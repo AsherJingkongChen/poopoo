@@ -1,0 +1,1 @@
+d=${1:-.}; find "$d" -type d -exec touch {}/.DS_Store \;
