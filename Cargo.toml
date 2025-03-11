@@ -6,6 +6,7 @@ resolver = "2"
 edition = "2021"
 repository = "https://github.com/AsherJingkongChen/poopoo"
 version = "0.0.0"
+license-file = "LICENSE"
 
 [profile.release]
 debug = false

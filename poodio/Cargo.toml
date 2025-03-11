@@ -1,8 +1,10 @@
 [package]
+description = "Fart poo poo audio"
 edition.workspace = true
 name = "poodio"
 repository.workspace = true
 version.workspace = true
+license-file.workspace = true
 
 [package.metadata.binstall]
 pkg-fmt = "bin"
