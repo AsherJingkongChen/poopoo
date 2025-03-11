@@ -84,6 +84,7 @@ jobs:
                       target
             - run: cargo build --locked --release --target ${{ matrix.target }}
             - run: gh release upload ${{ github.ref_name }}
-                  target/${{ matrix.target }}/release/${{ matrix.artifact }}
+                  target/${{ matrix.target }}/release/\
+                  ${{ matrix.artifact }}#${{ matrix.artifact }}-${{ matrix.target }}
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
