@@ -73,8 +73,8 @@ jobs:
             - run: cargo build --locked --release --target ${{ matrix.target }}
             - run:
                   mv target/${{ matrix.target }}/release/${{ matrix.prefix }}${{ matrix.suffix }}
-                  ${{ matrix.prefix }}-${{ matrix.target }}-${{ matrix.suffix }}
+                  ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
             - uses: softprops/action-gh-release@v2
               if: github.ref_type == 'tag'
               with:
-                  files: ${{ matrix.prefix }}-${{ matrix.target }}-${{ matrix.suffix }}
+                  files: ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
