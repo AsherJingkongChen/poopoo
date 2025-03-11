@@ -1,7 +1,12 @@
 [package]
+edition.workspace = true
 name = "poodio"
-version = "0.0.0"
-edition = "2021"
+repository.workspace = true
+version.workspace = true
+
+[package.metadata.binstall]
+pkg-fmt = "bin"
+pkg-url = "{ repo }/releases/download/{ name }%40v{ version }/{ name }-{ target }"
 
 [lib]
 crate-type = ["rlib"]
