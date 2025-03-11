@@ -50,7 +50,7 @@ jobs:
             - run: gh release create ${{ github.ref }}
                   --repo ${{ github.repository }}
                   --title ${{ github.ref }}
-                  --fail-on-no-commits
+                  --generate-notes
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
