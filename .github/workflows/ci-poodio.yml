@@ -40,7 +40,7 @@ jobs:
             - run: cargo test --all-features
 
     create-github-release:
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.ref_type == 'tag'
         needs: check
         runs-on: ubuntu-latest
         permissions:
@@ -49,12 +49,12 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   fetch-depth: 1
-            - run: gh release create ${{ github.ref }} --generate-notes
+            - run: gh release create ${{ github.ref_name }} --generate-notes
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     build-github-release:
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.ref_type == 'tag'
         needs: create-github-release
         runs-on: ${{ matrix.os }}
         permissions:
@@ -83,7 +83,7 @@ jobs:
                       ~/.cargo/git
                       target
             - run: cargo build --locked --release --target ${{ matrix.target }}
-            - run: gh release upload ${{ github.ref }}
+            - run: gh release upload ${{ github.ref_name }}
                   target/${{ matrix.target }}/release/${{ matrix.artifact }}
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
