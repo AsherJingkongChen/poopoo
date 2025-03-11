@@ -29,9 +29,9 @@ jobs:
                       ~/.cargo/registry
                       ~/.cargo/git
                       target
-            - uses: dtolnay/rust-toolchain@stable
-              with:
-                  components: clippy, outdated, rustfmt
+            # - uses: dtolnay/rust-toolchain@stable
+            #   with:
+            #       components: clippy, rustfmt
             - run: cargo outdated --exit-code 34
             - run: cargo fmt --all -- --check
             - run: cargo clippy --all-features -- -D warnings
