@@ -1,3 +1,8 @@
+build
+node_modules
+dist
+target
+
 # The best way to clean your git repository
 .DS_Store
 .DS_Store
