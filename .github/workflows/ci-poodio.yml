@@ -45,6 +45,7 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: write
+            id-token: write
         steps:
             - uses: actions/checkout@v4
               with:
@@ -60,6 +61,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         permissions:
             contents: write
+            id-token: write
         strategy:
             matrix:
                 include:
@@ -89,5 +91,3 @@ jobs:
                   --repo ${{ github.repository }}
                   --name ${{ matrix.artifact }}
                   --label ${{ matrix.artifact }}
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
