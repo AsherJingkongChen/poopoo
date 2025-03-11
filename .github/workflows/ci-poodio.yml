@@ -83,9 +83,8 @@ jobs:
                       ~/.cargo/git
                       target
             - run: cargo build --locked --release --target ${{ matrix.target }}
-            - run: cp target/${{ matrix.target }}/release/${{ matrix.artifact }}
-                  ${{ matrix.artifact }}-${{ matrix.target }}
-            - run: gh release upload ${{ github.ref_name }}
-                  ${{ matrix.artifact }}-${{ matrix.target }}
+            - run: cd target/${{ matrix.target }}/release
+            - run: zip -6 poodio-${{ matrix.target }}.zip ${{ matrix.artifact }}
+            - run: gh release upload ${{ github.ref_name }} poodio-${{ matrix.target }}.zip
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
