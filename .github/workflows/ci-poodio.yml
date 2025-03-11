@@ -92,6 +92,6 @@ jobs:
                       ~/.cargo/registry
                       ~/.cargo/git
                       target
-            - run: cargo publish --all-features --locked
+            - run: cargo publish --all-features --locked -p poodio
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
