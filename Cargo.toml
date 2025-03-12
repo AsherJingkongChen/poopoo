@@ -1,3 +1,11 @@
+[profile.release]
+codegen-units = 1
+debug = false
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
+
 [workspace]
 members = ["poodio"]
 resolver = "2"
@@ -6,11 +14,3 @@ resolver = "2"
 edition = "2021"
 license-file = "LICENSE"
 repository = "https://github.com/AsherJingkongChen/poopoo"
-
-[profile.release]
-codegen-units = 1
-debug = false
-lto = true
-opt-level = "s"
-panic = "abort"
-strip = true
