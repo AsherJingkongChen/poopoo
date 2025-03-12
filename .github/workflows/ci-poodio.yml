@@ -24,6 +24,7 @@ jobs:
             - uses: actions/cache@v4
               with:
                   key: cargo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: cargo-${{ runner.os }}-${{ runner.arch }}-
                   path: |
                       ~/.cargo/registry
                       ~/.cargo/git
@@ -35,7 +36,7 @@ jobs:
                   cargo fmt --all --check & pid1=$!
                   cargo outdated --exit-code 34 --workspace & pid2=$!
                   cargo clippy --all-features -- -D warnings & pid3=$!
-                  cargo test --all --all-features & pid4=$!
+                  cargo test --all --all-features --release & pid4=$!
                   for pid in $pid1 $pid2 $pid3 $pid4; do wait $pid; done
 
     build-release:
@@ -63,17 +64,13 @@ jobs:
               with:
                   fetch-depth: 1
             - if: runner.os == 'Linux'
-              uses: actions/cache@v4
-              with:
-                  key: apt-${{ runner.os }}-${{ runner.arch }}
-                  path: /var/cache/apt/archives
-            - if: runner.os == 'Linux'
               run: |
                   sudo apt-get update &&
                   sudo apt-get install -y libasound2-dev
             - uses: actions/cache@v4
               with:
                   key: cargo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: cargo-${{ runner.os }}-${{ runner.arch }}-
                   path: |
                       ~/.cargo/registry
                       ~/.cargo/git

@@ -12,4 +12,4 @@ name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version = "1.70"
-version = "0.0.1"
+version = "0.0.2"
