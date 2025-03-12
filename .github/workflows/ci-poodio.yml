@@ -51,9 +51,9 @@ jobs:
             matrix:
                 include:
                     - os: macos-latest
+                      can-publish-source: true
                       target: aarch64-apple-darwin
                       prefix: poodio
-                      cargo-publish: true
                     - os: windows-latest
                       target: x86_64-pc-windows-msvc
                       prefix: poodio
@@ -86,7 +86,7 @@ jobs:
               with:
                   files: ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
                   generate_release_notes: true
-            - if: matrix.cargo-publish
+            - if: matrix.can-publish-source
               run: cargo publish --all-features --locked --package poodio --no-verify
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
