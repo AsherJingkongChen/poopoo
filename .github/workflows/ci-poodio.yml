@@ -87,6 +87,6 @@ jobs:
                   files: ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
                   generate_release_notes: true
             - if: matrix.cargo-publish
-              run: cargo publish --all-features --locked --no-verify --workspace
+              run: cargo publish --all-features --locked --package poodio --no-verify
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
