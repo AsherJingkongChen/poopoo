@@ -2,13 +2,11 @@
 description = "Fart poo poo audio"
 edition.workspace = true
 license-file.workspace = true
+metadata.workspace = true
 name = "poodio"
+readme.workspace = true
 repository.workspace = true
-version = "0.0.0"
-
-[package.metadata.binstall]
-pkg-fmt = "bin"
-pkg-url = "{ repo }/releases/download/{ name }%40v{ version }/{ name }-{ target }"
+version = "0.0.1"
 
 [lib]
 crate-type = ["rlib"]

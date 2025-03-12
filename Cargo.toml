@@ -4,8 +4,10 @@ resolver = "2"
 
 [workspace.package]
 edition = "2021"
-repository = "https://github.com/AsherJingkongChen/poopoo"
 license-file = "LICENSE"
+metadata.binstall.pkg-url = "{ repo }/releases/download/{ name }%40v{ version }/{ name }-{ target }"
+repository = "https://github.com/AsherJingkongChen/poopoo"
+readme = true
 
 [profile.release]
 debug = false
