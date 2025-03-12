@@ -89,7 +89,7 @@ jobs:
     publish-crates-release:
         if: github.ref_type == 'tag'
         needs: check
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
         steps:
             - uses: actions/checkout@v4
               with:
