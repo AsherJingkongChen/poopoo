@@ -8,9 +8,12 @@ edition.workspace = true
 exclude = ["/doc"]
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio"
 license.workspace = true
-metadata.binstall.pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }-{ target }"
 name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version = "1.70"
 version = "0.0.4"
+
+[package.metadata.binstall]
+pkg-fmt = "bin"
+pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }-{ target }{ archive-suffix }"
