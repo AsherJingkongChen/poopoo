@@ -38,19 +38,19 @@ cargo binstall -y poodio@0.1.0 && poodio
 <details><summary><strong>View</strong> screenshots</summary>
 
 ![GitHub Release Assets](https://raw.githubusercontent.com/AsherJingkongChen/poopoo/main/poodio/doc/img/readme-screenshot-1.png)
-
 </details>
 
-Open the [**tags**](https://github.com/AsherJingkongChen/poopoo/tags) page, and download the **proper asset** (e.g. `poodio-x86_64-pc-windows-msvc.exe`) from the **specific release** (e.g. `poodio@0.1.0`).
+1. Open the **[tags](https://github.com/AsherJingkongChen/poopoo/tags) page**.
+2. Download the **proper asset** (e.g. `poodio-x86_64-pc-windows-msvc.exe`)
 
-Finally, run the executable:
+    from the **specific release** (e.g. `poodio@0.1.0`).
 
-```shell
-./poodio-x86_64-pc-windows-msvc.exe
-```
+3. Run the executable:
+    ```shell
+    ./poodio-x86_64-pc-windows-msvc.exe
+    ```
 
-Optionally, you can move it to a **directory** in your environment variable **`PATH`** and run it more easily:
-
-```shell
-poodio
-```
+4. Optionally, you can move it to a **directory** in your environment variable **`PATH`** and run it more easily:
+    ```shell
+    poodio
+    ```
