@@ -9,7 +9,7 @@ Fart poo poo audio
 
 We provide various ways to install `poodio` to your system, so you can pick the one that suits you best.
 
-### Cargo B(inary) Install
+### From Cargo B(inary) Install
 
 > It is `npx` for `cargo`.
 
@@ -31,7 +31,7 @@ Install and Run the **specific version** (e.g. `0.1.0`) of executable for the lo
 cargo binstall -y poodio@0.1.0 && poodio
 ```
 
-### GitHub Release
+### From GitHub Release
 
 > Download a pre-built executable.
 
