@@ -31,11 +31,11 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-outdated
-            - run: cargo fmt --all --check &
-                  cargo outdated --exit-code 34 --workspace &
-                  cargo clippy --all-features -- -D warnings &
-                  cargo test --all --all-features &
-                  wait
+            - run: cargo fmt --all --check & pid1=$!
+                  cargo outdated --exit-code 34 --workspace & pid2=$!
+                  cargo clippy --all-features -- -D warnings & pid3=$!
+                  cargo test --all --all-features & pid4=$!
+                  for pid in $pid1 $pid2 $pid3 $pid4; do wait $pid; done
 
     build-github-release:
         if: github.ref_type == 'tag'
