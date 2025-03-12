@@ -24,13 +24,13 @@
 -   💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)
 </details>
 
-💩 Install and Run the **latest version** of executable. 💩
+💩 Install **once** and Run the **latest version** of executable. 💩
 
 ```shell
 cargo binstall -y poodio && poodio
 ```
 
-💩 Install and Run the **specific version** (e.g. `0.1.0`) of executable with the lowest latency. 💩
+💩 Install **once** and Run the **specific version** (e.g. `0.1.0`) of executable. 💩
 
 ```shell
 cargo binstall -y poodio@0.1.0 && poodio
