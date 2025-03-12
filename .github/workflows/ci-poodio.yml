@@ -33,10 +33,10 @@ jobs:
               with:
                   tool: cargo-outdated
             - run: |
-                  cargo fmt --all --check & pid1=$!
-                  cargo outdated --exit-code 34 --workspace & pid2=$!
-                  cargo clippy --all-features -- -D warnings & pid3=$!
-                  cargo test --all --all-features --release & pid4=$!
+                  cargo clippy --all-features --locked -- -D warnings & pid1=$!
+                  cargo fmt --all --check & pid2=$!
+                  cargo outdated --exit-code 34 --workspace & pid3=$!
+                  cargo test --all --all-features --locked & pid4=$!
                   for pid in $pid1 $pid2 $pid3 $pid4; do wait $pid; done
 
     build-release:
@@ -83,7 +83,8 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                   files: ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
+                  generate_release_notes: true
             - if: matrix.cargo-publish
-              run: cargo publish --all-features --locked --package poodio
+              run: cargo publish --all-features --locked --no-verify --workspace
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}

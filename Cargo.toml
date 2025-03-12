@@ -12,5 +12,5 @@ resolver = "2"
 
 [workspace.package]
 edition = "2021"
-license-file = "LICENSE"
+license = "MIT"
 repository = "https://github.com/AsherJingkongChen/poopoo"
