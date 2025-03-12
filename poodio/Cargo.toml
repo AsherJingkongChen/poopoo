@@ -12,7 +12,7 @@ name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version = "1.70"
-version = "0.0.4"
+version = "0.0.5"
 
 [package.metadata.binstall]
 pkg-fmt = "bin"
