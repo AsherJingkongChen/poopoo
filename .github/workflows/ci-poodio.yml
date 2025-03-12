@@ -23,11 +23,18 @@ jobs:
                   fetch-depth: 1
             - uses: actions/cache@v4
               with:
-                  key: ${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
+                  key: apt-${{ runner.os }}-${{ runner.arch }}
+                  path: /var/cache/apt/archives
+            - uses: actions/cache@v4
+              with:
+                  key: cargo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
                   path: |
                       ~/.cargo/registry
                       ~/.cargo/git
                       target
+            - run: |
+                  sudo apt-get update &&
+                  sudo apt-get install -y libasound2-dev
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-outdated
@@ -65,14 +72,14 @@ jobs:
                   fetch-depth: 1
             - uses: actions/cache@v4
               with:
-                  key: ${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
+                  key: cargo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
                   path: |
                       ~/.cargo/registry
                       ~/.cargo/git
                       target
             - run: cargo build --locked --release --target ${{ matrix.target }}
-            - run:
-                  mv target/${{ matrix.target }}/release/${{ matrix.prefix }}${{ matrix.suffix }}
+            - run: mv
+                  target/${{ matrix.target }}/release/${{ matrix.prefix }}${{ matrix.suffix }}
                   ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
             - uses: softprops/action-gh-release@v2
               if: github.ref_type == 'tag'
@@ -89,7 +96,7 @@ jobs:
                   fetch-depth: 1
             - uses: actions/cache@v4
               with:
-                  key: ${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
+                  key: cargo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
                   path: |
                       ~/.cargo/registry
                       ~/.cargo/git
