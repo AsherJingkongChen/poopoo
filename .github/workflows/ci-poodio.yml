@@ -31,10 +31,10 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-outdated
-            - run: cargo outdated --exit-code 34
             - run: cargo fmt --all -- --check
-            - run: cargo clippy --all-features -- -D warnings
-            - run: cargo test --all-features
+            - run: cargo outdated --exit-code 34 &
+                  cargo clippy --all-features -- -D warnings &
+                  cargo test --all-features
 
     build-github-release:
         if: github.ref_type == 'tag'
