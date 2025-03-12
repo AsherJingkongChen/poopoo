@@ -9,13 +9,13 @@ Fart poo poo audio
 
 We provide various ways to install `poodio` to your system, so you can pick the one that suits you best.
 
-### From Cargo B(inary) Install
+### Installation - Cargo B(inary) Install
 
 > It is `npx` for `cargo`.
 
 <details><summary><strong>View</strong> pre-requisites</summary>
 
--   [`rustup`, `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+-   [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 -   [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)
 </details>
 
@@ -31,13 +31,14 @@ Install and Run the **specific version** (e.g. `0.1.0`) of executable for the lo
 cargo binstall -y poodio@0.1.0 && poodio
 ```
 
-### From GitHub Release
+### Installation - GitHub Release
 
-> Download a pre-built executable.
+> You can download a pre-built executable.
 
 <details><summary><strong>View</strong> screenshots</summary>
 
 ![GitHub Release Assets](https://raw.githubusercontent.com/AsherJingkongChen/poopoo/main/poodio/doc/img/readme-screenshot-1.png)
+
 </details>
 
 1. Open the **[tags](https://github.com/AsherJingkongChen/poopoo/tags) page**.
@@ -46,11 +47,31 @@ cargo binstall -y poodio@0.1.0 && poodio
     from the **specific release** (e.g. `poodio@0.1.0`).
 
 3. Run the executable:
+
     ```shell
     ./poodio-x86_64-pc-windows-msvc.exe
     ```
 
 4. Optionally, you can move it to a **directory** in your environment variable **`PATH`** and run it more easily:
+
     ```shell
     poodio
     ```
+
+### Installation - Build from Source
+
+> It's the most flexible option.
+
+<details><summary><strong>View</strong> pre-requisites</summary>
+
+-   [`git`](https://git-scm.com/downloads)
+-   [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+</details>
+
+Clone, Install, and Run the **development version** of executable:
+
+```shell
+git clone --branch main --depth 1 https://github.com/AsherJingkongChen/poopoo && \
+cargo install --path poopoo/poodio && \
+poodio
+```
