@@ -32,14 +32,11 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-outdated
-            - run: |
-                  cargo clippy --all-features --locked -- -D warnings & pid1=$!
-                  cargo fmt --all --check & pid2=$!
-                  cargo outdated --exit-code 34 --workspace & pid3=$!
-                  cargo test --all --all-features --locked & pid4=$!
-                  for pid in $pid1 $pid2 $pid3 $pid4;
-                      do wait $pid || exit 1;
-                  done
+            - run: >
+                  cargo fmt --all --check &&
+                  cargo clippy --all-features --locked -- -D warnings &&
+                  cargo outdated --exit-code 34 --workspace &&
+                  cargo test --all --all-features --locked
 
     build-release:
         if: github.ref_type == 'tag'
@@ -77,9 +74,9 @@ jobs:
                       ~/.cargo/registry
                       ~/.cargo/git
                       target
-            - run: cargo build --locked --release --target ${{ matrix.target }}
-            - run: mv
-                  target/${{ matrix.target }}/release/${{ matrix.prefix }}${{ matrix.suffix }}
+            - run: >
+                  cargo build --locked --release --target ${{ matrix.target }} &&
+                  mv target/${{ matrix.target }}/release/${{ matrix.prefix }}${{ matrix.suffix }}
                   ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
             - if: github.ref_type == 'tag'
               uses: softprops/action-gh-release@v2

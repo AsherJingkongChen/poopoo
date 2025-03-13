@@ -3,7 +3,7 @@ default-features = false
 version = "0.15.3"
 
 [package]
-description = "Fart poo poo audio"
+description = "💩 Fart poo poo audio 💩"
 edition.workspace = true
 exclude = []
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio"
