@@ -5,7 +5,7 @@ version = "0.15.3"
 [package]
 description = "Fart poo poo audio"
 edition.workspace = true
-exclude = ["/doc"]
+exclude = []
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio"
 license.workspace = true
 name = "poodio"
