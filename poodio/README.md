@@ -22,18 +22,19 @@
 
 -   💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 -   💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)
+
 </details>
 
 💩 Install **once** and Run the **latest version** of executable. 💩
 
 ```shell
-cargo binstall -y poodio && poodio
+cargo binstall -qy poodio && poodio
 ```
 
 💩 Install **once** and Run the **specific version** (e.g. `0.1.0`) of executable. 💩
 
 ```shell
-cargo binstall -y poodio@0.1.0 && poodio
+cargo binstall -qy poodio@0.1.0 && poodio
 ```
 
 ### 💩 Installation - Build from Source 💩
@@ -44,6 +45,7 @@ cargo binstall -y poodio@0.1.0 && poodio
 
 -   💩 [`git`](https://git-scm.com/downloads)
 -   💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+
 </details>
 
 💩 Install and Run the **development version** of executable. 💩
