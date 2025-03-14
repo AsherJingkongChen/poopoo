@@ -1,25 +1,25 @@
 {
-  "name": "poodio",
-  "version": "0.0.5",
-  "description": "💩 Fart poo poo audio 💩",
-  "homepage": "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio",
-  "license": "MIT",
   "author": "AsherJingkongChen",
+  "bin": "src/node/poodio",
+  "description": "💩 Fart poo poo audio 💩",
   "files": [
     "src/node/"
   ],
+  "homepage": "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio",
+  "license": "MIT",
   "main": "src/node/index.js",
-  "bin": "src/node/poodio",
+  "name": "poodio",
+  "optionalDependencies": {
+    "@poodio/poodio-aarch64-apple-darwin": "0.0.5",
+    "@poodio/poodio-x86_64-pc-windows-msvc": "0.0.5",
+    "@poodio/poodio-x86_64-unknown-linux-gnu": "0.0.5"
+  },
+  "private": false,
   "repository": "https://github.com/AsherJingkongChen/poopoo",
   "scripts": {
     "build": "./build.js"
   },
-  "optionalDependencies": {
-    "@poodio/poodio-x86_64-unknown-linux-gnu": "0.0.5",
-    "@poodio/poodio-aarch64-apple-darwin": "0.0.5",
-    "@poodio/poodio-x86_64-pc-windows-msvc": "0.0.5"
-  },
-  "private": false,
   "type": "commonjs",
-  "types": "src/node/index.d.ts"
+  "types": "src/node/index.d.ts",
+  "version": "0.0.5"
 }

@@ -1,6 +1,13 @@
 use color_eyre::eyre::Result;
-use serde_json::{from_reader as read_json, to_writer_pretty as write_json};
-use std::{fs::File, path::Path};
+use serde::{Deserialize, Serialize};
+use serde_json::{
+    from_reader as read_json, from_value as from_json, to_value as into_json,
+    to_writer_pretty as write_json, Value as Json,
+};
+use std::{
+    fs::{self, File},
+    path::Path,
+};
 
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=build.rs");
@@ -28,11 +35,12 @@ fn build_npm_pkg() -> Result<()> {
     ];
 
     let npm_pkg_fp = Path::new(env!("CARGO_MANIFEST_DIR")).join(PACKAGE_JSON_FILENAME);
-    let mut npm_pkg = if File::create_new(&npm_pkg_fp).is_err() {
-        read_json(File::open(&npm_pkg_fp)?)?
-    } else {
-        PackageJson::default()
-    };
+    let mut npm_pkg: PackageJson = File::create_new(&npm_pkg_fp)
+        .map(|_| Default::default())
+        .or_else(|_| {
+            read_json(File::open(&npm_pkg_fp)?)
+                .or_else(|_| fs::remove_file(&npm_pkg_fp).map(|_| Default::default()))
+        })?;
 
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
     npm_pkg.bin = Some(Bin::Literal(format!("{NPM_PKG_FILES_0}{NPM_PKG_NAME}")));
@@ -53,13 +61,22 @@ fn build_npm_pkg() -> Result<()> {
 
     let npm_pkg_opt_deps = npm_pkg.optional_dependencies.get_or_insert_default();
     for npm_pkg_target in NPM_PKG_TARGETS {
-        npm_pkg_opt_deps.insert(
-            format!("@{NPM_PKG_NAME}/{NPM_PKG_NAME}-{npm_pkg_target}"),
-            NPM_PKG_VERSION.into(),
-        );
+        let opt_dep_name = format!("@{NPM_PKG_NAME}/{NPM_PKG_NAME}-{npm_pkg_target}");
+        if !npm_pkg_opt_deps.contains_key(&opt_dep_name) {
+            npm_pkg_opt_deps.insert(opt_dep_name, NPM_PKG_VERSION.into());
+        }
     }
 
-    write_json(File::create(&npm_pkg_fp)?, &npm_pkg)?;
+    write_json(File::create(&npm_pkg_fp)?, &into_sorted_json(npm_pkg)?)?;
 
     Ok(())
+}
+
+fn into_sorted_json(value: impl Serialize) -> Result<Json> {
+    #[derive(Deserialize, Serialize)]
+    struct SortedJson {
+        #[serde(flatten)]
+        __rest: Json,
+    }
+    Ok(into_json(from_json::<SortedJson>(into_json(value)?)?)?)
 }

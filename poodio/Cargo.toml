@@ -3,12 +3,14 @@ color-eyre.default-features = true
 color-eyre.workspace = true
 napi-build.workspace = true
 package-json.workspace = true
+serde.features = ["derive"]
+serde.workspace = true
 serde_json.workspace = true
 
 [dependencies]
 cpal.workspace = true
-napi-derive.workspace = true
 napi-derive.features = ["type-def"]
+napi-derive.workspace = true
 napi.features = ["compat-mode", "dyn-symbols"]
 napi.workspace = true
 
@@ -26,7 +28,7 @@ authors.workspace = true
 description = "💩 Fart poo poo audio 💩"
 edition.workspace = true
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio"
-include = ["/src/rust", "/LICENSE.txt"]
+include = ["/build.rs", "/src/rust", "/LICENSE.txt"]
 license.workspace = true
 name = "poodio"
 readme = "README.md"
