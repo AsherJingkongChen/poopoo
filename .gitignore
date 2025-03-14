@@ -1,7 +1,9 @@
 build
-node_modules
 dist
+node_modules
 target
+
+.cargo.build.jsonl
 
 # The best way to clean your git repository
 .DS_Store

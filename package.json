@@ -1,0 +1,11 @@
+{
+    "workspaces": [
+        "poodio"
+    ],
+    "devDependencies": {
+        "@napi-rs/cli": "^2.18.4",
+        "cargo-cp-artifact": "^0.1.9",
+        "minimist": "^1.2.8",
+        "smol-toml": "^1.3.1"
+    }
+}

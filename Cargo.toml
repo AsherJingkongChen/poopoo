@@ -14,3 +14,13 @@ resolver = "2"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/AsherJingkongChen/poopoo"
+authors = ["AsherJingkongChen"]
+
+[workspace.dependencies]
+color-eyre = {version = "0.6.3", default-features = false}
+cpal = {version = "0.15.3", default-features = false}
+napi = {version = "2.16.16", default-features = false}
+napi-build = {version = "2.1.5", default-features = true}
+napi-derive = {version = "2.16.13", default-features = true}
+package-json = {version = "0.5.0", default-features = false}
+serde_json = {version = "1.0.140", default-features = false}

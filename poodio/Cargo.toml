@@ -1,17 +1,37 @@
-[dependencies.cpal]
-default-features = false
-version = "0.15.3"
+[build-dependencies]
+color-eyre.default-features = true
+color-eyre.workspace = true
+napi-build.workspace = true
+package-json.workspace = true
+serde_json.workspace = true
+
+[dependencies]
+cpal.workspace = true
+napi-derive.workspace = true
+napi-derive.features = ["type-def"]
+napi.features = ["compat-mode", "dyn-symbols"]
+napi.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "poodio"
+path = "src/rust/lib.rs"
+
+[[bin]]
+name = "poodio"
+path = "src/rust/bin.rs"
 
 [package]
+authors.workspace = true
 description = "💩 Fart poo poo audio 💩"
 edition.workspace = true
-exclude = []
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio"
+include = ["/src/rust", "/LICENSE.txt"]
 license.workspace = true
 name = "poodio"
 readme = "README.md"
 repository.workspace = true
-rust-version = "1.70"
+rust-version = "1.80"
 version = "0.0.5"
 
 [package.metadata.binstall]
