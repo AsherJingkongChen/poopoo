@@ -1,8 +1,6 @@
 {
   "author": "AsherJingkongChen",
-  "bin": {
-    "poodio": "src/node/poodio"
-  },
+  "bin": "src/node/poodio",
   "dependencies": {
     "@kaciras/deasync": "^1.1.0",
     "detect-libc": "^2.0.3",
@@ -17,14 +15,14 @@
   "main": "src/node/index.cjs",
   "name": "poodio",
   "optionalDependencies": {
-    "@poodio/arm64-darwin-unknown": "0.0.5",
-    "@poodio/arm64-linux-glibc": "0.0.5",
-    "@poodio/arm64-win32-unknown": "0.0.5",
-    "@poodio/ia32-linux-glibc": "0.0.5",
-    "@poodio/ia32-win32-unknown": "0.0.5",
-    "@poodio/x64-darwin-unknown": "0.0.5",
-    "@poodio/x64-linux-glibc": "0.0.5",
-    "@poodio/x64-win32-unknown": "0.0.5"
+    "@poodio/poodio-arm64-darwin-unknown": "0.0.5",
+    "@poodio/poodio-arm64-linux-glibc": "0.0.5",
+    "@poodio/poodio-arm64-win32-unknown": "0.0.5",
+    "@poodio/poodio-ia32-linux-glibc": "0.0.5",
+    "@poodio/poodio-ia32-win32-unknown": "0.0.5",
+    "@poodio/poodio-x64-darwin-unknown": "0.0.5",
+    "@poodio/poodio-x64-linux-glibc": "0.0.5",
+    "@poodio/poodio-x64-win32-unknown": "0.0.5"
   },
   "private": false,
   "repository": "https://github.com/AsherJingkongChen/poopoo",

@@ -27,7 +27,7 @@ execSync(
 ${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
 -- ${NAPI} build --no-dts-header --cargo-flags='--locked --message-format json' \
 ${featuresArg}${targetArg}${targetArg && "--release "}${TDIR}${SDIR}`,
-    { stdio: "inherit", windowsHide: true }
+    { stdio: "inherit" }
 );
 fs.writeFileSync(
     `${TDIR}${SDIR}index.cjs`,
@@ -38,7 +38,8 @@ fs.writeFileSync(
 if (!target) {
     fs.copyFileSync(`${SDIR}index.cjs`, `${TDIR}${SDIR}index.cjs`);
     fs.copyFileSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
-    fs.copyFileSync(`${SDIR}poodio`, `${TDIR}${SDIR}poodio`);
+    fs.copyFileSync(`${SDIR}loader.cjs`, `${TDIR}${SDIR}loader.cjs`);
+    fs.copyFileSync(`${SDIR}${name}`, `${TDIR}${SDIR}${name}`);
 }
 
 // Update the package info
@@ -46,12 +47,13 @@ let npmPkgChange = {
     scripts: undefined,
 };
 if (target) {
-    const npmTarget = cargoToNpmTarget(target);
+    const npmTarget = buildNpmPkgTargetFromCargo(target);
     const { cpu, os, libc } = npmTarget;
+    const npmTargetTriple = `${cpu[0]}-${os[0]}-${libc?.[0] || "unknown"}`;
     npmPkgChange = {
-        name: `@${name}/${cpu[0]}-${os[0]}-${libc?.[0] || "unknown"}`,
-        optionalDependencies: undefined,
         ...npmPkgChange,
+        name: `@${name}/${name}-${npmTargetTriple}`,
+        optionalDependencies: undefined,
         ...npmTarget,
     };
 }
@@ -64,7 +66,7 @@ fs.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2));
 fs.copyFileSync("README.md", `${TDIR}README.md`);
 fs.copyFileSync("LICENSE.txt", `${TDIR}LICENSE.txt`);
 
-function cargoToNpmTarget(cargoTarget) {
+function buildNpmPkgTargetFromCargo(cargoTarget) {
     const transform = {
         "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
         "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },

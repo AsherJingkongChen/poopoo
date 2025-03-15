@@ -1,1 +1,14 @@
 #! /usr/bin/env node
+
+const loader = require("./loader.cjs");
+const { name, version, bin } = require("../../package.json");
+
+const nameForPlatform = loader.buildPkgNameForPlatform(name);
+loader.tryInstallPkg(nameForPlatform, version);
+
+const command = require.resolve(`${nameForPlatform}/${bin}`);
+const args = process.argv.slice(2);
+
+require("node:child_process")
+    .spawn(command, args, { stdio: "inherit" })
+    .on("exit", (code) => process.exit(code));

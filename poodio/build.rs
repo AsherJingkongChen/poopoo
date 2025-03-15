@@ -48,14 +48,7 @@ fn build_npm_pkg() -> Result<()> {
         })?;
 
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
-    npm_pkg.bin = Some(Bin::Record(
-        [(
-            NPM_PKG_NAME.into(),
-            format!("{NPM_PKG_FILES_0}{NPM_PKG_NAME}"),
-        )]
-        .into_iter()
-        .collect(),
-    ));
+    npm_pkg.bin = Some(Bin::Literal(format!("{NPM_PKG_FILES_0}{NPM_PKG_NAME}")));
     npm_pkg.description = option_env!("CARGO_PKG_DESCRIPTION").map(Into::into);
     npm_pkg.homepage = option_env!("CARGO_PKG_HOMEPAGE").map(Into::into);
     npm_pkg.license = option_env!("CARGO_PKG_LICENSE").map(Into::into);
@@ -73,7 +66,7 @@ fn build_npm_pkg() -> Result<()> {
 
     let npm_pkg_opt_deps = npm_pkg.optional_dependencies.get_or_insert_default();
     for npm_pkg_target in NPM_PKG_TARGETS {
-        let opt_dep_name = format!("@{NPM_PKG_NAME}/{npm_pkg_target}");
+        let opt_dep_name = format!("@{NPM_PKG_NAME}/{NPM_PKG_NAME}-{npm_pkg_target}");
         if !npm_pkg_opt_deps.contains_key(&opt_dep_name) {
             npm_pkg_opt_deps.insert(opt_dep_name, NPM_PKG_VERSION.into());
         }
