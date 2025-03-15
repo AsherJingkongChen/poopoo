@@ -39,12 +39,14 @@ module.exports = {
             const id = `${name}@${version}`;
             try {
                 C.execFileSync(this.buildPkgManager(), ["add", id, "--no-save"], {
-                    stdio: "pipe",
+                    stdio: "ignore",
                     windowsHide: true,
                 });
                 require.resolve(name);
             } catch (err) {
-                throw new Error(`Failed to install the package "${id}": ${err.message}`);
+                throw new Error(
+                    `Failed to install the dependency "${id}": ${err.message}`,
+                );
             }
         }
     },
