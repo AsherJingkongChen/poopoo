@@ -9,6 +9,4 @@ loader.tryInstallPkg(nameForPlatform, version);
 const command = require.resolve(`${nameForPlatform}/${bin}`);
 const args = process.argv.slice(2);
 
-require("node:child_process")
-    .spawn(command, args, { stdio: "inherit" })
-    .on("exit", (code) => process.exit(code));
+require("node:child_process").execFileSync(command, args, { stdio: "inherit" });
