@@ -34,7 +34,7 @@ FS.writeFileSync(
     `module.exports = require("./index.node");\n`,
 );
 
-// Replace artifacts with placeholders
+// Use stubs if the target is not specified
 if (!target) {
     FS.copyFileSync(`${SDIR}index.cjs`, `${TDIR}${SDIR}index.cjs`);
     FS.copyFileSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
