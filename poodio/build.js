@@ -22,8 +22,8 @@ const { name } = parseToml(F.readFileSync("Cargo.toml", "utf8")).package;
 
 // Clean the previous artifacts
 F.rmSync(TDIR, { force: true, recursive: true });
-F.rmSync(`${SDIR}index.d.ts`);
-F.truncateSync(`${SDIR}index.node`, 0);
+F.rmSync(`${SDIR}index.d.ts`, { force: true });
+F.rmSync(`${SDIR}index.node`, { force: true });
 
 // Build the artifacts
 execSync(
@@ -41,7 +41,7 @@ F.writeFileSync(
 // Use stubs if the target is not specified
 if (!target) {
     F.copyFileSync(`${SDIR}index.cjs`, `${TDIR}${SDIR}index.cjs`);
-    F.copyFileSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
+    F.truncateSync(`${TDIR}${SDIR}index.node`, 0);
     F.copyFileSync(`${SDIR}loader.cjs`, `${TDIR}${SDIR}loader.cjs`);
     F.copyFileSync(`${SDIR}${name}`, `${TDIR}${SDIR}${name}`);
 }
