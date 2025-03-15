@@ -62,7 +62,7 @@ const npmPkg = Object.fromEntries(
 );
 
 // Write the common files
-fs.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2));
+fs.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2) + "\n");
 fs.copyFileSync("README.md", `${TDIR}README.md`);
 fs.copyFileSync("LICENSE.txt", `${TDIR}LICENSE.txt`);
 

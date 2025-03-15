@@ -1,11 +1,12 @@
 use color_eyre::eyre::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::{
-    from_reader as read_json, from_value as from_json, to_value as into_json,
-    to_writer_pretty as write_json, Value as Json,
+    from_reader as read_json, from_value as from_json, ser::PrettyFormatter,
+    to_value as into_json, Serializer, Value as Json,
 };
 use std::{
     fs::{self, File},
+    io::Write,
     path::Path,
 };
 
@@ -39,12 +40,14 @@ fn build_npm_pkg() -> Result<()> {
 
     println!("cargo:rerun-if-changed=package.json");
 
-    let npm_pkg_fp = Path::new(env!("CARGO_MANIFEST_DIR")).join(PACKAGE_JSON_FILENAME);
-    let mut npm_pkg: PackageJson = File::create_new(&npm_pkg_fp)
+    let npm_pkg_file_path =
+        Path::new(env!("CARGO_MANIFEST_DIR")).join(PACKAGE_JSON_FILENAME);
+    let mut npm_pkg: PackageJson = File::create_new(&npm_pkg_file_path)
         .map(|_| Default::default())
         .or_else(|_| {
-            read_json(File::open(&npm_pkg_fp)?)
-                .or_else(|_| fs::remove_file(&npm_pkg_fp).map(|_| Default::default()))
+            read_json(File::open(&npm_pkg_file_path)?).or_else(|_| {
+                fs::remove_file(&npm_pkg_file_path).map(|_| Default::default())
+            })
         })?;
 
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
@@ -79,7 +82,12 @@ fn build_npm_pkg() -> Result<()> {
         npm_pkg.scripts.insert("build".into(), "./build.js".into());
     }
 
-    write_json(File::create(&npm_pkg_fp)?, &into_sorted_json(npm_pkg)?)?;
+    let mut npm_pkg_ref = File::create(&npm_pkg_file_path)?;
+    into_sorted_json(npm_pkg)?.serialize(&mut Serializer::with_formatter(
+        &mut npm_pkg_ref,
+        PrettyFormatter::with_indent(b"    "),
+    ))?;
+    npm_pkg_ref.write_all(b"\n")?;
 
     Ok(())
 }

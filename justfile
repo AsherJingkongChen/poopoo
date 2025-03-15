@@ -16,7 +16,7 @@ lint:
     cargo fmt --all --check
     cargo clippy --locked -- -D warnings
     cargo clippy --all-features --locked -- -D warnings
-    npm run lint --workspaces
+    npm run lint
 
 outdated:
     cargo outdated --exit-code 77 --workspace
