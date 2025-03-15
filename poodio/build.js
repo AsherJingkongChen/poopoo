@@ -27,11 +27,11 @@ execSync(
 ${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
 -- ${NAPI} build --no-dts-header --cargo-flags='--locked --message-format json' \
 ${featuresArg}${targetArg}${targetArg && "--release "}${TDIR}${SDIR}`,
-    { stdio: "inherit" }
+    { stdio: "inherit" },
 );
 fs.writeFileSync(
     `${TDIR}${SDIR}index.cjs`,
-    `module.exports = require("./index.node");\n`
+    `module.exports = require("./index.node");\n`,
 );
 
 // Replace artifacts with placeholders
@@ -58,7 +58,7 @@ if (target) {
     };
 }
 const npmPkg = Object.fromEntries(
-    Object.entries(Object.assign(require("./package.json"), npmPkgChange)).sort()
+    Object.entries(Object.assign(require("./package.json"), npmPkgChange)).sort(),
 );
 
 // Write the common files
@@ -69,13 +69,25 @@ fs.copyFileSync("LICENSE.txt", `${TDIR}LICENSE.txt`);
 function buildNpmPkgTargetFromCargo(cargoTarget) {
     const transform = {
         "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
-        "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },
+        "aarch64-unknown-linux-gnu": {
+            cpu: ["arm64"],
+            os: ["linux"],
+            libc: ["glibc"],
+        },
         "aarch64-pc-windows-msvc": { cpu: ["arm64"], os: ["win32"] },
         "i686-pc-windows-msvc": { cpu: ["ia32"], os: ["win32"] },
-        "i686-unknown-linux-gnu": { cpu: ["ia32"], os: ["linux"], libc: ["glibc"] },
+        "i686-unknown-linux-gnu": {
+            cpu: ["ia32"],
+            os: ["linux"],
+            libc: ["glibc"],
+        },
         "x86_64-apple-darwin": { cpu: ["x64"], os: ["darwin"] },
         "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
-        "x86_64-unknown-linux-gnu": { cpu: ["x64"], os: ["linux"], libc: ["glibc"] },
+        "x86_64-unknown-linux-gnu": {
+            cpu: ["x64"],
+            os: ["linux"],
+            libc: ["glibc"],
+        },
     };
     const npmTarget = transform[cargoTarget];
     if (!npmTarget) {

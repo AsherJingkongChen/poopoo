@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 const loader = require("./loader.cjs");
-const { name, version, bin } = require("../../package.json");
+const { bin, name, version } = require("../../package.json");
 
 const nameForPlatform = loader.buildPkgNameForPlatform(name);
 loader.tryInstallPkg(nameForPlatform, version);

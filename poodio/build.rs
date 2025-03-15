@@ -19,8 +19,8 @@ fn main() -> Result<()> {
 
 fn build_npm_pkg() -> Result<()> {
     use package_json::{
-        PackageBin as Bin, PackageJson, PackagePeople as People, PackageRepository as Repository,
-        PACKAGE_JSON_FILENAME,
+        PackageBin as Bin, PackageJson, PackagePeople as People,
+        PackageRepository as Repository, PACKAGE_JSON_FILENAME,
     };
 
     const NPM_PKG_FILES_0: &str = "src/node/";
@@ -56,7 +56,8 @@ fn build_npm_pkg() -> Result<()> {
     npm_pkg.name = NPM_PKG_NAME.into();
     npm_pkg.r#type = "commonjs".into();
     npm_pkg.types = Some(format!("{NPM_PKG_FILES_0}index.d.ts"));
-    npm_pkg.repository = option_env!("CARGO_PKG_REPOSITORY").map(|v| Repository::Url(v.into()));
+    npm_pkg.repository =
+        option_env!("CARGO_PKG_REPOSITORY").map(|v| Repository::Url(v.into()));
     npm_pkg.version = NPM_PKG_VERSION.into();
 
     let npm_pkg_files = npm_pkg.files.get_or_insert(Default::default());

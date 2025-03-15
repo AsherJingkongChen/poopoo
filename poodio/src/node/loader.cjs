@@ -19,7 +19,7 @@ module.exports = {
             const request = pm.resolveCommand(agent, "add", ["--no-save", fullName]);
             if (!request) {
                 throw new Error(
-                    `Could not find a package manager to install "${fullName}"`
+                    `Could not find a package manager to install "${fullName}"`,
                 );
             }
             try {
@@ -28,11 +28,11 @@ module.exports = {
                     {
                         stdio: "ignore",
                         windowsHide: true,
-                    }
+                    },
                 );
             } catch (err) {
                 throw new Error(
-                    `Failed to install the package "${fullName}": ${err.message}`
+                    `Failed to install the package "${fullName}": ${err.message}`,
                 );
             }
         }

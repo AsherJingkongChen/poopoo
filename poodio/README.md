@@ -20,8 +20,8 @@
 
 <details><summary><i>💩 View pre-requisites 💩</i></summary>
 
--   💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
--   💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)
+- 💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+- 💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)
 
 </details>
 
@@ -43,8 +43,8 @@ cargo binstall -qy poodio@0.1.0 && poodio
 
 <details><summary><i>💩 View pre-requisites 💩</i></summary>
 
--   💩 [`git`](https://git-scm.com/downloads)
--   💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+- 💩 [`git`](https://git-scm.com/downloads)
+- 💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 
 </details>
 
