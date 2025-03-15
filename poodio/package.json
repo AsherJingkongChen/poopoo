@@ -1,13 +1,20 @@
 {
   "author": "AsherJingkongChen",
-  "bin": "src/node/poodio",
+  "bin": {
+    "poodio": "src/node/poodio"
+  },
+  "dependencies": {
+    "@kaciras/deasync": "^1.1.0",
+    "detect-libc": "^2.0.3",
+    "package-manager-detector": "^1.0.0"
+  },
   "description": "💩 Fart poo poo audio 💩",
   "files": [
     "src/node/"
   ],
   "homepage": "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio",
   "license": "MIT",
-  "main": "src/node/index.js",
+  "main": "src/node/index.cjs",
   "name": "poodio",
   "optionalDependencies": {
     "@poodio/arm64-darwin-unknown": "0.0.5",

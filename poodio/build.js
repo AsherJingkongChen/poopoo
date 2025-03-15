@@ -21,6 +21,7 @@ const targetArg = target ? `--target ${target} ` : "";
 const { name } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).package;
 
 // Build the artifacts
+fs.rmSync(TDIR, { force: true, recursive: true });
 execSync(
     `\
 ${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
@@ -28,11 +29,14 @@ ${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
 ${featuresArg}${targetArg}${targetArg && "--release "}${TDIR}${SDIR}`,
     { stdio: "inherit", windowsHide: true }
 );
-fs.writeFileSync(`${TDIR}${SDIR}index.js`, `module.exports = require("./index.node");\n`);
+fs.writeFileSync(
+    `${TDIR}${SDIR}index.cjs`,
+    `module.exports = require("./index.node");\n`
+);
 
 // Replace artifacts with placeholders
 if (!target) {
-    fs.copyFileSync(`${SDIR}index.js`, `${TDIR}${SDIR}index.js`);
+    fs.copyFileSync(`${SDIR}index.cjs`, `${TDIR}${SDIR}index.cjs`);
     fs.copyFileSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
     fs.copyFileSync(`${SDIR}poodio`, `${TDIR}${SDIR}poodio`);
 }
@@ -52,10 +56,7 @@ if (target) {
     };
 }
 const npmPkg = Object.fromEntries(
-    Object.entries({
-        ...require("./package.json"),
-        ...npmPkgChange,
-    }).sort()
+    Object.entries(Object.assign(require("./package.json"), npmPkgChange)).sort()
 );
 
 // Write the common files
