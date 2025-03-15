@@ -23,42 +23,46 @@ const { name } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).package;
 // Build the artifacts
 execSync(
     `\
-${CPAR} --artifact bin ${name} ${TDIR}${SDIR}/${name} \
--- ${NAPI} build ${featuresArg}${targetArg}${targetArg && "--release "}--no-dts-header \
---cargo-flags='--locked --message-format json' ${TDIR}${SDIR}/`,
+${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
+-- ${NAPI} build --no-dts-header --cargo-flags='--locked --message-format json' \
+${featuresArg}${targetArg}${targetArg && "--release "}${TDIR}${SDIR}`,
     { stdio: "inherit", windowsHide: true }
 );
+fs.writeFileSync(`${TDIR}${SDIR}index.js`, `module.exports = require("./index.node");\n`);
 
-if (target) {
-    // Rewrite the package info
-    const npmTarget = cargoToNpmTarget(target);
-    const npmTargetTriple = `${npmTarget.cpu[0]}-${npmTarget.os[0]}-${
-        npmTarget.libc[0] || "unknown"
-    }`;
-    const npmPkg = Object.assign(require("./package.json"), {
-        name: `@${name}/${name}-${npmTargetTriple}`,
-        optionalDependencies: undefined,
-        scripts: undefined,
-        ...npmTarget,
-    });
-    const npmPkgSorted = Object.fromEntries(Object.entries(npmPkg).sort());
-    fs.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkgSorted, null, 2));
-} else {
-    // Rewrite the package info
-    const npmPkg = Object.assign(require("./package.json"), {
-        scripts: undefined,
-    });
-    fs.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2));
-
-    // Overwrite the specific files
-    fs.cpSync(`${SDIR}/index.node`, `${TDIR}${SDIR}/index.node`);
-    fs.cpSync(`${SDIR}/poodio`, `${TDIR}${SDIR}/poodio`);
+// Replace artifacts with placeholders
+if (!target) {
+    fs.cpSync(`${SDIR}index.js`, `${TDIR}${SDIR}index.js`);
+    fs.cpSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
+    fs.cpSync(`${SDIR}poodio`, `${TDIR}${SDIR}poodio`);
 }
 
-// Copy the universal files
+// Update the package info
+let npmPkgChange = {
+    scripts: undefined,
+};
+if (target) {
+    const npmTarget = cargoToNpmTarget(target);
+    const npmTargetTriple =
+        npmTarget.cpu[0] + "-" + npmTarget.os[0] + "-" + (npmTarget.libc[0] || "unknown");
+    npmPkgChange = {
+        name: `@${name}/${npmTargetTriple}`,
+        optionalDependencies: undefined,
+        ...npmPkgChange,
+        ...npmTarget,
+    };
+}
+const npmPkg = Object.fromEntries(
+    Object.entries({
+        ...require("./package.json"),
+        ...npmPkgChange,
+    }).sort()
+);
+
+// Write the common files
+fs.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2));
 fs.cpSync("README.md", `${TDIR}README.md`);
 fs.cpSync("LICENSE.txt", `${TDIR}LICENSE.txt`, { dereference: true });
-fs.cpSync(`${SDIR}/index.js`, `${TDIR}${SDIR}/index.js`);
 
 function cargoToNpmTarget(cargoTarget) {
     const transform = {

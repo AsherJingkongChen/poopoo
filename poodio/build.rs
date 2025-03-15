@@ -67,6 +67,10 @@ fn build_npm_pkg() -> Result<()> {
         }
     }
 
+    if !npm_pkg.scripts.contains_key("build") {
+        npm_pkg.scripts.insert("build".into(), "./build.js".into());
+    }
+
     write_json(File::create(&npm_pkg_fp)?, &into_sorted_json(npm_pkg)?)?;
 
     Ok(())
