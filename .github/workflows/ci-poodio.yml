@@ -31,8 +31,7 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
-            - run: just prepare
-            - run: just check
+            - run: just prepare check
 
     build-release:
         if: github.ref_type == 'tag'
@@ -68,8 +67,7 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
-            - run: just prepare
-            - run: just build-target ${{ matrix.target }}
+            - run: just prepare build-target ${{ matrix.target }}
             # - uses: softprops/action-gh-release@v2
             #   with:
             #       files: ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
