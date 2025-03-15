@@ -27,6 +27,11 @@ test:
     # TODO
     exit 4
 
+fix:
+    cargo fmt --all
+    cargo clippy --fix --locked
+    npm run lint -- --write
+
 build-common:
     npm run build --workspaces
 
