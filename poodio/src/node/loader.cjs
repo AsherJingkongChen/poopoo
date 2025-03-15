@@ -1,5 +1,6 @@
 const C = require("node:child_process");
 const F = require("node:fs");
+const P = require("node:path");
 
 module.exports = {
     buildPkgName(name) {
@@ -10,10 +11,10 @@ module.exports = {
     },
     buildPkgManager() {
         const cwd = process.cwd();
-        if (F.existsSync(resolve(cwd, "bun.lockb"))) return "bun";
-        if (F.existsSync(resolve(cwd, "pnpm-lock.yaml"))) return "pnpm";
-        if (F.existsSync(resolve(cwd, "yarn.lock"))) return "yarn";
-        if (F.existsSync(resolve(cwd, "package-lock.json"))) return "npm";
+        if (F.existsSync(P.resolve(cwd, "bun.lockb"))) return "bun";
+        if (F.existsSync(P.resolve(cwd, "pnpm-lock.yaml"))) return "pnpm";
+        if (F.existsSync(P.resolve(cwd, "yarn.lock"))) return "yarn";
+        if (F.existsSync(P.resolve(cwd, "package-lock.json"))) return "npm";
         for (const pm of ["bun", "pnpm", "yarn"]) {
             try {
                 if (
@@ -37,8 +38,8 @@ module.exports = {
 
             const id = `${name}@${version}`;
             try {
-                C.execFileSync(buildPkgManager(), ["add", id, "--no-save"], {
-                    stdio: "ignore",
+                C.execFileSync(this.buildPkgManager(), ["add", id, "--no-save"], {
+                    stdio: "pipe",
                     windowsHide: true,
                 });
                 require.resolve(name);
