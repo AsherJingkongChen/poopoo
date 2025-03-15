@@ -8,7 +8,10 @@
         "minimist": "^1.2.8",
         "smol-toml": "^1.3.1"
     },
-    "dependencies": {
-        "@poodio/poodio-aarch64-apple-darwin": "file:poodio/dist/npm"
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "error"
+        }
     }
 }

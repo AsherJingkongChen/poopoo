@@ -32,9 +32,9 @@ fs.writeFileSync(`${TDIR}${SDIR}index.js`, `module.exports = require("./index.no
 
 // Replace artifacts with placeholders
 if (!target) {
-    fs.cpSync(`${SDIR}index.js`, `${TDIR}${SDIR}index.js`);
-    fs.cpSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
-    fs.cpSync(`${SDIR}poodio`, `${TDIR}${SDIR}poodio`);
+    fs.copyFileSync(`${SDIR}index.js`, `${TDIR}${SDIR}index.js`);
+    fs.copyFileSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
+    fs.copyFileSync(`${SDIR}poodio`, `${TDIR}${SDIR}poodio`);
 }
 
 // Update the package info
@@ -43,10 +43,9 @@ let npmPkgChange = {
 };
 if (target) {
     const npmTarget = cargoToNpmTarget(target);
-    const npmTargetTriple =
-        npmTarget.cpu[0] + "-" + npmTarget.os[0] + "-" + (npmTarget.libc[0] || "unknown");
+    const { cpu, os, libc } = npmTarget;
     npmPkgChange = {
-        name: `@${name}/${npmTargetTriple}`,
+        name: `@${name}/${cpu[0]}-${os[0]}-${libc?.[0] || "unknown"}`,
         optionalDependencies: undefined,
         ...npmPkgChange,
         ...npmTarget,
@@ -61,19 +60,19 @@ const npmPkg = Object.fromEntries(
 
 // Write the common files
 fs.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2));
-fs.cpSync("README.md", `${TDIR}README.md`);
-fs.cpSync("LICENSE.txt", `${TDIR}LICENSE.txt`, { dereference: true });
+fs.copyFileSync("README.md", `${TDIR}README.md`);
+fs.copyFileSync("LICENSE.txt", `${TDIR}LICENSE.txt`);
 
 function cargoToNpmTarget(cargoTarget) {
     const transform = {
-        "aarch64-apple-darwin": { os: ["darwin"], cpu: ["arm64"], libc: [] },
-        "aarch64-unknown-linux-gnu": { os: ["linux"], cpu: ["arm64"], libc: ["glibc"] },
-        "aarch64-pc-windows-msvc": { os: ["win32"], cpu: ["arm64"], libc: [] },
-        "i686-pc-windows-msvc": { os: ["win32"], cpu: ["ia32"], libc: [] },
-        "i686-unknown-linux-gnu": { os: ["linux"], cpu: ["ia32"], libc: ["glibc"] },
-        "x86_64-apple-darwin": { os: ["darwin"], cpu: ["x64"], libc: [] },
-        "x86_64-pc-windows-msvc": { os: ["win32"], cpu: ["x64"], libc: [] },
-        "x86_64-unknown-linux-gnu": { os: ["linux"], cpu: ["x64"], libc: ["glibc"] },
+        "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
+        "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },
+        "aarch64-pc-windows-msvc": { cpu: ["arm64"], os: ["win32"] },
+        "i686-pc-windows-msvc": { cpu: ["ia32"], os: ["win32"] },
+        "i686-unknown-linux-gnu": { cpu: ["ia32"], os: ["linux"], libc: ["glibc"] },
+        "x86_64-apple-darwin": { cpu: ["x64"], os: ["darwin"] },
+        "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
+        "x86_64-unknown-linux-gnu": { cpu: ["x64"], os: ["linux"], libc: ["glibc"] },
     };
     const npmTarget = transform[cargoTarget];
     if (!npmTarget) {
