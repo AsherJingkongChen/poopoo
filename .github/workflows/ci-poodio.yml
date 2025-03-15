@@ -31,11 +31,10 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-outdated
-            - run: >
-                  cargo fmt --all --check &&
-                  cargo clippy --all-features --locked -- -D warnings &&
-                  cargo outdated --exit-code 34 --workspace &&
-                  cargo test --all --all-features --locked
+            - run: cargo fmt --all --check
+            - run: cargo clippy --all-features --locked -- -D warnings
+            - run: cargo outdated --exit-code 34 --workspace
+            - run: cargo test --all --all-features --locked
 
     build-release:
         if: github.ref_type == 'tag'
@@ -94,5 +93,5 @@ jobs:
             - run: cargo publish --all-features --locked --package poodio --no-verify
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
-# npm publish --provenance --access public
 
+# npm publish --provenance --access public

@@ -59,17 +59,19 @@ fn build_npm_pkg() -> Result<()> {
     npm_pkg.repository = option_env!("CARGO_PKG_REPOSITORY").map(|v| Repository::Url(v.into()));
     npm_pkg.version = NPM_PKG_VERSION.into();
 
-    let npm_pkg_files = npm_pkg.files.get_or_insert_default();
+    let npm_pkg_files = npm_pkg.files.get_or_insert(Default::default());
     if !npm_pkg_files.contains(&NPM_PKG_FILES_0.into()) {
         npm_pkg_files.push(NPM_PKG_FILES_0.into());
     }
 
-    let npm_pkg_opt_deps = npm_pkg.optional_dependencies.get_or_insert_default();
+    let npm_pkg_opt_deps = npm_pkg
+        .optional_dependencies
+        .get_or_insert(Default::default());
     for npm_pkg_target in NPM_PKG_TARGETS {
         let opt_dep_name = format!("@{NPM_PKG_NAME}/{NPM_PKG_NAME}-{npm_pkg_target}");
-        if !npm_pkg_opt_deps.contains_key(&opt_dep_name) {
-            npm_pkg_opt_deps.insert(opt_dep_name, NPM_PKG_VERSION.into());
-        }
+        npm_pkg_opt_deps
+            .entry(opt_dep_name)
+            .or_insert_with(|| NPM_PKG_VERSION.into());
     }
 
     if !npm_pkg.scripts.contains_key("build") {
