@@ -8,9 +8,7 @@ const pkgName = loader.buildPkgName(name);
 loader.tryInstallPkg(pkgName, version);
 
 const source = require.resolve(`${pkgName}/${bin}`);
+loader.copyPkg(source);
+
 const args = process.argv.slice(2);
-
 C.execFileSync(source, args, { stdio: "inherit" });
-
-// TODO: Replace stubs with the "source" package
-

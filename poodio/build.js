@@ -4,7 +4,7 @@ process.chdir(__dirname);
 
 // Import the modules
 globalThis.execSync = require("node:child_process").execSync;
-globalThis.FS = require("node:fs");
+globalThis.F = require("node:fs");
 globalThis.parseArgs = require("minimist");
 globalThis.parseToml = require("smol-toml").parse;
 
@@ -18,10 +18,14 @@ const SDIR = "src/node/";
 const { features, target } = parseArgs(process.argv.slice(2));
 const featuresArg = features ? `--features ${features} ` : "";
 const targetArg = target ? `--target ${target} ` : "";
-const { name } = parseToml(FS.readFileSync("Cargo.toml", "utf8")).package;
+const { name } = parseToml(F.readFileSync("Cargo.toml", "utf8")).package;
+
+// Clean the previous artifacts
+F.rmSync(TDIR, { force: true, recursive: true });
+F.rmSync(`${SDIR}index.d.ts`);
+F.truncateSync(`${SDIR}index.node`, 0);
 
 // Build the artifacts
-FS.rmSync(TDIR, { force: true, recursive: true });
 execSync(
     `\
 ${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
@@ -29,17 +33,17 @@ ${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
 ${featuresArg}${targetArg}${targetArg && "--release "}${TDIR}${SDIR}`,
     { stdio: "inherit" },
 );
-FS.writeFileSync(
+F.writeFileSync(
     `${TDIR}${SDIR}index.cjs`,
     `module.exports = require("./index.node");\n`,
 );
 
 // Use stubs if the target is not specified
 if (!target) {
-    FS.copyFileSync(`${SDIR}index.cjs`, `${TDIR}${SDIR}index.cjs`);
-    FS.copyFileSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
-    FS.copyFileSync(`${SDIR}loader.cjs`, `${TDIR}${SDIR}loader.cjs`);
-    FS.copyFileSync(`${SDIR}${name}`, `${TDIR}${SDIR}${name}`);
+    F.copyFileSync(`${SDIR}index.cjs`, `${TDIR}${SDIR}index.cjs`);
+    F.copyFileSync(`${SDIR}index.node`, `${TDIR}${SDIR}index.node`);
+    F.copyFileSync(`${SDIR}loader.cjs`, `${TDIR}${SDIR}loader.cjs`);
+    F.copyFileSync(`${SDIR}${name}`, `${TDIR}${SDIR}${name}`);
 }
 
 // Update the package info
@@ -62,9 +66,9 @@ const npmPkg = Object.fromEntries(
 );
 
 // Write the common files
-FS.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2) + "\n");
-FS.copyFileSync("README.md", `${TDIR}README.md`);
-FS.copyFileSync("LICENSE.txt", `${TDIR}LICENSE.txt`);
+F.writeFileSync(`${TDIR}package.json`, JSON.stringify(npmPkg, null, 2) + "\n");
+F.copyFileSync("README.md", `${TDIR}README.md`);
+F.copyFileSync("LICENSE.txt", `${TDIR}LICENSE.txt`);
 
 function buildNpmPkgTargetFromCargo(cargoTarget) {
     const npmTarget = {

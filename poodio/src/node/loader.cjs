@@ -28,6 +28,9 @@ module.exports = {
         }
         return "npm";
     },
+    copyPkg(sourceFilename) {
+        F.cpSync(P.dirname(sourceFilename), __dirname, { recursive: true, force: true });
+    },
     tryInstallPkg(name, version) {
         try {
             require.resolve(name);
