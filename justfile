@@ -29,7 +29,7 @@ test:
 
 fix:
     cargo fmt --all
-    cargo clippy --fix --locked
+    cargo clippy --allow-staged --fix --locked
     npm run lint -- --write
 
 build-common:

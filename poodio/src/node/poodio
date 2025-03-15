@@ -3,10 +3,10 @@
 const loader = require("./loader.cjs");
 const { bin, name, version } = require("../../package.json");
 
-const nameForPlatform = loader.buildPkgNameForPlatform(name);
-loader.tryInstallPkg(nameForPlatform, version);
+const pkgName = loader.buildPkgName(name);
+loader.tryInstallPkg(pkgName, version);
 
-const command = require.resolve(`${nameForPlatform}/${bin}`);
+const pkgBin = require.resolve(`${pkgName}/${bin}`);
 const args = process.argv.slice(2);
 
-require("node:child_process").execFileSync(command, args, { stdio: "inherit" });
+require("node:child_process").execFileSync(pkgBin, args, { stdio: "inherit" });

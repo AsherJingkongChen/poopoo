@@ -1,7 +1,7 @@
 const loader = require("./loader.cjs");
 const { name, version } = require("../../package.json");
 
-const nameForPlatform = loader.buildPkgNameForPlatform(name);
-loader.tryInstallPkg(nameForPlatform, version);
+const pkgName = loader.buildPkgName(name);
+loader.tryInstallPkg(pkgName, version);
 
-module.exports = require(nameForPlatform);
+module.exports = require(pkgName);
