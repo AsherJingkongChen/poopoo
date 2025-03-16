@@ -3,8 +3,14 @@
 
 use napi_derive::napi;
 
-/// Entry point
+/// A simple greeting message.
+#[napi]
+pub fn greeting() -> &'static str {
+    "Greetings from poodio!"
+}
+
+/// Program entry point
 #[napi]
 pub fn main() {
-    println!("Hello World from poodio!");
+    println!("{}", greeting());
 }
