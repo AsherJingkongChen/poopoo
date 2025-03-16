@@ -10,7 +10,7 @@ prepare-apt:
     sudo apt-get install -y libasound2-dev
 
 prepare-npm:
-    npm i --ignore-scripts --omit optional
+    npm ci --ignore-scripts --omit optional
 
 lint:
     cargo fmt --all --check

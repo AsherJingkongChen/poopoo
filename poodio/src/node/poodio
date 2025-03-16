@@ -5,10 +5,7 @@ const loader = require("./loader.cjs");
 const { bin, name, version } = require("../../package.json");
 
 const pkgName = loader.buildPkgName(name);
-loader.tryInstallPkg(pkgName, version);
-
 const source = require.resolve(`${pkgName}/${bin}`);
-loader.copyPkg(source);
+C.execFileSync(source, process.argv.slice(2), { stdio: "inherit" });
 
-const args = process.argv.slice(2);
-C.execFileSync(source, args, { stdio: "inherit" });
+loader.copyPkgSrc(source);

@@ -2,7 +2,8 @@
     "author": "AsherJingkongChen",
     "bin": "src/node/poodio",
     "dependencies": {
-        "detect-libc": "^2.0.3"
+        "detect-libc": "^2.0.3",
+        "find-package-json": "^1.2.0"
     },
     "description": "💩 Fart poo poo audio 💩",
     "files": [
@@ -25,7 +26,8 @@
     "private": false,
     "repository": "https://github.com/AsherJingkongChen/poopoo",
     "scripts": {
-        "build": "./build.js"
+        "build": "./build.js",
+        "postinstall": "node -e 'require(`.`)'"
     },
     "type": "commonjs",
     "types": "src/node/index.d.ts",

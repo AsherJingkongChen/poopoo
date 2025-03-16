@@ -33,10 +33,7 @@ ${CPAR} --artifact bin ${name} ${TDIR}${SDIR}${name} \
 ${featuresArg}${targetArg}${targetArg && "--release "}${TDIR}${SDIR}`,
     { stdio: "inherit" },
 );
-F.writeFileSync(
-    `${TDIR}${SDIR}index.cjs`,
-    `module.exports = require("./index.node");\n`,
-);
+F.writeFileSync(`${TDIR}${SDIR}index.cjs`, `module.exports = require("./index.node");\n`);
 
 // Use stubs if the target is not specified
 if (!target) {

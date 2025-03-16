@@ -50,7 +50,6 @@ jobs:
                       prefix: poodio
                       suffix: .exe
                     - os: ubuntu-latest
-                      can-publish-source: true
                       target: x86_64-unknown-linux-gnu
                       prefix: poodio
         steps:
