@@ -47,5 +47,5 @@ clean-cargo:
     cargo clean
 
 clean-npm:
-    npm prune
+    npm prune --ignore-scripts
     rm -rf node_modules
