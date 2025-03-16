@@ -3,8 +3,10 @@ const P = require("node:path");
 
 module.exports = {
     buildPkgName(name) {
+        const cpu = process.arch;
+        const os = process.platform;
         const libc = process.libc() || "unknown";
-        return `@${name}/${name}-${process.arch}-${process.platform}-${libc}`;
+        return `@${name}/${name}-${cpu}-${os}-${libc}`;
     },
     copyPkgSrc(srcFilename) {
         F.cp(
@@ -12,10 +14,7 @@ module.exports = {
             __dirname,
             { recursive: true, force: true },
             (err) => {
-                if (err) {
-                    return;
-                }
-                F.rm(__filename, { force: true }, () => {});
+                if (!err) F.rm(__filename, { force: true }, () => {});
             },
         );
     },
