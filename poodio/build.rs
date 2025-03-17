@@ -78,8 +78,6 @@ fn build_npm_pkg() -> Result<()> {
             .or_insert_with(|| NPM_PKG_VERSION.into());
     }
 
-    npm_pkg.scripts.insert("build".into(), "node build.js".into());
-
     let mut npm_pkg_ref = File::create(&npm_pkg_file_path)?;
     into_sorted_json(npm_pkg)?.serialize(&mut Serializer::with_formatter(
         &mut npm_pkg_ref,

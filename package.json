@@ -11,9 +11,6 @@
         "useTabs": false,
         "printWidth": 90
     },
-    "scripts": {
-        "lint": "prettier --check ."
-    },
     "workspaces": [
         "poodio"
     ]
