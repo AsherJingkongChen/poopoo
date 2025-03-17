@@ -79,9 +79,6 @@ fn build_npm_pkg() -> Result<()> {
     }
 
     npm_pkg.scripts.insert("build".into(), "./build.js".into());
-    npm_pkg
-        .scripts
-        .insert("postinstall".into(), "node -e 'require(`.`)'".into());
 
     let mut npm_pkg_ref = File::create(&npm_pkg_file_path)?;
     into_sorted_json(npm_pkg)?.serialize(&mut Serializer::with_formatter(

@@ -1,10 +1,9 @@
 #! /usr/bin/env node
 
-const C = require("node:child_process");
-const L = require("./loader.cjs");
 const { bin, name } = require("../../package.json");
-
-const pkgName = L.buildPkgName(name);
-const source = require.resolve(`${pkgName}/${bin}`);
-C.execFileSync(source, process.argv.slice(2), { stdio: "inherit" });
-L.copyPkgSrc(source);
+const pkgName = require("./loader.cjs").pkgName(name);
+require("node:child_process").execFileSync(
+    require.resolve(`${pkgName}/${bin}`),
+    process.argv.slice(2),
+    { stdio: "inherit" },
+);

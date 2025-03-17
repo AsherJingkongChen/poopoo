@@ -1,5 +1,5 @@
 [build-dependencies]
-color-eyre.default-features = true
+color-eyre.features = ["default"]
 color-eyre.workspace = true
 napi-build.workspace = true
 package-json.workspace = true

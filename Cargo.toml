@@ -8,7 +8,6 @@ strip = true
 
 [workspace]
 members = ["poodio"]
-exclude = ["poodio-0.0.5"]
 resolver = "2"
 
 [workspace.package]
