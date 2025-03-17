@@ -22,7 +22,7 @@
     "private": false,
     "repository": "https://github.com/AsherJingkongChen/poopoo",
     "scripts": {
-        "build": "./build.js"
+        "build": "node build.js"
     },
     "type": "commonjs",
     "types": "src/node/index.d.ts",

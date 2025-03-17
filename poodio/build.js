@@ -14,35 +14,36 @@ const NAPI = require.resolve("@napi-rs/cli/scripts");
 
 // Fetch the arguments
 const { features, target } = parseArgs(process.argv.slice(2));
-const featuresArg = features ? `--features ${features} ` : "";
-const targetArg = target ? `--target ${target} ` : "";
+const FEATURES = features ? `--features ${features} ` : "";
+const TARGET = target ? `--target ${target} ` : "";
 const { name } = parseToml(F.readFileSync("Cargo.toml", "utf8")).package;
 
 // Clean the previous artifacts
-F.rmSync("dist/npm/", { force: true, recursive: true });
+F.rmSync("dist/", { force: true, recursive: true });
 
 // Build the artifacts
 // TODO: .exe
 execSync(
     `\
-${CPAR} --artifact bin ${name} dist/npm/src/node/${name} \
--- ${NAPI} build --no-dts-header --cargo-flags='--locked --message-format json' \
-${featuresArg}${targetArg}${targetArg && "--release "}dist/npm/src/node/`,
+${CPAR} --artifact bin ${name} dist/bin/${name} -- \
+${NAPI} build --no-dts-header --cargo-flags='--locked --message-format json' \
+${FEATURES}${TARGET}${TARGET && "--release "}dist/npm/src/node/`,
     { stdio: "inherit" },
 );
 
 // Write stubs if the target is not specified
+// TODO: .exe
 if (!target) {
-    F.rmSync("dist/npm/src/node/index.node");
     F.copyFileSync("src/node/index.cjs", "dist/npm/src/node/index.cjs");
     F.copyFileSync("src/node/loader.cjs", "dist/npm/src/node/loader.cjs");
     F.copyFileSync(`src/node/${name}`, `dist/npm/src/node/${name}`);
-    // TODO: .exe
+    F.rmSync("dist/npm/src/node/index.node");
 } else {
     F.writeFileSync(
         "dist/npm/src/node/index.cjs",
         'module.exports = require("./index.node");\n',
     );
+    F.copyFileSync(`dist/bin/${name}`, `dist/npm/src/node/${name}`);
 }
 
 // Update the package info
