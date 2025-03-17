@@ -13,8 +13,7 @@ clean-cargo:
     cargo clean
 
 clean-npm:
-    npm prune --ignore-scripts
-    rm -rf node_modules/
+    rm -rf node_modules/ package-lock.json
 
 lint-fix:
     cargo fmt --all
@@ -44,7 +43,7 @@ prepare-apt:
     sudo apt-get install -y libasound2-dev
 
 prepare-npm:
-    npm ci --ignore-scripts
+    npm i --ignore-scripts --no-package-lock --omit optional
 
 # TODO
 test:
