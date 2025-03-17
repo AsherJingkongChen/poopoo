@@ -27,7 +27,7 @@ lint:
 
 outdated:
     cargo outdated --exit-code 4 --workspace
-    npm outdated --all
+    # npm outdated --all
 
 # prepare-*
 [linux]

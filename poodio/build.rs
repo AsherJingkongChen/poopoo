@@ -51,7 +51,7 @@ fn build_npm_pkg() -> Result<()> {
         })?;
 
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
-    npm_pkg.bin = Some(Bin::Literal(format!("{NPM_PKG_FILES_0}{NPM_PKG_NAME}")));
+    npm_pkg.bin = Some(Bin::Literal(format!("{NPM_PKG_FILES_0}{NPM_PKG_NAME}.cjs")));
     npm_pkg.description = option_env!("CARGO_PKG_DESCRIPTION").map(Into::into);
     npm_pkg.homepage = option_env!("CARGO_PKG_HOMEPAGE").map(Into::into);
     npm_pkg.license = option_env!("CARGO_PKG_LICENSE").map(Into::into);

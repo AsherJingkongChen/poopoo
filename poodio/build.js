@@ -8,68 +8,71 @@ globalThis.F = require("node:fs");
 globalThis.parseArgs = require("minimist");
 globalThis.parseToml = require("smol-toml").parse;
 
-// Resolve the executable paths
-const CPAR = require.resolve("cargo-cp-artifact/bin/cargo-cp-artifact");
-const NAPI = require.resolve("@napi-rs/cli/scripts");
-
 // Fetch the arguments
 const { features, target } = parseArgs(process.argv.slice(2));
-const FEATURES = features ? `--features ${features} ` : "";
-const TARGET = target ? `--target ${target} ` : "";
 const { name } = parseToml(F.readFileSync("Cargo.toml", "utf8")).package;
+const npmTarget = buildNpmTargetFromCargo(target);
+const binExt = npmTarget.os[0] === "win32" ? ".exe" : "";
 
 // Clean the previous artifacts
 F.rmSync("dist/", { force: true, recursive: true });
 
 // Build the artifacts
-// TODO: .exe
-execSync(
-    `\
-${CPAR} --artifact bin ${name} dist/bin/${name} -- \
-${NAPI} build --no-dts-header --cargo-flags='--locked --message-format json' \
-${FEATURES}${TARGET}${TARGET && "--release "}dist/npm/src/node/`,
-    { stdio: "inherit" },
-);
+const execBuild = (isBin) => {
+    const NAPI = require.resolve("@napi-rs/cli/scripts");
+    const FEATURES = features ? `--features '${features}' ` : "";
+    const TARGET = target ? `--target '${target}' ` : "";
+    execSync(
+        `\
+node '${NAPI}' build --cargo-flags=--locked --no-dts-header \
+${FEATURES}${TARGET}${TARGET && "--release "}${isBin && `--bin '${name}' `} \
+dist/${isBin ? "bin/" : "npm/src/node/"}`,
+        { stdio: "inherit", windowsHide: true },
+    );
+};
+execBuild("");
+execBuild("T");
 
-// Write stubs if the target is not specified
-// TODO: .exe
+const { bin, main, ...npmPkg } = { ...require("./package.json") };
+
+// Write the artifacts
 if (!target) {
-    F.copyFileSync("src/node/index.cjs", "dist/npm/src/node/index.cjs");
-    F.copyFileSync("src/node/loader.cjs", "dist/npm/src/node/loader.cjs");
-    F.copyFileSync(`src/node/${name}`, `dist/npm/src/node/${name}`);
+    F.copyFileSync("src/node/loader.cjs", "dist/npm/src/node/loader.cjs"); // TODO: remove
+    F.copyFileSync(bin, `dist/npm/${bin}`);
+    F.copyFileSync(main, `dist/npm/${main}`);
     F.rmSync("dist/npm/src/node/index.node");
 } else {
-    F.writeFileSync(
-        "dist/npm/src/node/index.cjs",
-        'module.exports = require("./index.node");\n',
-    );
-    F.copyFileSync(`dist/bin/${name}`, `dist/npm/src/node/${name}`);
+    F.copyFileSync(`dist/bin/${name}${binExt}`, `dist/npm/src/node/${name}${binExt}`);
+    F.writeFileSync(`dist/npm/${main}`, 'module.exports = require("./index.node");\n');
 }
 
 // Update the package info
-let npmPkgChange = {
+let npmPkgDelta = {
     scripts: undefined,
 };
 if (target) {
-    const npmTarget = buildNpmPkgTargetFromCargo(target);
+    const npmTarget = buildNpmTargetFromCargo(target);
     const { cpu, os, libc } = npmTarget;
-    npmPkgChange = {
-        ...npmPkgChange,
-        name: `@${name}/${name}-${cpu[0]}-${os[0]}-${libc?.[0] || "unknown"}`,
+    const binUpdated = `src/node/${name}${binExt}`;
+    const nameUpdated = `@${name}/${name}-${cpu[0]}-${os[0]}-${libc?.[0] || "unknown"}`;
+    npmPkgDelta = {
+        ...npmPkgDelta,
+        bin: binUpdated,
+        name: nameUpdated,
         optionalDependencies: undefined,
         ...npmTarget,
     };
 }
-const npmPkg = Object.fromEntries(
-    Object.entries(Object.assign(require("./package.json"), npmPkgChange)).sort(),
+const npmPkgUpdated = Object.fromEntries(
+    Object.entries({ ...npmPkg, bin, main, ...npmPkgDelta }).sort(),
 );
 
 // Write the common files
-F.writeFileSync("dist/npm/package.json", JSON.stringify(npmPkg, null, 4) + "\n");
+F.writeFileSync("dist/npm/package.json", JSON.stringify(npmPkgUpdated, null, 4) + "\n");
 F.copyFileSync("README.md", `dist/npm/README.md`);
 F.copyFileSync("LICENSE.txt", `dist/npm/LICENSE.txt`);
 
-function buildNpmPkgTargetFromCargo(cargoTarget) {
+function buildNpmTargetFromCargo(cargoTarget) {
     const npmTarget = {
         "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
         "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },
@@ -77,11 +80,13 @@ function buildNpmPkgTargetFromCargo(cargoTarget) {
         "i686-pc-windows-msvc": { cpu: ["ia32"], os: ["win32"] },
         "i686-unknown-linux-gnu": { cpu: ["ia32"], os: ["linux"], libc: ["glibc"] },
         "x86_64-apple-darwin": { cpu: ["x64"], os: ["darwin"] },
-        "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
         "x86_64-unknown-linux-gnu": { cpu: ["x64"], os: ["linux"], libc: ["glibc"] },
     }[cargoTarget];
-    if (!npmTarget) {
-        throw new TypeError(`Unsupported target: "${cargoTarget}"`);
-    }
-    return npmTarget;
+    return (
+        npmTarget || {
+            cpu: [process.arch],
+            os: [process.platform],
+            libc: process.libc && [process.libc],
+        }
+    );
 }
