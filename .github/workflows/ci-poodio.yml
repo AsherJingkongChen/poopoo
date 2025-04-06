@@ -47,8 +47,7 @@ jobs:
               with:
                   tool: just
             - run: just prepare poodio::build-target ${{ matrix.target }}
-            - name: Upload Artifacts for publish
-              uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
                   path: poodio/dist/
@@ -79,6 +78,7 @@ jobs:
               with:
                   files: dist/*/bin/*.tgz
                   generate_release_notes: true
+
             # - run: cargo publish --all-features --locked --package poodio --no-verify
             #   env:
             #       CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}

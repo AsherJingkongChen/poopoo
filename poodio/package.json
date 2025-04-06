@@ -20,7 +20,11 @@
         "@poodio/poodio-x64-win32-unknown": "0.0.5"
     },
     "private": false,
-    "repository": "https://github.com/AsherJingkongChen/poopoo",
+    "repository": {
+        "directory": "poodio",
+        "type": "git",
+        "url": "git+https://github.com/AsherJingkongChen/poopoo.git"
+    },
     "type": "commonjs",
     "types": "src/node/index.d.ts",
     "version": "0.0.5"

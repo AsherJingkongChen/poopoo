@@ -21,7 +21,7 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/AsherJingkongChen/poopoo"
+repository = "https://github.com/AsherJingkongChen/poopoo.git"
 authors = ["AsherJingkongChen"]
 
 [workspace.dependencies]
