@@ -1,7 +1,14 @@
 mod poodio
 
-# outdated, lint
-check: outdated lint
+check-fix:
+    cargo fmt --all
+    cargo clippy --all-features --allow-dirty --allow-staged --fix --locked
+    npm exec prettier -- --write .
+
+check:
+    cargo fmt --all --check
+    cargo clippy --all-features --locked -- -D warnings
+    npm exec prettier -- --check .
 
 # clean-*
 clean: clean-artifact clean-cargo clean-npm
@@ -15,19 +22,9 @@ clean-cargo:
 clean-npm:
     rm -rf node_modules/ package-lock.json
 
-lint-fix:
-    cargo fmt --all
-    cargo clippy --all-features --allow-dirty --allow-staged --fix --locked
-    npm exec prettier -- --write .
-
-lint:
-    cargo fmt --all --check
-    cargo clippy --all-features --locked -- -D warnings
-    npm exec prettier -- --check .
-
 outdated:
     cargo outdated --exit-code 4 --workspace
-    # npm outdated --all
+    npm outdated --all
 
 # prepare-*
 [linux]

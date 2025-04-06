@@ -10,7 +10,7 @@
     "main": "src/node/index.cjs",
     "name": "poodio",
     "optionalDependencies": {
-        "@poodio/poodio-arm64-darwin-unknown": "*",
+        "@poodio/poodio-arm64-darwin-unknown": "0.0.5",
         "@poodio/poodio-arm64-linux-glibc": "0.0.5",
         "@poodio/poodio-arm64-win32-unknown": "0.0.5",
         "@poodio/poodio-ia32-linux-glibc": "0.0.5",
