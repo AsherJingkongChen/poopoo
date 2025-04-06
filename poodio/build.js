@@ -3,6 +3,7 @@
 process.chdir(__dirname);
 
 globalThis.execSync = require("node:child_process").execSync;
+globalThis.formatPkgName = require("./src/node/loader.cjs").formatPkgName;
 globalThis.fs = require("node:fs");
 globalThis.parseArgs = require("minimist");
 globalThis.parseToml = require("smol-toml").parse;
@@ -10,7 +11,6 @@ globalThis.parseToml = require("smol-toml").parse;
 // Parse the arguments
 const { features, target: cargoTarget } = parseArgs(process.argv.slice(2));
 const npmTarget = (() => {
-    require("./src/node/loader.cjs");
     const toNpm = {
         "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
         "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },
@@ -32,11 +32,11 @@ const { name: pkgName } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).packa
 const binName = `${pkgName}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 
 // Build the artifacts
-fs.rmSync("dist/", { force: true, recursive: true });
 const napiCliPath = require.resolve("@napi-rs/cli/scripts");
 const featuresArg = features ? `--features '${features}' ` : "";
 const targetArg = cargoTarget ? `--target '${cargoTarget}' ` : "";
 const releaseFlag = cargoTarget ? "--release" : "";
+fs.rmSync("dist/", { force: true, recursive: true });
 execSync(
     `\
 node '${napiCliPath}' build --cargo-flags=--locked --no-dts-header \
@@ -44,7 +44,7 @@ ${featuresArg}${targetArg}${releaseFlag} dist/npm/src/node/`,
     { stdio: "inherit", windowsHide: true },
 );
 
-// Copy the artifacts
+// Write the artifacts
 const npmPkg = { ...require("./package.json") };
 if (cargoTarget) {
     const binPath = `../target/${cargoTarget}/release/${binName}`;
@@ -64,18 +64,23 @@ if (cargoTarget) {
 
 // Write the common files
 const npmPkgUpdated = (function () {
-    let npmPkgDelta = { scripts: undefined };
+    let npmPkgChange = { scripts: undefined };
     if (cargoTarget) {
         const { cpu, os, libc } = npmTarget;
         const binUpdated = `src/node/${binName}`;
-        const pkgNameUpdated = `@${pkgName}/${pkgName}-${cpu[0]}-${os[0]}-${libc?.[0] || "unknown"}`;
-        npmPkgDelta = Object.assign(
-            npmPkgDelta,
+        const pkgNameUpdated = formatPkgName({
+            name: pkgName,
+            cpu: cpu[0],
+            os: os[0],
+            libc: libc?.[0],
+        });
+        npmPkgChange = Object.assign(
+            npmPkgChange,
             { bin: binUpdated, name: pkgNameUpdated, optionalDependencies: undefined },
             npmTarget,
         );
     }
-    return Object.fromEntries(Object.entries(Object.assign(npmPkg, npmPkgDelta)).sort());
+    return Object.fromEntries(Object.entries(Object.assign(npmPkg, npmPkgChange)).sort());
 })();
 fs.writeFileSync("dist/npm/package.json", JSON.stringify(npmPkgUpdated, null, 4) + "\n");
 fs.copyFileSync("README.md", "dist/npm/README.md");

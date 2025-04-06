@@ -1,10 +1,17 @@
+function buildPkgName(name) {
+    return formatPkgName({
+        name,
+        cpu: process.arch,
+        os: process.platform,
+        libc: process.libc,
+    });
+}
+function formatPkgName({ name, cpu, os, libc }) {
+    return `@${name}/${name}-${cpu}-${os}-${libc || "unknown"}`;
+}
 module.exports = {
-    pkgName(name) {
-        const cpu = process.arch;
-        const os = process.platform;
-        const libc = process.libc || "unknown";
-        return `@${name}/${name}-${cpu}-${os}-${libc}`;
-    },
+    buildPkgName,
+    formatPkgName,
 };
 
 var _libc;

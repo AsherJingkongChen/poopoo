@@ -24,7 +24,6 @@ fn build_npm_pkg() -> Result<()> {
         PackageRepository as Repository, PACKAGE_JSON_FILENAME,
     };
 
-    const NPM_PKG_FILES_0: &str = "src/node/";
     const NPM_PKG_NAME: &str = env!("CARGO_PKG_NAME");
     const NPM_PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
     const NPM_PKG_TARGETS: &[&str] = &[
@@ -51,21 +50,21 @@ fn build_npm_pkg() -> Result<()> {
         })?;
 
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
-    npm_pkg.bin = Some(Bin::Literal(format!("{NPM_PKG_FILES_0}{NPM_PKG_NAME}.cjs")));
+    npm_pkg.bin = Some(Bin::Literal(format!("src/node/{NPM_PKG_NAME}.cjs")));
     npm_pkg.description = option_env!("CARGO_PKG_DESCRIPTION").map(Into::into);
     npm_pkg.homepage = option_env!("CARGO_PKG_HOMEPAGE").map(Into::into);
     npm_pkg.license = option_env!("CARGO_PKG_LICENSE").map(Into::into);
-    npm_pkg.main = format!("{NPM_PKG_FILES_0}index.cjs");
+    npm_pkg.main = "src/node/index.cjs".to_string();
     npm_pkg.name = NPM_PKG_NAME.into();
     npm_pkg.r#type = "commonjs".into();
-    npm_pkg.types = Some(format!("{NPM_PKG_FILES_0}index.d.ts"));
+    npm_pkg.types = Some("src/node/index.d.ts".to_string());
     npm_pkg.repository =
         option_env!("CARGO_PKG_REPOSITORY").map(|v| Repository::Url(v.into()));
     npm_pkg.version = NPM_PKG_VERSION.into();
 
     let npm_pkg_files = npm_pkg.files.get_or_insert(Default::default());
-    if !npm_pkg_files.contains(&NPM_PKG_FILES_0.into()) {
-        npm_pkg_files.push(NPM_PKG_FILES_0.into());
+    if !npm_pkg_files.contains(&"src/node/".into()) {
+        npm_pkg_files.push("src/node/".into());
     }
 
     let npm_pkg_opt_deps = npm_pkg
