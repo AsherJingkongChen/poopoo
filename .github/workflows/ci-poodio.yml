@@ -33,7 +33,7 @@ jobs:
                   tool: just
             - run: just prepare check
 
-    build-release:
+    build-target:
         if: github.ref_type == 'tag'
         needs: check
         runs-on: ${{ matrix.os }}
@@ -67,14 +67,24 @@ jobs:
               with:
                   tool: just
             - run: just prepare poodio::build-target ${{ matrix.target }}
-            # - uses: softprops/action-gh-release@v2
-            #   with:
-            #       files: ${{ matrix.prefix }}-${{ matrix.target }}${{ matrix.suffix }}
-            #       generate_release_notes: true
+            - name: Upload Artifacts for publish
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ matrix.target }}
+                  path: poodio/dist
+
+    publish-dry:
+        needs: build-target
+        runs-on: macos-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  path: dist
+            - run: ls -lR dist
 
     publish:
         if: github.ref_type == 'tag'
-        needs: build-release
+        needs: build-target
         runs-on: macos-latest
         permissions:
             id-token: write
