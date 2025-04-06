@@ -37,5 +37,5 @@ rust-version = "1.80"
 version = "0.0.5"
 
 [package.metadata.binstall]
-pkg-fmt = "bin"
+pkg-fmt = "tgz"
 pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }-{ target }{ archive-suffix }"

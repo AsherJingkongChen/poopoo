@@ -25,12 +25,6 @@
 
 </details>
 
-💩 Install **once** and Run the **latest version** of executable. 💩
-
-```shell
-cargo binstall -qy poodio && poodio
-```
-
 💩 Install **once** and Run the **specific version** (e.g. `0.1.0`) of executable. 💩
 
 ```shell
