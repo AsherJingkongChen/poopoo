@@ -32,14 +32,13 @@ const { name: pkgName } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).packa
 const binName = `${pkgName}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 
 // Build the artifacts
-const napiCliPath = require.resolve("@napi-rs/cli/scripts");
 const featuresArg = features ? `--features '${features}' ` : "";
 const targetArg = cargoTarget ? `--target '${cargoTarget}' ` : "";
 const releaseFlag = cargoTarget ? "--release" : "";
 fs.rmSync("dist/", { force: true, recursive: true });
 execSync(
     `\
-node '${napiCliPath}' build --cargo-flags=--locked --no-dts-header \
+npx napi build --cargo-flags=--locked --no-dts-header \
 ${featuresArg}${targetArg}${releaseFlag} dist/npm/src/node/`,
     { stdio: "inherit", windowsHide: true },
 );
