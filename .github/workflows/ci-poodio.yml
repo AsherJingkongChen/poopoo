@@ -34,7 +34,7 @@ jobs:
             - run: just prepare check
 
     build-target:
-        if: github.ref_type == 'tag'
+        # if: github.ref_type == 'tag'
         needs: check
         runs-on: ${{ matrix.os }}
         permissions:
@@ -73,7 +73,7 @@ jobs:
                   name: ${{ matrix.target }}
                   path: poodio/dist
 
-    publish-dry:
+    publish-dry-temp:
         needs: build-target
         runs-on: macos-latest
         steps:
