@@ -25,6 +25,7 @@ jobs:
               with:
                   tool: just
             - run: just prepare check
+
     test-tar:
         runs-on: ${{ matrix.os }}
         strategy:
@@ -39,6 +40,9 @@ jobs:
                       target: x86_64-unknown-linux-gnu
         steps:
             - run: tar --version
+              shell: bash
+            - run: zip --version
+              shell: bash
 
     build-target:
         if: github.ref_type == 'tag'
