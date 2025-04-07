@@ -13,6 +13,7 @@ on:
 
 env:
     CARGO_TERM_COLOR: always
+    FORCE_COLOR: 1
 
 jobs:
     check:
@@ -54,7 +55,7 @@ jobs:
             - run: just prepare poodio::build-target ${{ matrix.target }}
             - uses: actions/upload-artifact@v4
               with:
-                  name: target-${{ matrix.target }}
+                  name: target/${{ matrix.target }}
                   path: poodio/dist/
 
     publish:
@@ -74,8 +75,8 @@ jobs:
                   name: common
             - uses: actions/download-artifact@v4
               with:
-                  path: dist/target/
-                  pattern: target-*
+                  path: dist/
+                  pattern: target/*
             - name: Package GitHub Release Artifacts
               run: |
                   for dir in dist/target/*; do
