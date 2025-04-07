@@ -5,6 +5,8 @@
 💩
 [![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=CRATES&logo=docs.rs&logoColor=%23fc3&labelColor=%23333&color=%23fc3)](https://docs.rs/poodio)
 💩
+
+💩
 [![License](https://img.shields.io/crates/l/poodio?style=for-the-badge&label=LICENSE&logo=opensourceinitiative&logoColor=%23fff&labelColor=%23333&color=%234a3)](https://docs.rs/crate/poodio/latest/source/LICENSE.txt)
 💩
 [![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=ISSUES&logo=github&logoColor=%23fff&labelColor=%23333&color=%23eee)](https://github.com/AsherJingkongChen/poopoo/issues)

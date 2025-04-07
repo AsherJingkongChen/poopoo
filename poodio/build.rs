@@ -18,13 +18,16 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-#[cfg(not(docsrs))]
 fn build_npm_pkg() -> Result<()> {
     use package_json::{
         PackageBin as Bin, PackageJson, PackagePeople as People,
         PackageRepository as Repository, PackageRepositoryRecord as RepositoryRecord,
         PACKAGE_JSON_FILENAME,
     };
+
+    if std::env::var("DOCS_RS").is_ok() {
+        return Ok(());
+    }
 
     const NPM_PKG_NAME: &str = env!("CARGO_PKG_NAME");
     const NPM_PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -89,11 +92,6 @@ fn build_npm_pkg() -> Result<()> {
     ))?;
     npm_pkg_fp.write_all(b"\n")?;
 
-    Ok(())
-}
-
-#[cfg(docsrs)]
-fn build_npm_pkg() -> Result<()> {
     Ok(())
 }
 
