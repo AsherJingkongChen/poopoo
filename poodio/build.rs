@@ -18,6 +18,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+#[cfg(not(docsrs))]
 fn build_npm_pkg() -> Result<()> {
     use package_json::{
         PackageBin as Bin, PackageJson, PackagePeople as People,
@@ -88,6 +89,11 @@ fn build_npm_pkg() -> Result<()> {
     ))?;
     npm_pkg_fp.write_all(b"\n")?;
 
+    Ok(())
+}
+
+#[cfg(docsrs)]
+fn build_npm_pkg() -> Result<()> {
     Ok(())
 }
 
