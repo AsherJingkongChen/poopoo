@@ -13,7 +13,6 @@ on:
 
 env:
     CARGO_TERM_COLOR: always
-    FORCE_COLOR: 1
 
 jobs:
     check:
@@ -69,6 +68,9 @@ jobs:
             id-token: write
         steps:
             - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  registry-url: https://registry.npmjs.org/
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
@@ -88,7 +90,7 @@ jobs:
                   files: dist/*/bin/*.tgz
                   generate_release_notes: true
             - name: Publish to crates.io
-              run: cargo publish --all-features --locked --package poodio --no-verify
+              run: cargo publish --dry-run --all-features --locked --package poodio --no-verify
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
             - name: Publish to npmjs.com
