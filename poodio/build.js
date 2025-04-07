@@ -31,11 +31,16 @@ const npmTarget = (() => {
 const { name: pkgName } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).package;
 const binName = `${pkgName}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 
+// Clean the artifacts
+fs.rmSync("dist/", { force: true, recursive: true });
+
 // Build the artifacts
 const featuresArg = features ? `--features ${features} ` : "";
 const targetArg = cargoTarget ? `--target ${cargoTarget} ` : "";
 const releaseFlag = cargoTarget ? "--release" : "";
-fs.rmSync("dist/", { force: true, recursive: true });
+if (!fs.existsSync("package.json")) {
+    fs.writeFileSync("package.json", "{}");
+}
 execSync(
     `\
 npx napi build --cargo-flags=--locked --no-dts-header \

@@ -1,6 +1,7 @@
 mod poodio
 
 check-fix:
+    cargo update
     cargo fmt --all
     cargo clippy --all-features --allow-dirty --allow-staged --fix --locked
     npm exec prettier -- --write .
