@@ -19,12 +19,21 @@ jobs:
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 1
-            - uses: taiki-e/install-action@v2
-              with:
-                  tool: just
+            - uses: taiki-e/install-action@just
             - run: just prepare check
+
+    build-common:
+        if: github.ref_type == 'tag'
+        needs: check
+        runs-on: macos-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: taiki-e/install-action@just
+            - run: just prepare poodio::build-common
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: common
+                  path: poodio/dist/
 
     build-target:
         if: github.ref_type == 'tag'
@@ -41,47 +50,53 @@ jobs:
                       target: x86_64-unknown-linux-gnu
         steps:
             - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 1
-            - uses: taiki-e/install-action@v2
-              with:
-                  tool: just
+            - uses: taiki-e/install-action@just
             - run: just prepare poodio::build-target ${{ matrix.target }}
             - uses: actions/upload-artifact@v4
               with:
-                  name: ${{ matrix.target }}
+                  name: target-${{ matrix.target }}
                   path: poodio/dist/
 
     publish:
         if: github.ref_type == 'tag'
-        needs: build-target
+        needs:
+            - build-common
+            - build-target
         runs-on: macos-latest
         permissions:
             contents: write
             id-token: write
         steps:
             - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 1
             - uses: actions/download-artifact@v4
               with:
-                  path: dist/
+                  path: dist/common/
+                  name: common
+            - uses: actions/download-artifact@v4
+              with:
+                  path: dist/target/
+                  pattern: target-*
             - name: Package GitHub Release Artifacts
               run: |
-                  for dir in dist/*; do
+                  for dir in dist/target/*; do
                     target=$(basename "$dir");
                     cd "$dir/bin/"
                     tar -czf "poodio-$target.tgz" *
                     cd - > /dev/null
                   done
-            - uses: softprops/action-gh-release@v2
+            - name: Publish to github.com
+              uses: softprops/action-gh-release@v2
               with:
-                  files: dist/*/bin/*.tgz
+                  files: dist/target/*/bin/*.tgz
                   generate_release_notes: true
-
-            # - run: cargo publish --all-features --locked --package poodio --no-verify
-            #   env:
-            #       CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
-            # - run: npm publish --provenance --access public
-            #   env:
-            #       NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
+            - name: Publish to crates.io
+              run: cargo publish --dry-run --all-features --locked --package poodio --no-verify
+              env:
+                  CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_API_TOKEN }}
+            - name: Publish to npmjs.com
+              run: |
+                  for pkg in ./dist/common ./dist/target/*; do
+                    npm publish --dry-run --access public --provenance "$pkg/npm/"
+                  done
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPMJS_API_TOKEN }}

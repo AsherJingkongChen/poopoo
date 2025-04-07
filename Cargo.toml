@@ -1,10 +1,10 @@
 [profile.dev]
-opt-level = 0
-debug = 0
 codegen-units = 512
+debug = 0
 incremental = true
-panic = "abort"
 lto = false
+opt-level = 0
+panic = "abort"
 
 [profile.release]
 codegen-units = 1
