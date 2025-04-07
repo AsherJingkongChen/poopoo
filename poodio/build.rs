@@ -78,17 +78,15 @@ fn build_npm_pkg() -> Result<()> {
         .get_or_insert(Default::default());
     for npm_pkg_target in NPM_PKG_TARGETS {
         let opt_dep_name = format!("@{NPM_PKG_NAME}/{NPM_PKG_NAME}-{npm_pkg_target}");
-        npm_pkg_opt_deps
-            .entry(opt_dep_name)
-            .or_insert_with(|| NPM_PKG_VERSION.into());
+        npm_pkg_opt_deps.insert(opt_dep_name, NPM_PKG_VERSION.into());
     }
 
-    let mut npm_pkg_ref = File::create(&npm_pkg_file_path)?;
+    let mut npm_pkg_fp = File::create(&npm_pkg_file_path)?;
     into_sorted_json(npm_pkg)?.serialize(&mut Serializer::with_formatter(
-        &mut npm_pkg_ref,
+        &mut npm_pkg_fp,
         PrettyFormatter::with_indent(b"    "),
     ))?;
-    npm_pkg_ref.write_all(b"\n")?;
+    npm_pkg_fp.write_all(b"\n")?;
 
     Ok(())
 }
