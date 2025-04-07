@@ -1,10 +1,8 @@
 [profile.dev]
-codegen-units = 512
-debug = 0
-incremental = true
-lto = false
+debug = false
 opt-level = 0
 panic = "abort"
+strip = true
 
 [profile.release]
 codegen-units = 1
@@ -19,10 +17,10 @@ members = ["poodio"]
 resolver = "2"
 
 [workspace.package]
+authors = ["AsherJingkongChen"]
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/AsherJingkongChen/poopoo.git"
-authors = ["AsherJingkongChen"]
 
 [workspace.dependencies]
 color-eyre = {version = "0.6.3", default-features = false}
