@@ -14,9 +14,9 @@
 
 ## 💩 Install & Run 💩
 
-💩 We provide various ways to install and run **`poodio`** on your system, so you can pick the one that suits you best, including: `npx`, `bunx`, `cargo-binstall`, and `git` 💩
+💩 We provide various ways to install and run **`poodio`** on your system, so you can pick the one that suits you best, including: `npx`, `bunx`, `cargo binstall`, and `git` 💩
 
-### 💩 Install & Run: from `npx` 💩
+### 💩 Install & Run from `npx` 💩
 
 > 💩 It's the simplest option. 💩
 
@@ -32,7 +32,7 @@
 npx -y poodio
 ```
 
-### 💩 Install & Run: from `bunx` 💩
+### 💩 Install & Run from `bunx` 💩
 
 > 💩 It's a faster version of `npx`. 💩
 
@@ -48,7 +48,7 @@ npx -y poodio
 bunx poodio
 ```
 
-### 💩 Install & Run: from "Cargo-Binstall" 💩
+### 💩 Install & Run from `cargo binstall` 💩
 
 > 💩 It's the Rustiest option. 💩
 
@@ -65,7 +65,7 @@ bunx poodio
 cargo binstall -qy poodio@0.1.0 && poodio
 ```
 
-### 💩 Install & Run: from "Git" 💩
+### 💩 Install & Run from `git` 💩
 
 > 💩 It's the most transparent option. 💩
 
