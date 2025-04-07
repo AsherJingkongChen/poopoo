@@ -84,6 +84,7 @@ jobs:
             - name: Publish to github.com
               uses: softprops/action-gh-release@v2
               with:
+                  append_body: false
                   files: dist/*/bin/*.tgz
                   generate_release_notes: true
             - name: Publish to crates.io
