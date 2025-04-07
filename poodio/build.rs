@@ -66,6 +66,7 @@ fn build_npm_pkg() -> Result<()> {
     });
     npm_pkg.r#type = "commonjs".into();
     npm_pkg.types = Some("src/node/index.d.ts".to_string());
+    npm_pkg.version = NPM_PKG_VERSION.into();
 
     let npm_pkg_files = npm_pkg.files.get_or_insert(Default::default());
     if !npm_pkg_files.contains(&"src/node/".into()) {
