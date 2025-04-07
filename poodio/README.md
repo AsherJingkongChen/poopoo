@@ -12,15 +12,47 @@
 
 💩 🔊 Fart poo poo audio 🔊 💩
 
-## 💩 Installation 💩
+## 💩 Install & Run 💩
 
-💩 We provide various ways to install **`poodio`** to your system, so you can pick the one that suits you best. 💩
+💩 We provide various ways to install and run **`poodio`** on your system, so you can pick the one that suits you best, including: `npx`, `bunx`, `cargo-binstall`, and `git` 💩
 
-### 💩 Installation - Cargo B(inary) Install 💩
+### 💩 Install & Run: from `npx` 💩
 
-> 💩 It is `npx` for `cargo`. 💩
+> 💩 It's the simplest option. 💩
 
-<details><summary><i>💩 View pre-requisites 💩</i></summary>
+<details><summary><i>💩 View pre-requisites: 💩</i></summary>
+
+- 💩 [`node.js` + `npm`](https://nodejs.org/en/download/)
+
+</details>
+
+💩 Install **once** and Run the **latest version** of executable. 💩
+
+```shell
+npx -y poodio
+```
+
+### 💩 Install & Run: from `bunx` 💩
+
+> 💩 It's a faster version of `npx`. 💩
+
+<details><summary><i>💩 View pre-requisites: 💩</i></summary>
+
+- 💩 [`bun`](https://bun.sh/)
+
+</details>
+
+💩 Install **once** and Run the **latest version** of executable. 💩
+
+```shell
+bunx poodio
+```
+
+### 💩 Install & Run: from "Cargo-Binstall" 💩
+
+> 💩 It's the Rustiest option. 💩
+
+<details><summary><i>💩 View pre-requisites: 💩</i></summary>
 
 - 💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 - 💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)
@@ -33,11 +65,11 @@
 cargo binstall -qy poodio@0.1.0 && poodio
 ```
 
-### 💩 Installation - Build from Source 💩
+### 💩 Install & Run: from "Git" 💩
 
-> 💩 It's the most flexible option. 💩
+> 💩 It's the most transparent option. 💩
 
-<details><summary><i>💩 View pre-requisites 💩</i></summary>
+<details><summary><i>💩 View pre-requisites: 💩</i></summary>
 
 - 💩 [`git`](https://git-scm.com/downloads)
 - 💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
