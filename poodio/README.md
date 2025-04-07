@@ -28,7 +28,7 @@
 
 </details>
 
-💩 Install **once** and Run the **latest version** of executable. 💩
+💩 Install **once** & Run the **latest version** of executable. 💩
 
 ```shell
 npx -y poodio
@@ -44,7 +44,7 @@ npx -y poodio
 
 </details>
 
-💩 Install **once** and Run the **latest version** of executable. 💩
+💩 Install **once** & Run the **latest version** of executable. 💩
 
 ```shell
 bunx poodio
@@ -61,7 +61,7 @@ bunx poodio
 
 </details>
 
-💩 Install **once** and Run the **specific version** (e.g. `0.1.0`) of executable. 💩
+💩 Install **once** & Run the **specific version** (e.g. `0.1.0`) of executable. 💩
 
 ```shell
 cargo binstall -qy poodio@0.1.0 && poodio
@@ -78,9 +78,10 @@ cargo binstall -qy poodio@0.1.0 && poodio
 
 </details>
 
-💩 Install and Run the **development version** of executable. 💩
+💩 Install & Run the **development version** of executable. 💩
 
 ```shell
+rm -rf poopoo && \
 git clone --branch main --depth 1 https://github.com/AsherJingkongChen/poopoo && \
 cargo install --path poopoo/poodio && \
 poodio
