@@ -1,4 +1,4 @@
-# 💩 What does **`poodio`** do? 💩
+# What does _`poodio`_ do?
 
 💩
 [![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=NPMJS&logo=npm&logoColor=%23c33&labelColor=%23333&color=%23c33)](https://www.npmjs.com/package/poodio)
@@ -12,77 +12,32 @@
 [![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=ISSUES&logo=github&logoColor=%23fff&labelColor=%23333&color=%23eee)](https://github.com/AsherJingkongChen/poopoo/issues)
 💩
 
-💩 🔊 Fart poo poo audio 🔊 💩
+💩 💨 Fart poo poo audio 💨 💩
 
-## 💩 Install & Run 💩
+## Install & Run
 
-💩 We provide various ways to install and run **`poodio`** on your system, so you can pick the one that suits you best, including: `npx`, `bunx`, `cargo binstall`, and `git` 💩
+💩 We provide several ways to install and run **`poodio`** on your system with a single command. 💩
 
-### 💩 Install & Run from `npx` 💩
+| 💩 Method 💩                                | 💩 Command 💩                                                     |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| 1. [`npx`](https://nodejs.org/en/download/) | <ul><li>`npx -y poodio`</li><li>`npx -y poodio@0.1.0`</li></ul>   |
+| 2. [`bunx`](https://bun.sh/)                | <ul><li>`bunx -y poodio`</li><li>`bunx -y poodio@0.1.0`</li></ul> |
 
-> 💩 It's the simplest option. 💩
+## Install
 
-<details><summary><i>💩 View pre-requisites: 💩</i></summary>
+💩 We provide several ways to install **`poodio`** so you can run it later. 💩
 
-- 💩 [`node.js` + `npm`](https://nodejs.org/en/download/)
+| 💩 Method 💩                                                                                                             | 💩 Command 💩                                                                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. [`npm`](https://nodejs.org/en/download/)                                                                              | <ul><li>`npm i -g poodio`</li><li>`npm i -g poodio@0.1.0` </li></ul>                                                                                                                                                                                                  |
+| 2. [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)                      | <ul><li>`cargo-binstall -y poodio`</li><li>`cargo-binstall -y poodio@0.1.0`</li></ul>                                                                                                                                                                                 |
+| 3. [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) | <ul><li>`git clone https://github.com/AsherJingkongChen/poopoo -b main --depth 1`<br>`cargo install --path poopoo/poodio`</li><li>`git clone https://github.com/AsherJingkongChen/poopoo -b poodio@0.1.0 --depth 1`<br>`cargo install --path poopoo/poodio`</li></ul> |
 
-</details>
+## Run
 
-💩 Install **once** & Run the **latest version** of executable. 💩
+💩 After installing, run **`poodio`** with the following commands. 💩
 
-```shell
-npx -y poodio
-```
-
-### 💩 Install & Run from `bunx` 💩
-
-> 💩 It's a faster version of `npx`. 💩
-
-<details><summary><i>💩 View pre-requisites: 💩</i></summary>
-
-- 💩 [`bun`](https://bun.sh/)
-
-</details>
-
-💩 Install **once** & Run the **latest version** of executable. 💩
-
-```shell
-bunx poodio
-```
-
-### 💩 Install & Run from `cargo binstall` 💩
-
-> 💩 It's the Rustiest option. 💩
-
-<details><summary><i>💩 View pre-requisites: 💩</i></summary>
-
-- 💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
-- 💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)
-
-</details>
-
-💩 Install **once** & Run the **specific version** (e.g. `0.1.0`) of executable. 💩
-
-```shell
-cargo binstall -qy poodio@0.1.0 && poodio
-```
-
-### 💩 Install & Run from `git` 💩
-
-> 💩 It's the most transparent option. 💩
-
-<details><summary><i>💩 View pre-requisites: 💩</i></summary>
-
-- 💩 [`git`](https://git-scm.com/downloads)
-- 💩 [`rustup` + `cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)
-
-</details>
-
-💩 Install & Run the **development version** of executable. 💩
-
-```shell
-rm -rf poopoo && \
-git clone --branch main --depth 1 https://github.com/AsherJingkongChen/poopoo && \
-cargo install --path poopoo/poodio && \
-poodio
-```
+| 💩 Command 💩   | 💩 Description 💩                |
+| --------------- | -------------------------------- |
+| `poodio`        | 💩 Runs with default options. 💩 |
+| `poodio --help` | 💩 Shows help info. 💩           |
