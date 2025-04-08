@@ -1,9 +1,8 @@
 mod poodio
 
 check-fix:
-    cargo update
     cargo fmt --all
-    cargo clippy --all-features --allow-dirty --allow-staged --fix --locked
+    cargo clippy --all-features --allow-dirty --allow-staged --fix
     npm exec prettier -- --write .
 
 check:
@@ -21,7 +20,7 @@ clean-cargo:
     cargo clean
 
 clean-npm:
-    rm -rf node_modules/ package-lock.json
+    rm -rf node_modules/
 
 outdated:
     cargo outdated --exit-code 4 --workspace
@@ -41,8 +40,12 @@ prepare-apt:
     sudo apt-get install -y libasound2-dev
 
 prepare-npm:
-    npm i --ignore-scripts --no-package-lock --omit optional
+    npm ci --ignore-scripts --omit optional
 
 # TODO
 test:
     exit 4
+
+update:
+    cargo update
+    npm update --ignore-scripts --omit optional

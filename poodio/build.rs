@@ -35,11 +35,11 @@ fn build_npm_pkg() -> Result<()> {
         "arm64-darwin-unknown",
         "arm64-linux-glibc",
         "arm64-win32-unknown",
-        "ia32-win32-unknown",
         "ia32-linux-glibc",
+        "ia32-win32-unknown",
         "x64-darwin-unknown",
-        "x64-win32-unknown",
         "x64-linux-glibc",
+        "x64-win32-unknown",
     ];
 
     println!("cargo:rerun-if-changed=package.json");
