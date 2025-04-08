@@ -49,40 +49,25 @@ jobs:
                       target: i686-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
-            - uses: dtolnay/rust-toolchain@stable
+            - uses: taiki-e/setup-cross-toolchain-action@v1
               if: matrix.target != 'common'
               with:
-                  targets: ${{ matrix.target }}
-            - name: Install Cross-compilation Dependencies for Ubuntu Linux
+                  target: ${{ matrix.target }}
+            - name: Install Dependencies for Cross-compilation on Ubuntu
               if: matrix.os == 'ubuntu-latest'
               run: |
-                  if [[ "${{ matrix.target }}" == "x86_64"* ]]; then
-                    ARCH=amd64
-                  elif [[ "${{ matrix.target }}" == "aarch64"* ]]; then
-                    ARCH=arm64
-                  elif [[ "${{ matrix.target }}" == "i686"* ]]; then
-                    ARCH=i386
-                  else
-                    ARCH=
-                  fi
+                  sudo apt-get update
+                  sudo apt-get install -y --no-install-recommends libasound2-dev
 
-                  if [[ -n "$ARCH" ]]; then
-                    sudo dpkg --add-architecture $ARCH
-                    sudo apt-get update
-                    sudo apt-get install -y --no-install-recommends \
-                      libasound2-dev:$ARCH
+                  TARGET=""
+                  case "${{ matrix.target }}" in
+                    aarch64-*) TARGET="aarch64-linux-gnu" ;;
+                    i686-*) TARGET="i686-linux-gnu" ;;
+                  esac
 
-                    if [[ "$ARCH" == "arm64" ]]; then
-                      ARCH_TRIPLE="aarch64-linux-gnu"
-                    elif [[ "$ARCH" == "i386" ]]; then
-                      ARCH_TRIPLE="i686-linux-gnu"
-                    else
-                      ARCH_TRIPLE=
-                    fi
-                    if [[ -n "$ARCH_TRIPLE" ]]; then
-                      ls -l /usr/lib/
-                      echo "PKG_CONFIG_PATH=/usr/lib/$ARCH_TRIPLE/pkgconfig" >> $GITHUB_ENV
-                    fi
+                  if [[ -n "$TARGET" ]]; then
+                    echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> $GITHUB_ENV
+                    echo "PKG_CONFIG_SYSROOT_DIR=/" >> $GITHUB_ENV
                   fi
             - uses: taiki-e/install-action@just
             - run: |
