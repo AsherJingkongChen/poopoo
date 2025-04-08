@@ -61,6 +61,8 @@ jobs:
                     ARCH=i386
                   elif [[ "${{ matrix.target }}" == "aarch64"* ]]; then
                     ARCH=arm64
+                  elif [[ "${{ matrix.target }}" == "x86_64"* ]]
+                    ARCH=amd64
                   else
                     ARCH=
                   fi
