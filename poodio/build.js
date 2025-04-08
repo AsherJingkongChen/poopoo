@@ -10,7 +10,8 @@ globalThis.parseToml = require("smol-toml").parse;
 
 // Parse the arguments
 const { features, target: cargoTarget } = parseArgs(process.argv.slice(2));
-const npmTarget = (() => {
+const { name: pkgName } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).package;
+const npmTarget = cargoTarget && (() => {
     const cargoToNpm = {
         "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
         "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },
@@ -32,8 +33,7 @@ const npmTarget = (() => {
         libc: process.libc && [process.libc],
     };
 })();
-const { name: pkgName } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).package;
-const binName = `${pkgName}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
+const binName = cargoTarget && `${pkgName}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 
 // Clean the artifacts
 fs.rmSync("dist/", { force: true, recursive: true });

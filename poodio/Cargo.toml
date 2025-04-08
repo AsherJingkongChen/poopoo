@@ -1,5 +1,4 @@
 [build-dependencies]
-color-eyre.features = ["default"]
 color-eyre.workspace = true
 napi-build.workspace = true
 package-json.workspace = true
@@ -9,9 +8,8 @@ serde_json.workspace = true
 
 [dependencies]
 cpal.workspace = true
-napi-derive.features = ["type-def"]
 napi-derive.workspace = true
-napi.features = ["compat-mode", "dyn-symbols"]
+napi.features = ["dyn-symbols"]
 napi.workspace = true
 
 [lib]
@@ -34,7 +32,7 @@ name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version = "1.80"
-version = "0.0.9"
+version = "0.0.10"
 
 [package.metadata.binstall]
 pkg-fmt = "tgz"
