@@ -22,26 +22,15 @@ jobs:
             - uses: taiki-e/install-action@just
             - run: just prepare check
 
-    build-common:
-        if: github.ref_type == 'tag'
-        needs: check
-        runs-on: macos-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: taiki-e/install-action@just
-            - run: just prepare poodio::build-common
-            - uses: actions/upload-artifact@v4
-              with:
-                  name: common
-                  path: poodio/dist/
-
-    build-target:
+    build:
         # if: github.ref_type == 'tag'
         needs: check
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 include:
+                    - os: macos-latest
+                      target: common
                     - os: macos-latest
                       target: aarch64-apple-darwin
                     - os: macos-latest
@@ -61,10 +50,24 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: taiki-e/setup-cross-toolchain-action@v1
+              if: matrix.target != 'common'
               with:
                   target: ${{ matrix.target }}
+            - name: Install Cross-compilation Dependencies for Ubuntu Linux
+              if: matrix.os == 'ubuntu-latest'
+              run: |
+                  sudo apt-get update
+                  case ${{ matrix.target }} in
+                    aarch64-*) ARCH=arm64 ;;
+                    i686-*)    ARCH=i386  ;;
+                    x86_64-*)  ARCH=amd64 ;;
+                    *)         ARCH=      ;;
+                  esac
+                  if [[ -n "$ARCH" ]]; then
+                    sudo apt-get install -y --no-install-recommends libasound2-dev:$ARCH
+                  fi
             - uses: taiki-e/install-action@just
-            - run: just prepare poodio::build-target ${{ matrix.target }}
+            - run: just prepare poodio::build ${{ matrix.target }}
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
@@ -72,9 +75,7 @@ jobs:
 
     publish:
         if: github.ref_type == 'tag'
-        needs:
-            - build-common
-            - build-target
+        needs: build
         runs-on: macos-latest
         permissions:
             contents: write
@@ -84,7 +85,7 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
-            - name: Package GitHub Release Artifacts
+            - name: Package GitHub Release Assets
               run: |
                   for dir in dist/*; do
                     [[ "$dir" == "dist/common" ]] && continue

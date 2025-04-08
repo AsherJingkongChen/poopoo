@@ -1,5 +1,2 @@
-build-common:
-    node build.js
-
-build-target TARGET:
+build TARGET="":
     node build.js --target {{ TARGET }}

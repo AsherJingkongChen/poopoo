@@ -2,59 +2,43 @@
 
 process.chdir(__dirname);
 
-globalThis.execSync = require("node:child_process").execSync;
-globalThis.formatPkgName = require("./src/node/loader.cjs").formatPkgName;
 globalThis.fs = require("node:fs");
-globalThis.parseArgs = require("minimist");
-globalThis.parseToml = require("smol-toml").parse;
 
 // Parse the arguments
-const { features, target: cargoTarget } = parseArgs(process.argv.slice(2));
-const { name: pkgName } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).package;
-const npmTarget =
-    cargoTarget &&
-    (() => {
-        const cargoToNpm = {
-            "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
-            "aarch64-unknown-linux-gnu": {
-                cpu: ["arm64"],
-                os: ["linux"],
-                libc: ["glibc"],
-            },
-            "aarch64-pc-windows-msvc": { cpu: ["arm64"], os: ["win32"] },
-            "i686-pc-windows-msvc": { cpu: ["ia32"], os: ["win32"] },
-            "i686-unknown-linux-gnu": { cpu: ["ia32"], os: ["linux"], libc: ["glibc"] },
-            "x86_64-apple-darwin": { cpu: ["x64"], os: ["darwin"] },
-            "x86_64-unknown-linux-gnu": { cpu: ["x64"], os: ["linux"], libc: ["glibc"] },
-            "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
-        };
-        const npmTarget = cargoToNpm[cargoTarget];
-        if (npmTarget) {
-            return npmTarget;
-        }
-        console.warn(`WARN | No available Npm target for Cargo target '${cargoTarget}'`);
-        return {
-            cpu: [process.arch],
-            os: [process.platform],
-            libc: process.libc && [process.libc],
-        };
-    })();
+const args = require("minimist")(process.argv.slice(2));
+const cargoTarget = ["common", "false", true].includes(args.target) ? "" : args.target;
+const featuresArg = args.features ? `--features ${args.features} ` : "";
+const targetArg = cargoTarget ? `--target ${cargoTarget} ` : "";
+const releaseArg = cargoTarget ? "--release " : "";
+const { name: pkgName } = require("smol-toml").parse(
+    fs.readFileSync("Cargo.toml", "utf8"),
+).package;
+const npmTarget = {
+    "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
+    "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },
+    "aarch64-pc-windows-msvc": { cpu: ["arm64"], os: ["win32"] },
+    "i686-pc-windows-msvc": { cpu: ["ia32"], os: ["win32"] },
+    "i686-unknown-linux-gnu": { cpu: ["ia32"], os: ["linux"], libc: ["glibc"] },
+    "x86_64-apple-darwin": { cpu: ["x64"], os: ["darwin"] },
+    "x86_64-unknown-linux-gnu": { cpu: ["x64"], os: ["linux"], libc: ["glibc"] },
+    "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
+}[cargoTarget];
+if (cargoTarget && !npmTarget) {
+    throw new TypeError(`No available Npm target for Cargo target '${cargoTarget}'`);
+}
 const binName = cargoTarget && `${pkgName}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 
 // Clean the artifacts
 fs.rmSync("dist/", { force: true, recursive: true });
 
 // Build the artifacts
-const featuresArg = features ? `--features ${features} ` : "";
-const targetArg = cargoTarget ? `--target ${cargoTarget} ` : "";
-const releaseFlag = cargoTarget ? "--release" : "";
 if (!fs.existsSync("package.json")) {
     fs.writeFileSync("package.json", "{}");
 }
-execSync(
+require("node:child_process").execSync(
     `\
 npx napi build --cargo-flags=--locked --no-dts-header \
-${featuresArg}${targetArg}${releaseFlag} dist/npm/src/node/`,
+${featuresArg}${targetArg}${releaseArg}dist/npm/src/node/`,
     { stdio: "inherit", windowsHide: true },
 );
 
@@ -82,7 +66,7 @@ const npmPkgUpdated = (function () {
     if (cargoTarget) {
         const { cpu, os, libc } = npmTarget;
         const binUpdated = `src/node/${binName}`;
-        const pkgNameUpdated = formatPkgName({
+        const pkgNameUpdated = require("./src/node/loader.cjs").formatPkgName({
             name: pkgName,
             cpu: cpu[0],
             os: os[0],

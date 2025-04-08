@@ -11,9 +11,9 @@ check:
     npm exec prettier -- --check .
 
 # clean-*
-clean: clean-artifact clean-cargo clean-npm
+clean: clean-build clean-cargo clean-npm
 
-clean-artifact:
+clean-build:
     rm -rf poodio/dist/
 
 clean-cargo:
@@ -27,17 +27,7 @@ outdated:
     npm outdated --all
 
 # prepare-*
-[linux]
-prepare: prepare-apt prepare-npm
-
-# prepare-*
-[macos, windows]
 prepare: prepare-npm
-
-[linux]
-prepare-apt:
-    sudo apt-get update
-    sudo apt-get install -y libasound2-dev
 
 prepare-npm:
     npm ci --ignore-scripts --omit optional
