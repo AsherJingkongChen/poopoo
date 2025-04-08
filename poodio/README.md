@@ -30,7 +30,7 @@
 
 💩 After [installing](#install), run **`poodio`** with the following commands. 💩
 
-| 💩 Command 💩   | 💩 Description 💩                |
-| --------------- | -------------------------------- |
+| 💩 Command 💩   | 💩 Description 💩               |
+| --------------- | ------------------------------- |
 | `poodio`        | 💩 Runs with default options 💩 |
 | `poodio --help` | 💩 Shows help info 💩           |
