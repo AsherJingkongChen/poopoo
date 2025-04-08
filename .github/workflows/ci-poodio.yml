@@ -56,13 +56,12 @@ jobs:
             - name: Install Cross-compilation Dependencies for Ubuntu Linux
               if: matrix.os == 'ubuntu-latest'
               run: |
-                  if [[ "${{ matrix.target }}" == "i686"* ]]; then
-                    sudo dpkg --add-architecture i386
-                    ARCH=i386
+                  if [[ "${{ matrix.target }}" == "x86_64"* ]]; then
+                    ARCH=amd64
                   elif [[ "${{ matrix.target }}" == "aarch64"* ]]; then
                     ARCH=arm64
-                  elif [[ "${{ matrix.target }}" == "x86_64"* ]]
-                    ARCH=amd64
+                  elif [[ "${{ matrix.target }}" == "i686"* ]]; then
+                    ARCH=i386
                   else
                     ARCH=
                   fi
