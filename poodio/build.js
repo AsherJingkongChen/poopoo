@@ -11,28 +11,34 @@ globalThis.parseToml = require("smol-toml").parse;
 // Parse the arguments
 const { features, target: cargoTarget } = parseArgs(process.argv.slice(2));
 const { name: pkgName } = parseToml(fs.readFileSync("Cargo.toml", "utf8")).package;
-const npmTarget = cargoTarget && (() => {
-    const cargoToNpm = {
-        "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
-        "aarch64-unknown-linux-gnu": { cpu: ["arm64"], os: ["linux"], libc: ["glibc"] },
-        "aarch64-pc-windows-msvc": { cpu: ["arm64"], os: ["win32"] },
-        "i686-pc-windows-msvc": { cpu: ["ia32"], os: ["win32"] },
-        "i686-unknown-linux-gnu": { cpu: ["ia32"], os: ["linux"], libc: ["glibc"] },
-        "x86_64-apple-darwin": { cpu: ["x64"], os: ["darwin"] },
-        "x86_64-unknown-linux-gnu": { cpu: ["x64"], os: ["linux"], libc: ["glibc"] },
-        "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
-    };
-    const npmTarget = cargoToNpm[cargoTarget];
-    if (npmTarget) {
-        return npmTarget;
-    }
-    console.warn(`WARN | No available Npm target for Cargo target '${cargoTarget}'`);
-    return {
-        cpu: [process.arch],
-        os: [process.platform],
-        libc: process.libc && [process.libc],
-    };
-})();
+const npmTarget =
+    cargoTarget &&
+    (() => {
+        const cargoToNpm = {
+            "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
+            "aarch64-unknown-linux-gnu": {
+                cpu: ["arm64"],
+                os: ["linux"],
+                libc: ["glibc"],
+            },
+            "aarch64-pc-windows-msvc": { cpu: ["arm64"], os: ["win32"] },
+            "i686-pc-windows-msvc": { cpu: ["ia32"], os: ["win32"] },
+            "i686-unknown-linux-gnu": { cpu: ["ia32"], os: ["linux"], libc: ["glibc"] },
+            "x86_64-apple-darwin": { cpu: ["x64"], os: ["darwin"] },
+            "x86_64-unknown-linux-gnu": { cpu: ["x64"], os: ["linux"], libc: ["glibc"] },
+            "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
+        };
+        const npmTarget = cargoToNpm[cargoTarget];
+        if (npmTarget) {
+            return npmTarget;
+        }
+        console.warn(`WARN | No available Npm target for Cargo target '${cargoTarget}'`);
+        return {
+            cpu: [process.arch],
+            os: [process.platform],
+            libc: process.libc && [process.libc],
+        };
+    })();
 const binName = cargoTarget && `${pkgName}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 
 // Clean the artifacts
