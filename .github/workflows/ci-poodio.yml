@@ -69,9 +69,14 @@ jobs:
                   if [[ -n "$ARCH" ]]; then
                     if [[ "$ARCH" != "amd64" ]]; then
                       sudo dpkg --add-architecture $ARCH
+                      sudo rm /etc/apt/sources.list
+                      sudo rm /etc/apt/sources.list.d/* || true # Ignore errors if directory is empty
                       echo "deb [arch=$ARCH] http://ports.ubuntu.com/ubuntu-ports noble main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ubuntu-ports-$ARCH.list > /dev/null
                       echo "deb [arch=$ARCH] http://ports.ubuntu.com/ubuntu-ports noble-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ubuntu-ports-$ARCH.list > /dev/null
                       echo "deb [arch=$ARCH] http://ports.ubuntu.com/ubuntu-ports noble-security main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ubuntu-ports-$ARCH.list > /dev/null
+                      echo "deb [arch=amd64] http://azure.archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/azure-amd64.list > /dev/null
+                      echo "deb [arch=amd64] http://azure.archive.ubuntu.com/ubuntu/ noble-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/azure-amd64.list > /dev/null
+                      echo "deb [arch=amd64] http://azure.archive.ubuntu.com/ubuntu/ noble-security main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/azure-amd64.list > /dev/null
                     fi
                     sudo apt-get update
                     sudo apt-get install -y --no-install-recommends \
