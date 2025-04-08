@@ -67,12 +67,31 @@ jobs:
                   fi
 
                   if [[ -n "$ARCH" ]]; then
-                    sudo dpkg --add-architecture $ARCH
+                    if [[ "$ARCH" != "amd64" ]]; then
+                      sudo dpkg --add-architecture $ARCH
+                      echo "deb [arch=$ARCH] http://ports.ubuntu.com/ubuntu-ports noble main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ubuntu-ports-$ARCH.list > /dev/null
+                      echo "deb [arch=$ARCH] http://ports.ubuntu.com/ubuntu-ports noble-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ubuntu-ports-$ARCH.list > /dev/null
+                      echo "deb [arch=$ARCH] http://ports.ubuntu.com/ubuntu-ports noble-security main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ubuntu-ports-$ARCH.list > /dev/null
+                    fi
                     sudo apt-get update
-                    sudo apt-get install -y --no-install-recommends libasound2-dev:$ARCH
+                    sudo apt-get install -y --no-install-recommends \
+                      libasound2-dev:$ARCH
+
+                    if [[ "$ARCH" == "arm64" ]]; then
+                      ARCH_TRIPLE="aarch64-linux-gnu"
+                    elif [[ "$ARCH" == "i386" ]]; then
+                      ARCH_TRIPLE="i686-linux-gnu"
+                    else
+                      ARCH_TRIPLE=
+                    fi
+                    if [[ -n "$ARCH_TRIPLE" ]]; then
+                      ls -l /usr/lib/
+                      echo "PKG_CONFIG_PATH=/usr/lib/$ARCH_TRIPLE/pkgconfig" >> $GITHUB_ENV
+                    fi
                   fi
             - uses: taiki-e/install-action@just
-            - run: just prepare poodio::build ${{ matrix.target }}
+            - run: |
+                  just prepare poodio::build ${{ matrix.target }}
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
