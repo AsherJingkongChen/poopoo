@@ -56,14 +56,18 @@ jobs:
             - name: Install Cross-compilation Dependencies for Ubuntu Linux
               if: matrix.os == 'ubuntu-latest'
               run: |
-                  sudo apt-get update
-                  case ${{ matrix.target }} in
-                    aarch64-*) ARCH=arm64 ;;
-                    i686-*)    ARCH=i386  ;;
-                    x86_64-*)  ARCH=amd64 ;;
-                    *)         ARCH=      ;;
-                  esac
+                  if [[ "${{ matrix.target }}" == "i686"* ]]; then
+                    sudo dpkg --add-architecture i386
+                    ARCH=i386
+                  elif [[ "${{ matrix.target }}" == "aarch64"* ]]; then
+                    ARCH=arm64
+                  else
+                    ARCH=
+                  fi
+
                   if [[ -n "$ARCH" ]]; then
+                    sudo dpkg --add-architecture $ARCH
+                    sudo apt-get update
                     sudo apt-get install -y --no-install-recommends libasound2-dev:$ARCH
                   fi
             - uses: taiki-e/install-action@just
