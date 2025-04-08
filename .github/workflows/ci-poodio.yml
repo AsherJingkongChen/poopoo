@@ -49,10 +49,10 @@ jobs:
                       target: i686-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
-            - uses: taiki-e/setup-cross-toolchain-action@v1
+            - uses: dtolnay/rust-toolchain@stable
               if: matrix.target != 'common'
               with:
-                  target: ${{ matrix.target }}
+                  targets: ${{ matrix.target }}
             - name: Install Cross-compilation Dependencies for Ubuntu Linux
               if: matrix.os == 'ubuntu-latest'
               run: |
@@ -68,6 +68,7 @@ jobs:
 
                   if [[ -n "$ARCH" ]]; then
                     sudo dpkg --add-architecture $ARCH
+                    sudo apt-get update
                     sudo apt-get install -y --no-install-recommends \
                       libasound2-dev:$ARCH
 
