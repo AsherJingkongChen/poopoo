@@ -8,6 +8,7 @@ serde_json.workspace = true
 
 [dependencies]
 cpal.workspace = true
+napi-derive.features = ["type-def"]
 napi-derive.workspace = true
 napi.features = ["dyn-symbols"]
 napi.workspace = true
