@@ -1,5 +1,5 @@
 build TARGET="":
     node build.js --target {{ TARGET }}
 
-test:
+test-e2e:
     echo TODO && exit 4
