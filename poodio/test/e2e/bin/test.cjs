@@ -9,18 +9,18 @@ const assert = require("uvu/assert");
 const BIN_PATH =
     "../../../dist/bin/poodio" + (process.platform === "win32" ? ".exe" : "");
 
-test("Executable is runnable", () => {
+test("Executable is available", () => {
     assert.ok(fs.existsSync(BIN_PATH), `Not found: ${BIN_PATH} (cwd: ${process.cwd()})`);
     const stat = fs.statSync(BIN_PATH);
     assert.ok(stat.isFile(), `Not a file: ${BIN_PATH}`);
-    assert.ok(
-        stat.mode & 0o111,
-        `Not an executable: ${BIN_PATH} (mode: ${stat.mode.toString(8)})`,
+    assert.not.throws(
+        () => fs.accessSync(BIN_PATH, fs.constants.X_OK),
+        `Not an executable: ${BIN_PATH}`,
     );
 });
 
 test("Executable default output is correct", () => {
-    const output = require("node:child_process").execSync(BIN_PATH, {
+    const output = require("node:child_process").execFileSync(BIN_PATH, {
         encoding: "utf8",
         windowsHide: true,
     });
