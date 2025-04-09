@@ -31,16 +31,6 @@ fn build_npm_pkg() -> Result<()> {
 
     const NPM_PKG_NAME: &str = env!("CARGO_PKG_NAME");
     const NPM_PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
-    const NPM_PKG_TARGETS: &[&str] = &[
-        "arm64-darwin-unknown",
-        "arm64-linux-glibc",
-        "arm64-win32-unknown",
-        "ia32-linux-glibc",
-        "ia32-win32-unknown",
-        "x64-darwin-unknown",
-        "x64-linux-glibc",
-        "x64-win32-unknown",
-    ];
 
     println!("cargo:rerun-if-changed=package.json");
 
@@ -75,14 +65,6 @@ fn build_npm_pkg() -> Result<()> {
     let npm_pkg_files = npm_pkg.files.get_or_insert(Default::default());
     if !npm_pkg_files.contains(&"src/node/".into()) {
         npm_pkg_files.push("src/node/".into());
-    }
-
-    let npm_pkg_opt_deps = npm_pkg
-        .optional_dependencies
-        .get_or_insert(Default::default());
-    for npm_pkg_target in NPM_PKG_TARGETS {
-        let opt_dep_name = format!("@{NPM_PKG_NAME}/{NPM_PKG_NAME}-{npm_pkg_target}");
-        npm_pkg_opt_deps.insert(opt_dep_name, NPM_PKG_VERSION.into());
     }
 
     let mut npm_pkg_fp = File::create(&npm_pkg_file_path)?;
