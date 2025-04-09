@@ -1,6 +1,6 @@
-# What does _`poodio`_ do?
+# What does _**`poodio`**_ do?
 
-💩💨Fart poo poo audio💨💩
+💩 💨 Fart poo poo audio 💨 💩
 
 [![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=NPMJS&logo=npm&logoColor=%23c33&labelColor=%23333&color=%23c33)](https://www.npmjs.com/package/poodio)
 [![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=CRATES&logo=docs.rs&logoColor=%23fc3&labelColor=%23333&color=%23fc3)](https://docs.rs/poodio)
@@ -9,18 +9,18 @@
 
 ## Install & Run
 
-💩We provide several ways to install and run **`poodio`** on your system with a single command.💩
+💩 We provide several ways to install and run **`poodio`** on your system with a single command. 💩
 
-| 💩Method💩                                  | 💩Command💩                                                       |
+| 💩 Method 💩                                | 💩 Command 💩                                                     |
 | ------------------------------------------- | ----------------------------------------------------------------- |
 | 1. [`npx`](https://nodejs.org/en/download/) | <ul><li>`npx -y poodio`</li><li>`npx -y poodio@0.1.0`</li></ul>   |
 | 2. [`bunx`](https://bun.sh/)                | <ul><li>`bunx -y poodio`</li><li>`bunx -y poodio@0.1.0`</li></ul> |
 
 ## Install
 
-💩We provide several ways to install **`poodio`** so you can [run](#run) it later.💩
+💩 We provide several ways to install **`poodio`** so you can [run](#run) it later. 💩
 
-| 💩Method💩                                                                                                               | 💩Command💩                                                                                                                                                                                                                                                           |
+| 💩 Method 💩                                                                                                             | 💩 Command 💩                                                                                                                                                                                                                                                         |
 | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1. [`npm`](https://nodejs.org/en/download/)                                                                              | <ul><li>`npm i -g poodio`</li><li>`npm i -g poodio@0.1.0` </li></ul>                                                                                                                                                                                                  |
 | 2. [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation)                      | <ul><li>`cargo-binstall -y poodio`</li><li>`cargo-binstall -y poodio@0.1.0`</li></ul>                                                                                                                                                                                 |
@@ -28,9 +28,9 @@
 
 ## Run
 
-💩After [installing](#install), run **`poodio`** with the following commands.💩
+💩 After [installing](#install), run **`poodio`** with the following commands. 💩
 
-| 💩Command💩     | 💩Description💩               |
-| --------------- | ----------------------------- |
-| `poodio`        | 💩Runs with default options💩 |
-| `poodio --help` | 💩Shows help info💩           |
+| 💩 Command 💩   | 💩 Description 💩               |
+| --------------- | ------------------------------- |
+| `poodio`        | 💩 Runs with default options 💩 |
+| `poodio --help` | 💩 Shows help info 💩           |
