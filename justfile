@@ -8,6 +8,7 @@ check:
     cargo fmt --all --check
     cargo clippy --all-features --locked -- -D warnings
 
+# + update
 check-fix: update
     npx prettier --write .
     cargo fmt --all
@@ -20,7 +21,7 @@ check-dep:
     npm audit signatures
     npm outdated
 
-# clean-*
+# + clean-*
 clean: clean-build clean-cargo clean-npm
 
 clean-build:
@@ -32,7 +33,7 @@ clean-cargo:
 clean-npm:
     rm -rf node_modules/
 
-# prepare-*
+# + prepare-*
 prepare: prepare-npm
 
 prepare-npm:

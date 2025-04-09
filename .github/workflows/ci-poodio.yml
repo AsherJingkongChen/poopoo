@@ -19,7 +19,9 @@ jobs:
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: taiki-e/install-action@just
+            - uses: taiki-e/install-action@v2
+              with:
+                  tool: cargo-audit, just
             - run: just prepare check
             - run: just check-dep
               # if: github.ref_type == 'tag'
@@ -72,9 +74,10 @@ jobs:
                     echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> $GITHUB_ENV
                     echo "PKG_CONFIG_SYSROOT_DIR=/" >> $GITHUB_ENV
                   fi
-            - uses: taiki-e/install-action@just
-            - run: |
-                  just prepare poodio::build ${{ matrix.target }}
+            - uses: taiki-e/install-action@v2
+              with:
+                  tool: just
+            - run: just prepare poodio::build ${{ matrix.target }}
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
