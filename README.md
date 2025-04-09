@@ -1,7 +1,7 @@
 # poopoo
 
-💩 A moonoorepoo pooject foo fun 💩
+💩A moonoorepoo pooject foo fun💩
 
-## [`poodio`](./poodio/README.md)
+## [**`poodio`**](./poodio/README.md)
 
-💩 💨 Fart poo poo audio 💨 💩
+💩💨Fart poo poo audio💨💩

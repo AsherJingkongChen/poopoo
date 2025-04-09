@@ -24,7 +24,7 @@ path = "src/rust/bin.rs"
 
 [package]
 authors.workspace = true
-description = "💩 Fart poo poo audio 💩"
+description = "💩Fart poo poo audio💩"
 edition.workspace = true
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio"
 include = ["/build.rs", "/src/rust", "/LICENSE.txt"]
