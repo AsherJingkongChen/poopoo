@@ -78,6 +78,7 @@ jobs:
               with:
                   tool: just
             - run: just prepare poodio::build ${{ matrix.target }}
+            - run: just poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}

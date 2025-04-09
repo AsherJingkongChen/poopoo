@@ -2,4 +2,5 @@ build TARGET="":
     node build.js --target {{ TARGET }}
 
 test-e2e:
-    echo TODO && exit 4
+    npx @poodio/test-e2e-bin
+    npx @poodio/test-e2e-npm

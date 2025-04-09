@@ -1,3 +1,8 @@
+module.exports = {
+    buildPkgName,
+    formatPkgName,
+};
+
 function buildPkgName(name) {
     return formatPkgName({
         name,
@@ -9,10 +14,6 @@ function buildPkgName(name) {
 function formatPkgName({ name, cpu, os, libc }) {
     return `@${name}/${name}-${cpu}-${os}-${libc || "unknown"}`;
 }
-module.exports = {
-    buildPkgName,
-    formatPkgName,
-};
 
 var _libc;
 Object.defineProperty(process, "libc", {
