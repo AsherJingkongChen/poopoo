@@ -27,9 +27,6 @@ const NPM_PKG_NAMES = Object.values(CARGO_TO_NPM_TARGET).map((t) =>
 // Parse the arguments
 const args = require("minimist")(process.argv.slice(2));
 const cargoTarget = ["common", "false", true].includes(args.target) ? "" : args.target;
-const featuresArg = args.features ? `--features ${args.features} ` : "";
-const targetArg = cargoTarget ? `--target ${cargoTarget} ` : "";
-const releaseArg = cargoTarget ? "--release " : "";
 const { name } = require("smol-toml").parse(
     fs.readFileSync("Cargo.toml", "utf8"),
 ).package;
@@ -46,12 +43,14 @@ fs.rmSync("dist/", { force: true, recursive: true });
 if (!fs.existsSync("package.json")) {
     fs.writeFileSync("package.json", "{}");
 }
-require("node:child_process").execSync(
-    `\
-npx napi build --cargo-flags=--locked --no-dts-header \
-${featuresArg}${targetArg}${releaseArg}dist/npm/src/node/`,
-    { stdio: "inherit", windowsHide: true },
-);
+const buildArgs = "napi build --cargo-flags=--locked --no-dts-header".split(" ");
+args.features && buildArgs.push(`--features ${args.features}`);
+cargoTarget && buildArgs.push("--release", `--target=${cargoTarget}`);
+buildArgs.push("dist/npm/src/node/");
+require("node:child_process").execFileSync("npx", buildArgs, {
+    stdio: "inherit",
+    windowsHide: true,
+});
 
 // Write the artifacts
 const npmPkg = { ...require("./package.json") };
