@@ -80,8 +80,8 @@ jobs:
                   esac
 
                   if [[ -n "$TARGET" ]]; then
-                    echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> "$GITHUB_ENV"
-                    echo "PKG_CONFIG_SYSROOT_DIR=/" >> "$GITHUB_ENV"
+                    echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> $GITHUB_ENV
+                    echo "PKG_CONFIG_SYSROOT_DIR=/" >> $GITHUB_ENV
                   fi
             - uses: taiki-e/install-action@v2
               with:
@@ -109,13 +109,13 @@ jobs:
             - name: Publish to github.com (Packaging)
               run: |
                   for dir in dist/*; do
-                    TARGET="$(basename "$dir")"
+                    TARGET=$(basename "$dir")
                     [[ "$TARGET" == "common" ]] && continue
                     ASSET="poodio-$TARGET.tgz"
                     cd "$dir/bin/"
                     if tar -czf "$ASSET" poodio*; then
-                      FILE_COUNT="$(tar -tzf "$ASSET" | wc -l)"
-                      ASSET_SIZE="$(du -h "$ASSET" | cut -f1)"
+                      FILE_COUNT=$(tar -tzf "$ASSET" | wc -l)
+                      ASSET_SIZE=$(du -h "$ASSET" | cut -f1)
                       echo "Packaged $ASSET ($FILE_COUNT files compressed to $ASSET_SIZE)"
                     else
                       echo "Failed to package $ASSET" >&2
@@ -123,16 +123,21 @@ jobs:
                     fi
                     cd - > /dev/null
                   done
+                  echo "LATEST_TAG=$(git describe --abbrev=0 --match 'poodio@*' --tags)" >> $GITHUB_ENV
+            # - name: Publish to github.com (Attestation)
+            #   uses: actions/attest-build-provenance@v2
+            #   id: attest
+            #   with:
+            #       subject-name: ${{ github.ref_name }} on github.com
+            #       subject-path: dist/*/bin/*.tgz
             - name: Publish to github.com
               uses: softprops/action-gh-release@v2
               with:
-                  append_body: false
+                  append_body: true
+                  body: |
+                      - [**Build Attestation**](steps.attest.outputs.attestation-url)
                   files: dist/*/bin/*.tgz
                   generate_release_notes: true
-            - name: Publish to github.com (Attestation)
-              uses: actions/attest-build-provenance@v2
-              with:
-                  subject-path: dist/*/bin/*.tgz
 
             - name: Publish to npmjs.com
               run: |
