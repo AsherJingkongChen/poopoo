@@ -43,11 +43,11 @@ fs.rmSync("dist/", { force: true, recursive: true });
 if (!fs.existsSync("package.json")) {
     fs.writeFileSync("package.json", "{}");
 }
-const buildArgs = "napi build --cargo-flags=--locked --no-dts-header".split(" ");
+const buildArgs = "npx napi build --cargo-flags=--locked --no-dts-header".split(" ");
 args.features && buildArgs.push(`--features ${args.features}`);
 cargoTarget && buildArgs.push("--release", `--target=${cargoTarget}`);
 buildArgs.push("dist/npm/src/node/");
-require("node:child_process").execFileSync("npx", buildArgs, {
+require("node:child_process").execSync(buildArgs.join(" "), {
     stdio: "inherit",
     windowsHide: true,
 });
