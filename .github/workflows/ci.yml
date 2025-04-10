@@ -134,7 +134,6 @@ jobs:
               uses: actions/attest-build-provenance@v2
               id: attest
               with:
-                  subject-name: ${{ github.ref_name }} on github.com
                   subject-path: dist/*/bin/*.tgz
             - name: Publish to github.com
               uses: softprops/action-gh-release@v2
