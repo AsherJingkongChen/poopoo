@@ -42,24 +42,30 @@ jobs:
                     # - os: macos-13
                     #   target: x86_64-apple-darwin
                     #   test: e2e
-                    - os: ubuntu-24.04
-                      target: x86_64-unknown-linux-gnu
-                      test: e2e
                     - os: ubuntu-24.04-arm
                       target: aarch64-unknown-linux-gnu
+                      test: e2e
+                    - os: ubuntu-24.04-arm
+                      target: aarch64-unknown-linux-musl
                       test: e2e
                     - os: ubuntu-24.04
                       target: i686-unknown-linux-gnu
                       test:
+                    - os: ubuntu-24.04
+                      target: x86_64-unknown-linux-gnu
+                      test: e2e
+                    - os: ubuntu-24.04
+                      target: x86_64-unknown-linux-musl
+                      test: e2e
                     # - os: windows-2025
                     #   target: aarch64-pc-windows-msvc
                     #   test:
                     # - os: windows-2025
-                    #   target: x86_64-pc-windows-msvc
-                    #   test: e2e
-                    # - os: windows-2025
                     #   target: i686-pc-windows-msvc
                     #   test:
+                    # - os: windows-2025
+                    #   target: x86_64-pc-windows-msvc
+                    #   test: e2e
         steps:
             - uses: actions/checkout@v4
             - uses: taiki-e/setup-cross-toolchain-action@v1
@@ -113,10 +119,10 @@ jobs:
                   for dir in dist/*; do
                     TARGET="$(basename "$dir")"
                     [[ "$TARGET" == "common" ]] && continue
-                    ASSET="poodio-$TARGET.tgz"
+                    ASSET="${{ github.ref_name }}-$TARGET.tgz"
                     cd "$dir/bin/"
                     echo "Packaging $ASSET ..."
-                    tar -vczf "$ASSET" poodio*
+                    tar -vczf "$ASSET" *
                     cd - > /dev/null
                   done
             - name: Publish to github.com (Generating Release Notes)
@@ -124,11 +130,14 @@ jobs:
               run: |
                   LAST_TAG="$(git describe --tags --abbrev=0 HEAD~)"
                   HEAD_TAG="${{ github.ref_name }}"
-                  CHANGELOG="${{ github.server_url }}/${{ github.repository }}/compare/$LAST_TAG...$HEAD_TAG"
+                  GITHUB_REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+                  CHANGELOG="$GITHUB_REPO_URL/compare/$LAST_TAG...$HEAD_TAG"
                   CONTRIBUTORS="$(git log --pretty=format:'  + @%an' "$LAST_TAG".."$HEAD_TAG" | sort -u)"
+                  INSTALLATION="$GITHUB_REPO_URL/tree/main/poodio#install"
 
                   echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
                   echo "contributors=$CONTRIBUTORS" >> $GITHUB_OUTPUT
+                  echo "installation=$INSTALLATION" >> $GITHUB_OUTPUT
             # - name: Publish to github.com (Attestation)
             #   uses: actions/attest-build-provenance@v2
             #   id: attest

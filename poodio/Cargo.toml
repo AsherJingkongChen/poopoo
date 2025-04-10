@@ -39,4 +39,4 @@ version = "0.0.12"
 
 [package.metadata.binstall]
 pkg-fmt = "tgz"
-pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }-{ target }{ archive-suffix }"
+pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }%40{ version }-{ target }{ archive-suffix }"
