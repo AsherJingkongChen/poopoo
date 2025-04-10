@@ -10,12 +10,12 @@ const BIN_PATH =
     "../../../dist/bin/poodio" + (process.platform === "win32" ? ".exe" : "");
 
 test("Executable is available", () => {
-    assert.ok(fs.existsSync(BIN_PATH), `Not found: ${BIN_PATH} (cwd: ${process.cwd()})`);
+    assert.ok(fs.existsSync(BIN_PATH), `Not found: '${BIN_PATH}'`);
     const stat = fs.statSync(BIN_PATH);
-    assert.ok(stat.isFile(), `Not a file: ${BIN_PATH}`);
+    assert.ok(stat.isFile(), `Not a file: '${BIN_PATH}'`);
     assert.not.throws(
         () => fs.accessSync(BIN_PATH, fs.constants.X_OK),
-        `Not an executable: ${BIN_PATH}`,
+        `Not an executable: '${BIN_PATH}'`,
     );
 });
 

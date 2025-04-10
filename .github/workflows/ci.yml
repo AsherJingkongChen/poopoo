@@ -147,7 +147,6 @@ jobs:
                       - **Contributors**
                       ${{ steps.github-release-notes.outputs.contributors }}
                   files: dist/*/bin/*.tgz
-
             - name: Publish to npmjs.com
               run: |
                   npm set -L project //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
@@ -157,7 +156,6 @@ jobs:
                   npm set -L project //registry.npmjs.org/:_authToken
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
-
             - name: Publish to crates.io
               run: cargo publish --locked --package poodio --no-verify
               env:
