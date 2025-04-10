@@ -41,6 +41,6 @@ Object.defineProperty(process, "libc", {
               (_libc = "musl");
         return _libc;
     },
-    configurable: true,
-    enumerable: true,
+    configurable: !0,
+    enumerable: !0,
 });
