@@ -30,7 +30,17 @@
 
 💩 After [installing](#install), run **`poodio`** with the following commands. 💩
 
-| 💩 Command 💩   | 💩 Description 💩               |
-| --------------- | ------------------------------- |
-| `poodio`        | 💩 Runs with default options 💩 |
-| `poodio --help` | 💩 Shows help info 💩           |
+| 💩 Action 💩             | 💩 Command 💩                                            |
+| ------------------------ | -------------------------------------------------------- |
+| 💩 Shows help info 💩    | <ul><li>`poodio -h`</li><li>`poodio --help`</li></ul>    |
+| 💩 Shows version info 💩 | <ul><li>`poodio -v`</li><li>`poodio --version`</li></ul> |
+
+## Integrate
+
+💩 You can integrate **`poodio`** into your own project with the following command. 💩
+
+| 💩 Method 💩                                                                                                             | 💩 Command 💩                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. [`npm`](https://nodejs.org/en/download/)                                                                              | <ul><li>`npm i poodio`</li><li>`npm i poodio@0.1.0` </li></ul>                                                                                                                                                                                                |
+| 2. [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)                                          | <ul><li>`cargo add poodio`</li><li>`cargo add poodio@0.1.0`</li></ul>                                                                                                                                                                                         |
+| 3. [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) | <ul><li>`git clone https://github.com/AsherJingkongChen/poopoo -b main --depth 1`<br>`cargo add --path poopoo/poodio`</li><li>`git clone https://github.com/AsherJingkongChen/poopoo -b poodio@0.1.0 --depth 1`<br>`cargo add --path poopoo/poodio`</li></ul> |

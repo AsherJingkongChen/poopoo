@@ -13,6 +13,7 @@ strip = true
 
 [workspace]
 members = ["poodio"]
+exclude = ["*"]
 resolver = "2"
 
 [workspace.package]

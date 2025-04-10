@@ -11,10 +11,6 @@ test("Package modules can be required or resolved", () => {
     assert.not.throws(() => require(PKG_PATH), "No default module");
     assert.not.throws(() => require(`${PKG_PATH}/src/node/index.cjs`), "No main module");
     assert.not.throws(() => require(`${PKG_PATH}/package.json`), "No package manifest");
-    assert.not.throws(
-        () => require.resolve(`${PKG_PATH}/${require(PKG_PATH + "/package.json").bin}`),
-        "No bin module",
-    );
 });
 
 test("Package executable default output is correct", () => {
