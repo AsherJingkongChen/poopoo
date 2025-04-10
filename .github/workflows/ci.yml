@@ -98,10 +98,18 @@ jobs:
             - name: Package GitHub Release Assets
               run: |
                   for dir in dist/*; do
-                    [[ "$dir" == "dist/common" ]] && continue
-                    target=$(basename "$dir");
+                    TARGET=$(basename "$dir");
+                    [[ "$TARGET" == "common" ]] && continue
+                    ASSET="poodio-$TARGET.tgz"
                     cd "$dir/bin/"
-                    tar -czf "poodio-$target.tgz" *
+                    if tar -czf "$ASSET" poodio*; then
+                      FILE_COUNT=$(tar -tzf "$ASSET" | wc -l)
+                      ASSET_SIZE=$(du -h "$ASSET" | cut -f1)
+                      echo "Packaged $ASSET ($FILE_COUNT files compressed to $ASSET_SIZE)"
+                    else
+                      echo "Failed to package $ASSET" >&2
+                      exit 1
+                    fi
                     cd - > /dev/null
                   done
             - name: Publish to github.com
@@ -114,12 +122,12 @@ jobs:
               run: |
                   npm set -L project //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
                   for pkg in dist/*; do
-                    npm publish --access public --provenance "./$pkg/npm/"
+                    npm publish --dry-run --access public --provenance "./$pkg/npm/"
                   done
                   npm set -L project //registry.npmjs.org/:_authToken
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
             - name: Publish to crates.io
-              run: cargo publish --locked --package poodio --no-verify
+              run: cargo publish --dry-run --locked --package poodio --no-verify
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.POODIO_CRATE_TOKEN }}
