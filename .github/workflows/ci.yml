@@ -103,27 +103,33 @@ jobs:
             id-token: write
         steps:
             - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  fetch-tags: true
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
             - name: Publish to github.com (Packaging)
               run: |
                   for dir in dist/*; do
-                    TARGET=$(basename "$dir")
+                    TARGET="$(basename "$dir")"
                     [[ "$TARGET" == "common" ]] && continue
                     ASSET="poodio-$TARGET.tgz"
                     cd "$dir/bin/"
-                    if tar -czf "$ASSET" poodio*; then
-                      FILE_COUNT=$(tar -tzf "$ASSET" | wc -l)
-                      ASSET_SIZE=$(du -h "$ASSET" | cut -f1)
-                      echo "Packaged $ASSET ($FILE_COUNT files compressed to $ASSET_SIZE)"
-                    else
-                      echo "Failed to package $ASSET" >&2
-                      exit 1
-                    fi
+                    echo "Packaging $ASSET ..."
+                    tar -vczf "$ASSET" poodio*
                     cd - > /dev/null
                   done
-                  echo "LATEST_TAG=$(git describe --abbrev=0 --match 'poodio@*' --tags)" >> $GITHUB_ENV
+            - name: Publish to github.com (Generating Release Notes)
+              id: github-release-notes
+              run: |
+                  LAST_TAG="$(git describe --tags --abbrev=0 HEAD~)"
+                  HEAD_TAG="${{ github.ref_name }}"
+                  CHANGELOG="${{ github.server_url }}/${{ github.repository }}/compare/$LAST_TAG...$HEAD_TAG"
+                  CONTRIBUTORS="$(git log --pretty=format:'  + @%an' "$LAST_TAG".."$HEAD_TAG" | sort -u)"
+
+                  echo "::set-output name=changelog::$CHANGELOG"
+                  echo "::set-output name=contributors::$CONTRIBUTORS"
             # - name: Publish to github.com (Attestation)
             #   uses: actions/attest-build-provenance@v2
             #   id: attest
@@ -133,11 +139,13 @@ jobs:
             - name: Publish to github.com
               uses: softprops/action-gh-release@v2
               with:
-                  append_body: true
                   body: |
-                      - [**Build Attestation**](steps.attest.outputs.attestation-url)
+                      - [**Changelog**](${{ steps.github-release-notes.outputs.changelog }})
+                      - [**Attestation**]({{ steps.attest.outputs.attestation-url }})
+                      - [**Installation**](https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#install)
+                      - **Contributors**
+                      ${{ steps.github-release-notes.outputs.contributors }}
                   files: dist/*/bin/*.tgz
-                  generate_release_notes: true
 
             - name: Publish to npmjs.com
               run: |
