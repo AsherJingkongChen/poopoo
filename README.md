@@ -4,4 +4,4 @@
 
 ## [**`poodio`**](./poodio/README.md)
 
-💩 💨 Fart poo poo audio 💨 💩
+💩 💨 Farts poo poo audio 💨 💩

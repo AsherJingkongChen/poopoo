@@ -1,6 +1,6 @@
 # What does _**`poodio`**_ do?
 
-💩 💨 Fart poo poo audio 💨 💩
+💩 💨 Farts poo poo audio 💨 💩
 
 [![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=NPMJS&logo=npm&logoColor=%23c33&labelColor=%23333&color=%23c33)](https://www.npmjs.com/package/poodio)
 [![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=CRATES&logo=docs.rs&logoColor=%23fc3&labelColor=%23333&color=%23fc3)](https://docs.rs/poodio)

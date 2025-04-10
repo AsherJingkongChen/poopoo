@@ -1,11 +1,11 @@
 {
     "author": "AsherJingkongChen",
     "bin": "src/node/poodio.cjs",
-    "description": "💩Fart poo poo audio💩",
+    "description": "💩Farts poo poo audio💩",
     "files": [
         "src/node/"
     ],
-    "homepage": "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio",
+    "homepage": "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#readme",
     "keywords": [
         "agent",
         "ai",

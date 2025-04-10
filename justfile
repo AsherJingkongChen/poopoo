@@ -1,7 +1,7 @@
 mod poodio
 
 export NPM_CONFIG_PROGRESS := "false"
-export RUST_BACKTRACE := "1"
+export RUST_BACKTRACE := "full"
 
 audit:
     cargo audit -D warnings

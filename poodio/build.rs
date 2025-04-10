@@ -1,8 +1,8 @@
 use color_eyre::eyre::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::{
-    from_reader as read_json, from_value as from_json, ser::PrettyFormatter,
-    to_value as into_json, Serializer, Value as Json,
+    from_reader as read_json, from_value as from_json, ser::PrettyFormatter, to_value as into_json,
+    Serializer, Value as Json,
 };
 use std::{
     fs::{self, File},
@@ -20,9 +20,8 @@ fn main() -> Result<()> {
 
 fn build_npm_pkg() -> Result<()> {
     use package_json::{
-        PackageBin as Bin, PackageJson, PackagePeople as People,
-        PackageRepository as Repository, PackageRepositoryRecord as RepositoryRecord,
-        PACKAGE_JSON_FILENAME,
+        PackageBin as Bin, PackageJson, PackagePeople as People, PackageRepository as Repository,
+        PackageRepositoryRecord as RepositoryRecord, PACKAGE_JSON_FILENAME,
     };
 
     if std::env::var("DOCS_RS").is_ok() {
@@ -34,14 +33,12 @@ fn build_npm_pkg() -> Result<()> {
 
     println!("cargo:rerun-if-changed=package.json");
 
-    let npm_pkg_file_path =
-        Path::new(env!("CARGO_MANIFEST_DIR")).join(PACKAGE_JSON_FILENAME);
+    let npm_pkg_file_path = Path::new(env!("CARGO_MANIFEST_DIR")).join(PACKAGE_JSON_FILENAME);
     let mut npm_pkg: PackageJson = File::create_new(&npm_pkg_file_path)
         .map(|_| Default::default())
         .or_else(|_| {
-            read_json(File::open(&npm_pkg_file_path)?).or_else(|_| {
-                fs::remove_file(&npm_pkg_file_path).map(|_| Default::default())
-            })
+            read_json(File::open(&npm_pkg_file_path)?)
+                .or_else(|_| fs::remove_file(&npm_pkg_file_path).map(|_| Default::default()))
         })?;
 
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
