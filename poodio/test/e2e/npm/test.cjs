@@ -13,17 +13,27 @@ test("Package modules can be required or resolved", () => {
     assert.not.throws(() => require(`${PKG_PATH}/package.json`), "No package manifest");
 });
 
-test("Package executable default output is correct", () => {
-    const output = require("node:child_process").execFileSync(
-        require.resolve(`${PKG_PATH}/${require(PKG_PATH + "/package.json").bin}`),
-        { encoding: "utf8", windowsHide: true },
-    );
-    assert.is(output, "Greetings from poodio!\n");
+test("Package executable version is correct", () => {
+    const output = require("node:child_process")
+        .execFileSync(
+            require.resolve(`${PKG_PATH}/${require(PKG_PATH + "/package.json").bin}`),
+            ["--version"],
+            {
+                encoding: "utf8",
+                windowsHide: true,
+            },
+        )
+        .trimEnd();
+    assert.is(output, answerVersion());
 });
 
-test("Function 'greeting' default output is correct", () => {
-    const output = require(PKG_PATH).greeting();
-    assert.is(output, "Greetings from poodio!");
+test("Function 'version()' is correct", () => {
+    const output = require(PKG_PATH).version();
+    assert.is(output, answerVersion());
 });
+
+function answerVersion() {
+    return `poodio@${require(`${PKG_PATH}/package.json`).version}`;
+}
 
 test.run();

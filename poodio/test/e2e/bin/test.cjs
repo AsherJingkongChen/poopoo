@@ -19,12 +19,18 @@ test("Executable is available", () => {
     );
 });
 
-test("Executable default output is correct", () => {
-    const output = require("node:child_process").execFileSync(BIN_PATH, {
-        encoding: "utf8",
-        windowsHide: true,
-    });
-    assert.is(output, "Greetings from poodio!\n");
+test("Executable version is correct", () => {
+    const output = require("node:child_process")
+        .execFileSync(BIN_PATH, ["--version"], {
+            encoding: "utf8",
+            windowsHide: true,
+        })
+        .trimEnd();
+    assert.is(output, answerVersion());
 });
+
+function answerVersion() {
+    return `poodio@${require("../../../dist/npm/package.json").version}`;
+}
 
 test.run();

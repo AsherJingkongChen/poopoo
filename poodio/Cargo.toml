@@ -9,6 +9,7 @@ serde_json.workspace = true
 [dependencies]
 clap.features = ["default", "derive"]
 clap.workspace = true
+color-eyre.features = ["track-caller"]
 color-eyre.workspace = true
 cpal.workspace = true
 log.workspace = true
@@ -16,7 +17,8 @@ napi-derive.features = ["type-def"]
 napi-derive.workspace = true
 napi.features = ["dyn-symbols"]
 napi.workspace = true
-pretty_env_logger.workspace = true
+simple_logger.features = ["colors", "stderr"]
+simple_logger.workspace = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]

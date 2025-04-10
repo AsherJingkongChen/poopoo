@@ -1,58 +1,42 @@
 #![doc = include_str!("../../README.md")]
 #![deny(missing_docs)]
 
-pub use clap::{builder::styling, Parser};
+pub use clap::Parser;
 pub use color_eyre::Result;
 
-/// After help message.
-pub const AFTER_HELP: &str = "See 'https://docs.rs/poodio' for more information.";
-/// Help message template.
-pub const HELP_TEMPLATE: &str = "{about}\n\n{usage-heading} {usage}\n\n{all-args}{after-help}";
-/// Styles for the command line interface.
-pub const STYLES: styling::Styles = styling::Styles::styled()
-    .header(styling::AnsiColor::Green.on_default().bold())
-    .usage(styling::AnsiColor::Green.on_default().bold())
-    .literal(styling::AnsiColor::Cyan.on_default().bold())
-    .placeholder(styling::AnsiColor::Cyan.on_default())
-    .error(styling::AnsiColor::Red.on_default().bold())
-    .invalid(styling::AnsiColor::Yellow.on_default().bold())
-    .valid(styling::AnsiColor::Cyan.on_default().bold());
+use clap::{
+    builder::styling::{AnsiColor, Styles},
+    ArgAction,
+};
+use color_eyre::owo_colors::OwoColorize;
+use napi_derive::napi;
 
 #[derive(Clone, Debug, Parser, PartialEq)]
 #[command(
-    after_help = AFTER_HELP,
+    after_help = format!("See '{}' for more information.", "https://docs.rs/poodio".cyan()),
+    arg_required_else_help = true,
     disable_version_flag = true,
-    help_template = HELP_TEMPLATE,
-    styles = STYLES,
-    version = env!("CARGO_PKG_VERSION"),
+    help_template = "{about}\n\n{usage-heading} {usage}\n\n{all-args}{after-help}",
+    styles = Styles::styled()
+        .error(AnsiColor::Red.on_default().bold())
+        .header(AnsiColor::Green.on_default().bold())
+        .invalid(AnsiColor::Yellow.on_default().bold())
+        .literal(AnsiColor::Cyan.on_default().bold())
+        .placeholder(AnsiColor::Cyan.on_default())
+        .usage(AnsiColor::Green.on_default().bold())
+        .valid(AnsiColor::Cyan.on_default().bold()),
+    version,
+    verbatim_doc_comment,
 )]
 /// Poodio farts poo poo audio
 pub struct Arguments {
     /// Print version
-    #[arg(action = clap::ArgAction::Version, global = true, long, short)]
+    #[arg(action = ArgAction::Version, global = true, long, short)]
     pub version: (),
 }
 
-/// Initializes the program
-pub fn init() -> Result<()> {
-    color_eyre::install()?;
-    std::env::set_var("RUST_BACKTRACE", "full");
-    pretty_env_logger::formatted_timed_builder()
-        .parse_env("LOG")
-        .try_init()?;
-    Ok(())
+/// Program version tag
+#[napi]
+pub fn version() -> String {
+    format!("poodio@{}", env!("CARGO_PKG_VERSION"))
 }
-
-// use napi_derive::napi;
-
-// /// A simple greeting message.
-// #[napi]
-// pub fn greeting() -> &'static str {
-//     "Greetings from poodio!"
-// }
-
-// /// Program entry point
-// #[napi]
-// pub fn main() {
-//     println!("{}", greeting());
-// }
