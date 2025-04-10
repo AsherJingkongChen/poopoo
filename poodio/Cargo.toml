@@ -35,7 +35,7 @@ name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version = "1.80"
-version = "0.0.11"
+version = "0.0.12"
 
 [package.metadata.binstall]
 pkg-fmt = "tgz"
