@@ -32,7 +32,7 @@ const { name } = require("smol-toml").parse(
 ).package;
 const npmTarget = CARGO_TO_NPM_TARGET[cargoTarget];
 if (cargoTarget && !npmTarget) {
-    throw new TypeError(`No available Npm target for Cargo target '${cargoTarget}'`);
+    throw new TypeError(`Invalid cargo target: '${cargoTarget}'`);
 }
 const binName = cargoTarget && `${name}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 

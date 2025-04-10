@@ -71,13 +71,13 @@ jobs:
                   esac
 
                   if [[ -n "$TARGET" ]]; then
-                    echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> $GITHUB_ENV
-                    echo "PKG_CONFIG_SYSROOT_DIR=/" >> $GITHUB_ENV
+                    echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> "$GITHUB_ENV"
+                    echo "PKG_CONFIG_SYSROOT_DIR=/" >> "$GITHUB_ENV"
                   fi
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
-            - run: just prepare poodio::build ${{ matrix.target }}
+            - run: just prepare poodio::build "${{ matrix.target }}"
             - run: just poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
@@ -88,6 +88,7 @@ jobs:
         needs: build-poodio
         runs-on: macos-latest
         permissions:
+            attestations: write
             contents: write
             id-token: write
         steps:
@@ -95,16 +96,16 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
-            - name: Package GitHub Release Assets
+            - name: Package to GitHub Release Assets
               run: |
                   for dir in dist/*; do
-                    TARGET=$(basename "$dir");
+                    TARGET="$(basename "$dir")"
                     [[ "$TARGET" == "common" ]] && continue
                     ASSET="poodio-$TARGET.tgz"
                     cd "$dir/bin/"
                     if tar -czf "$ASSET" poodio*; then
-                      FILE_COUNT=$(tar -tzf "$ASSET" | wc -l)
-                      ASSET_SIZE=$(du -h "$ASSET" | cut -f1)
+                      FILE_COUNT="$(tar -tzf "$ASSET" | wc -l)"
+                      ASSET_SIZE="$(du -h "$ASSET" | cut -f1)"
                       echo "Packaged $ASSET ($FILE_COUNT files compressed to $ASSET_SIZE)"
                     else
                       echo "Failed to package $ASSET" >&2
@@ -120,7 +121,7 @@ jobs:
                   generate_release_notes: true
             - name: Publish to npmjs.com
               run: |
-                  npm set -L project //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+                  npm set -L project //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
                   for pkg in dist/*; do
                     npm publish --dry-run --access public --provenance "./$pkg/npm/"
                   done
