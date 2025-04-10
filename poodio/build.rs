@@ -67,6 +67,9 @@ fn build_npm_pkg() -> Result<()> {
         npm_pkg_files.push("src/node/".into());
     }
 
+    let npm_pkg_keywords = npm_pkg.keywords.get_or_insert(Default::default());
+    npm_pkg_keywords.sort_unstable();
+
     let mut npm_pkg_fp = File::create(&npm_pkg_file_path)?;
     into_sorted_json(npm_pkg)?.serialize(&mut Serializer::with_formatter(
         &mut npm_pkg_fp,

@@ -24,10 +24,12 @@ path = "src/rust/bin.rs"
 
 [package]
 authors.workspace = true
+categories = ["command-line-utilities", "multimedia::audio", "simulation"]
 description = "💩Fart poo poo audio💩"
 edition.workspace = true
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio"
 include = ["/build.rs", "/src/rust", "/LICENSE.txt"]
+keywords = ["api", "audio", "cli", "llm", "server"]
 license.workspace = true
 name = "poodio"
 readme = "README.md"
