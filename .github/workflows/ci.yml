@@ -96,7 +96,7 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
-            - name: Package to GitHub Release Assets
+            - name: Publish to github.com (Packaging)
               run: |
                   for dir in dist/*; do
                     TARGET="$(basename "$dir")"
@@ -119,6 +119,11 @@ jobs:
                   append_body: false
                   files: dist/*/bin/*.tgz
                   generate_release_notes: true
+            - name: Publish to github.com (Attestation)
+              uses: actions/attest-build-provenance@v2
+              with:
+                  subject-path: dist/*/bin/*.tgz
+
             - name: Publish to npmjs.com
               run: |
                   npm set -L project //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
@@ -128,6 +133,7 @@ jobs:
                   npm set -L project //registry.npmjs.org/:_authToken
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
+
             - name: Publish to crates.io
               run: cargo publish --dry-run --locked --package poodio --no-verify
               env:
