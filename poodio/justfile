@@ -1,6 +1,7 @@
 build TARGET="":
     node build.js --target {{ TARGET }}
 
-test-e2e:
-    npx @poodio/test-e2e-bin
-    npx @poodio/test-e2e-npm
+test SUBJECTS:
+    for SUBJECT in {{ SUBJECTS }}; do \
+        npx "@poodio/test-$SUBJECT"; \
+    done
