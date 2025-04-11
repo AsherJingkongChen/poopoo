@@ -166,11 +166,11 @@ jobs:
                   files: dist/*/bin/*.tgz
             - name: Publish to npmjs.com
               run: |
-                  npm set -L project //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
+                  npm set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
                   for pkg in dist/*; do
                     npm publish --access public --provenance "./$pkg/npm/"
                   done
-                  npm set -L project //registry.npmjs.org/:_authToken
+                  npm set //registry.npmjs.org/:_authToken
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
             - name: Publish to crates.io

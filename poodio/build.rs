@@ -12,6 +12,8 @@ use std::{
 
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=build.rs");
+
+    std::env::set_var("RUST_BACKTRACE", "full");
     color_eyre::install()?;
     napi_build::setup();
     build_npm_pkg()?;
@@ -44,7 +46,12 @@ fn build_npm_pkg() -> Result<()> {
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
     npm_pkg.bin = Some(Bin::Literal(format!("src/node/{NPM_PKG_NAME}.cjs")));
     npm_pkg.description = option_env!("CARGO_PKG_DESCRIPTION").map(Into::into);
+    npm_pkg.files = Some(vec!["src/node/".into()]);
     npm_pkg.homepage = option_env!("CARGO_PKG_HOMEPAGE").map(Into::into);
+    npm_pkg
+        .keywords
+        .get_or_insert(Default::default())
+        .sort_unstable();
     npm_pkg.license = option_env!("CARGO_PKG_LICENSE").map(Into::into);
     npm_pkg.main = "src/node/index.cjs".to_string();
     npm_pkg.name = NPM_PKG_NAME.into();
@@ -58,14 +65,6 @@ fn build_npm_pkg() -> Result<()> {
     npm_pkg.r#type = "commonjs".into();
     npm_pkg.types = Some("src/node/index.d.ts".to_string());
     npm_pkg.version = NPM_PKG_VERSION.into();
-
-    let npm_pkg_files = npm_pkg.files.get_or_insert(Default::default());
-    if !npm_pkg_files.contains(&"src/node/".into()) {
-        npm_pkg_files.push("src/node/".into());
-    }
-
-    let npm_pkg_keywords = npm_pkg.keywords.get_or_insert(Default::default());
-    npm_pkg_keywords.sort_unstable();
 
     let mut npm_pkg_fp = File::create(&npm_pkg_file_path)?;
     into_sorted_json(npm_pkg)?.serialize(&mut Serializer::with_formatter(

@@ -1,8 +1,5 @@
 mod poodio
 
-export NPM_CONFIG_PROGRESS := "false"
-export RUST_BACKTRACE := "full"
-
 audit:
     cargo audit -D warnings
     cargo outdated --exit-code 1 --workspace
