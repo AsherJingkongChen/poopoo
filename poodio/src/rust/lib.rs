@@ -4,10 +4,7 @@
 pub use clap::Parser;
 pub use color_eyre::Result;
 
-use clap::{
-    builder::styling::{AnsiColor, Styles},
-    ArgAction,
-};
+use clap::builder::styling::{AnsiColor, Styles};
 use color_eyre::owo_colors::OwoColorize;
 use napi_derive::napi;
 
@@ -15,8 +12,8 @@ use napi_derive::napi;
 #[command(
     after_help = format!("See '{}' for more information.", "https://docs.rs/poodio".cyan()),
     arg_required_else_help = true,
-    disable_version_flag = true,
     help_template = "{about}\n\n{usage-heading} {usage}\n\n{all-args}{after-help}",
+    propagate_version = true,
     styles = Styles::styled()
         .error(AnsiColor::Red.on_default().bold())
         .header(AnsiColor::Green.on_default().bold())
@@ -29,11 +26,7 @@ use napi_derive::napi;
     verbatim_doc_comment,
 )]
 /// Poodio farts poo poo audio
-pub struct Arguments {
-    /// Print version
-    #[arg(action = ArgAction::Version, global = true, long, short)]
-    pub version: (),
-}
+pub struct Arguments {}
 
 /// Program version tag
 #[napi]

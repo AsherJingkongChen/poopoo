@@ -33,7 +33,7 @@
 | 💩 Action 💩             | 💩 Command 💩                                            |
 | ------------------------ | -------------------------------------------------------- |
 | 💩 Shows help info 💩    | <ul><li>`poodio -h`</li><li>`poodio --help`</li></ul>    |
-| 💩 Shows version info 💩 | <ul><li>`poodio -v`</li><li>`poodio --version`</li></ul> |
+| 💩 Shows version info 💩 | <ul><li>`poodio -V`</li><li>`poodio --version`</li></ul> |
 
 ## Integrate
 

@@ -33,39 +33,39 @@ jobs:
         strategy:
             matrix:
                 include:
-                    # - os: macos-15
-                    #   target: common
-                    #   test:
-                    # - os: macos-15
-                    #   target: aarch64-apple-darwin
-                    #   test: e2e
-                    # - os: macos-13
-                    #   target: x86_64-apple-darwin
-                    #   test: e2e
-                    # - os: ubuntu-24.04-arm
-                    #   target: aarch64-unknown-linux-gnu
-                    #   test: e2e
+                    - os: macos-15
+                      target: common
+                      test:
+                    - os: macos-15
+                      target: aarch64-apple-darwin
+                      test: e2e
+                    - os: macos-13
+                      target: x86_64-apple-darwin
+                      test: e2e
+                    - os: ubuntu-24.04-arm
+                      target: aarch64-unknown-linux-gnu
+                      test: e2e
                     - os: ubuntu-24.04-arm
                       target: aarch64-unknown-linux-musl
-                      test: e2e
-                    # - os: ubuntu-24.04
-                    #   target: i686-unknown-linux-gnu
-                    #   test:
+                      test:
+                    - os: ubuntu-24.04
+                      target: i686-unknown-linux-gnu
+                      test:
                     - os: ubuntu-24.04
                       target: x86_64-unknown-linux-gnu
                       test: e2e
                     - os: ubuntu-24.04
                       target: x86_64-unknown-linux-musl
+                      test:
+                    - os: windows-2025
+                      target: aarch64-pc-windows-msvc
+                      test:
+                    - os: windows-2025
+                      target: i686-pc-windows-msvc
                       test: e2e
-                    # - os: windows-2025
-                    #   target: aarch64-pc-windows-msvc
-                    #   test:
-                    # - os: windows-2025
-                    #   target: i686-pc-windows-msvc
-                    #   test:
-                    # - os: windows-2025
-                    #   target: x86_64-pc-windows-msvc
-                    #   test: e2e
+                    - os: windows-2025
+                      target: x86_64-pc-windows-msvc
+                      test: e2e
         steps:
             - uses: actions/checkout@v4
             - uses: taiki-e/setup-cross-toolchain-action@v1
@@ -104,14 +104,6 @@ jobs:
               with:
                   tool: just
             - run: just prepare poodio::build "${{ matrix.target }}"
-            - name: Verify binary linkage
-              if: startsWith(matrix.os, 'ubuntu-')
-              run: |
-                  echo "--- File Info ---"
-                  file poodio/dist/bin/poodio
-                  file poodio/dist/npm/src/node/index.node
-                  echo "--- LDD Info (expect 'not a dynamic executable' or error) ---"
-                  ldd poodio/dist/bin/poodio || true
             - run: just poodio::test-e2e
               if: contains(matrix.test, 'e2e')
             - uses: actions/upload-artifact@v4

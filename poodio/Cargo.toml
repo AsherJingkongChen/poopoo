@@ -32,7 +32,7 @@ path = "src/rust/bin.rs"
 [package]
 authors.workspace = true
 categories = ["command-line-utilities", "multimedia::audio", "simulation"]
-description = "💩Farts poo poo audio💩"
+description = "💩 💨 Farts poo poo audio 💨 💩"
 edition.workspace = true
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#readme"
 include = ["/build.rs", "/src/rust", "/LICENSE.txt"]
@@ -42,7 +42,7 @@ name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version = "1.80"
-version = "0.0.12"
+version = "0.0.13"
 
 [package.metadata.binstall]
 pkg-fmt = "tgz"

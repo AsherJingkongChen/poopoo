@@ -1,7 +1,7 @@
 {
     "author": "AsherJingkongChen",
     "bin": "src/node/poodio.cjs",
-    "description": "💩Farts poo poo audio💩",
+    "description": "💩 💨 Farts poo poo audio 💨 💩",
     "files": [
         "src/node/"
     ],
@@ -47,5 +47,5 @@
     },
     "type": "commonjs",
     "types": "src/node/index.d.ts",
-    "version": "0.0.12"
+    "version": "0.0.13"
 }
