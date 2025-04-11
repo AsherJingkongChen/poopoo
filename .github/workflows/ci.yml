@@ -94,7 +94,7 @@ jobs:
 
                   if [[ "$TARGET" == *"-musl" ]]; then
                     sudo apt-get install -y --no-install-recommends \
-                      musl-dev
+                      musl-dev musl-tools
                   fi
 
                   ls -l /usr/lib
