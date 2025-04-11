@@ -75,19 +75,24 @@ jobs:
             - name: Configure Cross-compilation for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu-')
               run: |
-                  IS_MUSL=""
                   TARGET=""
                   case "${{ matrix.target }}" in
                     i686-*-gnu)
                       TARGET="i686-linux-gnu"
                     ;;
-                    *-musl)
-                      IS_MUSL="true"
+                    aarch64-*-musl)
+                      TARGET="aarch64-linux-musl"
+                    ;;
+                    x86_64-*-musl)
+                      TARGET="x86_64-linux-musl"
+                    ;;
                   esac
 
                   sudo apt-get update
                   sudo apt-get install -y --no-install-recommends \
                     libasound2-dev
+
+                  ls -l /usr/lib
 
                   if [[ -n "$TARGET" ]]; then
                     echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> $GITHUB_ENV
