@@ -97,3 +97,12 @@ fs.writeFileSync(
 );
 fs.copyFileSync("README.md", "dist/npm/README.md");
 fs.copyFileSync("LICENSE.txt", "dist/npm/LICENSE.txt");
+
+console.log("Built artifacts:");
+fs.readdirSync("dist", { recursive: true, withFileTypes: true }).forEach((entry) => {
+    if (entry.isDirectory()) return;
+    const prefix = `poodio/${entry.parentPath}`;
+    const suffix = entry.isDirectory() ? "/" : "";
+    const path = `${prefix}/${entry.name}${suffix}`;
+    console.log("-", path);
+});

@@ -8,9 +8,9 @@ const assert = require("uvu/assert");
 const PKG_PATH = "../../../dist/npm";
 
 test("Package modules can be required or resolved", () => {
-    assert.not.throws(() => require(PKG_PATH), "No default module");
-    assert.not.throws(() => require(`${PKG_PATH}/src/node/index.cjs`), "No main module");
-    assert.not.throws(() => require(`${PKG_PATH}/package.json`), "No package manifest");
+    assert.not.throws(() => require(PKG_PATH));
+    assert.not.throws(() => require(`${PKG_PATH}/src/node/index.cjs`));
+    assert.not.throws(() => require(`${PKG_PATH}/package.json`));
 });
 
 test("Package executable version is correct", () => {
