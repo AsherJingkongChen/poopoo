@@ -6,7 +6,7 @@ const { resolve } = require("node:path");
 const { test } = require("uvu");
 const assert = require("uvu/assert");
 
-const PKG_PATH = resolve("../../../dist/npm");
+const PKG_PATH = resolve("../../../dist/npm").replaceAll("\\", "/");
 
 test("Package modules can be required or resolved", () => {
     assert.not.throws(() => require(PKG_PATH), `No module: '${PKG_PATH}'`);
