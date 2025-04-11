@@ -89,10 +89,6 @@ jobs:
                   sudo apt-get install -y --no-install-recommends \
                     libasound2-dev
 
-                  if [[ -n "$IS_MUSL" ]]; then
-                    sudo apt-get install -y --no-install-recommends \
-                      musl-dev musl-tools
-                  fi
                   if [[ -n "$TARGET" ]]; then
                     echo "PKG_CONFIG_PATH=/usr/lib/$TARGET/pkgconfig" >> $GITHUB_ENV
                     echo "PKG_CONFIG_SYSROOT_DIR=/usr/lib/$TARGET" >> $GITHUB_ENV
