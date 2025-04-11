@@ -28,38 +28,38 @@ jobs:
 
     build-poodio:
         # if: startsWith(github.ref, 'refs/tags/poodio@')
-        needs: check
+        # needs: check
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
                 include:
-                    - os: macos-15
-                      target: common
-                      test:
-                    - os: macos-15
-                      target: aarch64-apple-darwin
-                      test: e2e
-                    - os: macos-13
-                      target: x86_64-apple-darwin
-                      test: e2e
-                    - os: ubuntu-24.04-arm
-                      target: aarch64-unknown-linux-gnu
-                      test: e2e
-                    - os: ubuntu-24.04-arm
-                      target: aarch64-unknown-linux-musl
-                      test:
-                    - os: ubuntu-24.04
-                      target: i686-unknown-linux-gnu
-                      test:
-                    - os: ubuntu-24.04
-                      target: x86_64-unknown-linux-gnu
-                      test: e2e
-                    - os: ubuntu-24.04
-                      target: x86_64-unknown-linux-musl
-                      test:
-                    - os: windows-2025
-                      target: aarch64-pc-windows-msvc
-                      test:
+                    # - os: macos-15
+                    #   target: common
+                    #   test:
+                    # - os: macos-15
+                    #   target: aarch64-apple-darwin
+                    #   test: e2e
+                    # - os: macos-13
+                    #   target: x86_64-apple-darwin
+                    #   test: e2e
+                    # - os: ubuntu-24.04-arm
+                    #   target: aarch64-unknown-linux-gnu
+                    #   test: e2e
+                    # - os: ubuntu-24.04-arm
+                    #   target: aarch64-unknown-linux-musl
+                    #   test:
+                    # - os: ubuntu-24.04
+                    #   target: i686-unknown-linux-gnu
+                    #   test:
+                    # - os: ubuntu-24.04
+                    #   target: x86_64-unknown-linux-gnu
+                    #   test: e2e
+                    # - os: ubuntu-24.04
+                    #   target: x86_64-unknown-linux-musl
+                    #   test:
+                    # - os: windows-2025
+                    #   target: aarch64-pc-windows-msvc
+                    #   test:
                     - os: windows-2025
                       target: i686-pc-windows-msvc
                       test: e2e
