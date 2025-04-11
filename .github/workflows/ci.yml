@@ -104,6 +104,13 @@ jobs:
               with:
                   tool: just
             - run: just prepare poodio::build "${{ matrix.target }}"
+            - name: Verify binary linkage (Important!)
+              if: startsWith(matrix.os, 'ubuntu-')
+              run: |
+                  echo "--- File Info ---"
+                  file poodio/dist/bin/poodio
+                  echo "--- LDD Info (expect 'not a dynamic executable' or error) ---"
+                  ldd poodio/dist/bin/poodio || true
             - run: just poodio::test-e2e
               if: contains(matrix.test, 'e2e')
             - uses: actions/upload-artifact@v4
