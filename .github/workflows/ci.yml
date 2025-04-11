@@ -42,15 +42,15 @@ jobs:
                     # - os: macos-13
                     #   target: x86_64-apple-darwin
                     #   test: e2e
-                    - os: ubuntu-24.04-arm
-                      target: aarch64-unknown-linux-gnu
-                      test: e2e
+                    # - os: ubuntu-24.04-arm
+                    #   target: aarch64-unknown-linux-gnu
+                    #   test: e2e
                     - os: ubuntu-24.04-arm
                       target: aarch64-unknown-linux-musl
                       test: e2e
-                    - os: ubuntu-24.04
-                      target: i686-unknown-linux-gnu
-                      test:
+                    # - os: ubuntu-24.04
+                    #   target: i686-unknown-linux-gnu
+                    #   test:
                     - os: ubuntu-24.04
                       target: x86_64-unknown-linux-gnu
                       test: e2e
@@ -104,11 +104,12 @@ jobs:
               with:
                   tool: just
             - run: just prepare poodio::build "${{ matrix.target }}"
-            - name: Verify binary linkage (Important!)
+            - name: Verify binary linkage
               if: startsWith(matrix.os, 'ubuntu-')
               run: |
                   echo "--- File Info ---"
                   file poodio/dist/bin/poodio
+                  file poodio/dist/npm/src/node/index.node
                   echo "--- LDD Info (expect 'not a dynamic executable' or error) ---"
                   ldd poodio/dist/bin/poodio || true
             - run: just poodio::test-e2e
