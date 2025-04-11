@@ -103,6 +103,6 @@ fs.readdirSync("dist", { recursive: true, withFileTypes: true }).forEach((entry)
     if (entry.isDirectory()) return;
     const prefix = `poodio/${entry.parentPath}`;
     const suffix = entry.isDirectory() ? "/" : "";
-    const path = `${prefix}/${entry.name}${suffix}`;
+    const path = `${prefix}/${entry.name}${suffix}`.replaceAll("\\", "/");
     console.log("-", path);
 });

@@ -17,7 +17,7 @@ test("Package modules can be required or resolved", () => {
 test("Package executable version is correct", () => {
     const output = require("node:child_process")
         .execFileSync(
-            require.resolve(`${PKG_PATH}${require(`${PKG_PATH}/package.json`).bin}`),
+            require.resolve(`${PKG_PATH}/${require(`${PKG_PATH}/package.json`).bin}`),
             ["--version"],
             { encoding: "utf8", windowsHide: true },
         )
