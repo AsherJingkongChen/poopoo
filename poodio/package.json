@@ -4,9 +4,6 @@
         "poodio": "src/node/index.cjs"
     },
     "description": "💩 💨 Farts poo poo audio 💨 💩",
-    "files": [
-        "src/node/"
-    ],
     "homepage": "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#readme",
     "keywords": [
         "agent",

@@ -49,7 +49,6 @@ fn build_npm_pkg() -> Result<()> {
         [(NPM_PKG_NAME.into(), NPM_PKG_ENTRY.into())].into(),
     ));
     npm_pkg.description = option_env!("CARGO_PKG_DESCRIPTION").map(Into::into);
-    npm_pkg.files = Some(vec!["src/node/".into()]);
     npm_pkg.homepage = option_env!("CARGO_PKG_HOMEPAGE").map(Into::into);
     npm_pkg
         .keywords
