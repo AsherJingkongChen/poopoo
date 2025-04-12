@@ -49,10 +49,10 @@ pub fn main<I: IntoIterator<Item = T>, T: Clone + Into<std::ffi::OsString>>(argv
     }()
     .unwrap_or_else(|e| {
         if anstream::AutoStream::auto(stderr().lock())
-            .write_all(format!("{e:?}\n").as_bytes())
+            .write_all(format!("Error: {e:?}\n").as_bytes())
             .is_err()
         {
-            log::error!(target: "poodio::main", "Failed to write error message to stderr");
+            log::error!(target: "poodio::main", "Failed to write error to stderr");
         }
         exit(1);
     });
@@ -80,17 +80,21 @@ fn init() -> Result<()> {
 
     if color_eyre::config::HookBuilder::blank()
         .display_env_section(false)
+        .panic_section(format!(
+            "Report the Crash: {}",
+            concat!(env!("CARGO_PKG_REPOSITORY"), "/issues/new").green()
+        ))
         .install()
         .is_err()
     {
-        log::error!(target: "poodio::init", "Failed to install color-eyre hooks");
+        log::error!(target: "poodio::init", "Failed to install error hooks");
     }
-
     simple_logger::SimpleLogger::new()
         .with_colors(true)
         .with_level(if cfg!(debug_assertions) { Info } else { Warn })
         .env()
         .init()?;
     log::info!(target: "poodio::init", "Hi");
+
     Ok(())
 }
