@@ -3,7 +3,6 @@
 process.chdir(__dirname);
 
 globalThis.fs = require("node:fs");
-globalThis.formatPkgName = require("./src/node/loader.cjs").formatPkgName;
 
 const CARGO_TO_NPM_TARGET = {
     "aarch64-apple-darwin": { cpu: ["arm64"], os: ["darwin"] },
@@ -17,14 +16,6 @@ const CARGO_TO_NPM_TARGET = {
     // "x86_64-unknown-linux-musl": { cpu: ["x64"], os: ["linux"], libc: ["musl"] },
     "x86_64-pc-windows-msvc": { cpu: ["x64"], os: ["win32"] },
 };
-const NPM_PKG_NAMES = Object.values(CARGO_TO_NPM_TARGET).map((t) =>
-    formatPkgName({
-        name: "poodio",
-        cpu: t.cpu[0],
-        os: t.os[0],
-        libc: t.libc?.[0],
-    }),
-);
 
 // Parse the arguments
 const args = require("minimist")(process.argv.slice(2));
@@ -36,7 +27,6 @@ const npmTarget = CARGO_TO_NPM_TARGET[cargoTarget];
 if (cargoTarget && !npmTarget) {
     throw new TypeError(`Invalid cargo target: '${cargoTarget}'`);
 }
-const binName = cargoTarget && `${name}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
 
 // Clean the artifacts
 fs.rmSync("dist/", { force: true, recursive: true });
@@ -57,17 +47,11 @@ require("node:child_process").execSync(buildArgs.join(" "), {
 // Write the artifacts
 const npmPkg = { ...require("./package.json") };
 if (cargoTarget) {
+    const binName = `${name}${npmTarget.os[0] === "win32" ? ".exe" : ""}`;
     const binPath = `../target/${cargoTarget}/release/${binName}`;
     fs.mkdirSync("dist/bin", { recursive: true });
     fs.copyFileSync(binPath, `dist/bin/${binName}`);
-    fs.copyFileSync(binPath, `dist/npm/src/node/${binName}`);
-    fs.writeFileSync(
-        `dist/npm/${npmPkg.main}`,
-        'module.exports = require("./index.node");\n',
-    );
 } else {
-    fs.copyFileSync("src/node/loader.cjs", "dist/npm/src/node/loader.cjs");
-    fs.copyFileSync(npmPkg.bin, `dist/npm/${npmPkg.bin}`);
     fs.copyFileSync(npmPkg.main, `dist/npm/${npmPkg.main}`);
     fs.unlinkSync("dist/npm/src/node/index.node");
 }
@@ -76,18 +60,17 @@ if (cargoTarget) {
 if (cargoTarget) {
     const { cpu, os, libc } = npmTarget;
     Object.assign(npmPkg, npmTarget, {
-        bin: `src/node/${binName}`,
-        name: formatPkgName({
-            name,
-            cpu: cpu[0],
-            os: os[0],
-            libc: libc?.[0],
-        }),
+        bin: undefined,
+        main: "src/node/index.node",
+        name: formatOdName(name, cpu[0], os[0], libc?.[0]),
     });
 } else {
     Object.assign(npmPkg, {
         optionalDependencies: Object.fromEntries(
-            NPM_PKG_NAMES.map((name) => [name, npmPkg.version]),
+            Object.values(CARGO_TO_NPM_TARGET).map((t) => [
+                formatOdName(name, t.cpu[0], t.os[0], t.libc?.[0]),
+                npmPkg.version,
+            ]),
         ),
     });
 }
@@ -101,8 +84,13 @@ fs.copyFileSync("LICENSE.txt", "dist/npm/LICENSE.txt");
 console.log("Built artifacts:");
 fs.readdirSync("dist", { recursive: true, withFileTypes: true }).forEach((entry) => {
     if (entry.isDirectory()) return;
-    const prefix = `poodio/${entry.parentPath}`;
+    const prefix = entry.parentPath;
     const suffix = entry.isDirectory() ? "/" : "";
     const path = `${prefix}/${entry.name}${suffix}`.replaceAll("\\", "/");
     console.log("-", path);
 });
+
+// Utilities
+function formatOdName(name, cpu, os, libc) {
+    return `@${name}/${name}-${cpu}-${os}-${libc || "unknown"}`;
+}

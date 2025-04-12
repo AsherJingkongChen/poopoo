@@ -1,0 +1,96 @@
+//! Command Line Interface (CLI) for [`poodio`](crate)
+
+pub use clap::Parser;
+
+use clap::builder::styling::{AnsiColor, Styles};
+use color_eyre::{owo_colors::OwoColorize, Result};
+use napi_derive::napi;
+use std::{
+    env,
+    io::{stderr, Write},
+    process::exit,
+};
+
+#[derive(Clone, Debug, Parser, PartialEq)]
+#[command(
+    after_help = format!("See '{}' for more information.", "https://docs.rs/poodio".cyan()),
+    arg_required_else_help = true,
+    help_template = "{about}\n\n{usage-heading} {usage}\n\n{all-args}{after-help}",
+    propagate_version = true,
+    styles = Styles::styled()
+        .error(AnsiColor::Red.on_default().bold())
+        .header(AnsiColor::Green.on_default().bold())
+        .invalid(AnsiColor::Yellow.on_default().bold())
+        .literal(AnsiColor::Cyan.on_default().bold())
+        .placeholder(AnsiColor::Cyan.on_default())
+        .usage(AnsiColor::Green.on_default().bold())
+        .valid(AnsiColor::Cyan.on_default().bold()),
+    version,
+    verbatim_doc_comment,
+)]
+/// Poodio farts poo poo audio
+pub struct Arguments {}
+
+/// Command Line Interface (CLI) entry point for [`poodio`](crate)
+pub fn main<I: IntoIterator<Item = T>, T: Clone + Into<std::ffi::OsString>>(argv: I) {
+    || -> Result<()> {
+        init()?;
+        let _args = match Arguments::try_parse_from(argv) {
+            Err(e) => {
+                match e.kind() {
+                    clap::error::ErrorKind::DisplayVersion => println!("{}", version()),
+                    _ => e.print()?,
+                };
+                exit(e.exit_code());
+            },
+            r => r,
+        };
+        Ok(())
+    }()
+    .unwrap_or_else(|e| {
+        if anstream::AutoStream::auto(stderr().lock())
+            .write_all(format!("{e:?}\n").as_bytes())
+            .is_err()
+        {
+            log::error!(target: "poodio::main", "Failed to write error message to stderr");
+        }
+        exit(1);
+    });
+}
+
+/// Command Line Interface (CLI) entry point for `poodio`
+#[napi(js_name = "main")]
+pub fn main_js(argv: Vec<String>) {
+    main(argv)
+}
+
+/// Version tag
+#[napi]
+pub fn version() -> String {
+    format!("poodio@{}", env!("CARGO_PKG_VERSION"))
+}
+
+fn init() -> Result<()> {
+    use log::LevelFilter::*;
+
+    std::env::set_var(
+        "RUST_BACKTRACE",
+        if cfg!(debug_assertions) { "full" } else { "0" },
+    );
+
+    if color_eyre::config::HookBuilder::blank()
+        .display_env_section(false)
+        .install()
+        .is_err()
+    {
+        log::error!(target: "poodio::init", "Failed to install color-eyre hooks");
+    }
+
+    simple_logger::SimpleLogger::new()
+        .with_colors(true)
+        .with_level(if cfg!(debug_assertions) { Info } else { Warn })
+        .env()
+        .init()?;
+    log::info!(target: "poodio::init", "Hi");
+    Ok(())
+}

@@ -7,6 +7,7 @@ serde.workspace = true
 serde_json.workspace = true
 
 [dependencies]
+anstream.workspace = true
 clap.features = ["default", "derive"]
 clap.workspace = true
 color-eyre.features = ["track-caller"]

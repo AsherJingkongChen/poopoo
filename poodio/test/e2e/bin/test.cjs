@@ -25,7 +25,7 @@ test("Executable version is correct", () => {
             encoding: "utf8",
             windowsHide: true,
         })
-        .trimEnd();
+        .slice(0, -1);
     assert.is(output, answerVersion());
 });
 

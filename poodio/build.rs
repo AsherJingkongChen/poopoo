@@ -32,6 +32,7 @@ fn build_npm_pkg() -> Result<()> {
 
     const NPM_PKG_NAME: &str = env!("CARGO_PKG_NAME");
     const NPM_PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
+    const NPM_PKG_ENTRY: &str = "src/node/index.cjs";
 
     println!("cargo:rerun-if-changed=package.json");
 
@@ -44,7 +45,9 @@ fn build_npm_pkg() -> Result<()> {
         })?;
 
     npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
-    npm_pkg.bin = Some(Bin::Literal(format!("src/node/{NPM_PKG_NAME}.cjs")));
+    npm_pkg.bin = Some(Bin::Record(
+        [(NPM_PKG_NAME.into(), NPM_PKG_ENTRY.into())].into(),
+    ));
     npm_pkg.description = option_env!("CARGO_PKG_DESCRIPTION").map(Into::into);
     npm_pkg.files = Some(vec!["src/node/".into()]);
     npm_pkg.homepage = option_env!("CARGO_PKG_HOMEPAGE").map(Into::into);
@@ -53,7 +56,7 @@ fn build_npm_pkg() -> Result<()> {
         .get_or_insert(Default::default())
         .sort_unstable();
     npm_pkg.license = option_env!("CARGO_PKG_LICENSE").map(Into::into);
-    npm_pkg.main = "src/node/index.cjs".to_string();
+    npm_pkg.main = NPM_PKG_ENTRY.into();
     npm_pkg.name = NPM_PKG_NAME.into();
     npm_pkg.repository = option_env!("CARGO_PKG_REPOSITORY").map(|v| {
         Repository::Record(RepositoryRecord {

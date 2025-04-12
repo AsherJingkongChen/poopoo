@@ -1,6 +1,8 @@
 {
     "author": "AsherJingkongChen",
-    "bin": "src/node/poodio.cjs",
+    "bin": {
+        "poodio": "src/node/index.cjs"
+    },
     "description": "💩 💨 Farts poo poo audio 💨 💩",
     "files": [
         "src/node/"

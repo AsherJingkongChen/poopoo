@@ -22,6 +22,7 @@ license = "MIT"
 repository = "https://github.com/AsherJingkongChen/poopoo.git"
 
 [workspace.dependencies]
+anstream = {version = "0.6.18", default-features = false}
 clap = {version = "4.5.35", default-features = false}
 color-eyre = {version = "0.6.3", default-features = false}
 cpal = {version = "0.15.3", default-features = false}
