@@ -80,8 +80,9 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y "${APT_PKGS[@]}"
 
-                  [[ -n "$PKG_CONFIG_SYSROOT" ]] && \
+                  if [[ -n "$PKG_CONFIG_SYSROOT" ]]; then
                     echo "PKG_CONFIG_SYSROOT_DIR=$PKG_CONFIG_SYSROOT" >> $GITHUB_ENV
+                  fi
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
