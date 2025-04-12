@@ -66,8 +66,8 @@ pub fn main_js(argv: Vec<String>) {
 
 /// Version tag
 #[napi]
-pub fn version() -> String {
-    format!("poodio@{}", env!("CARGO_PKG_VERSION"))
+pub const fn version() -> &'static str {
+    concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
 }
 
 fn init() -> Result<()> {
