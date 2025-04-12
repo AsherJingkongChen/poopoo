@@ -15,20 +15,20 @@ env:
     CARGO_TERM_COLOR: always
 
 jobs:
-    # check:
-    #     runs-on: macos-latest
-    #     steps:
-    #         - uses: actions/checkout@v4
-    #         - uses: taiki-e/install-action@v2
-    #           with:
-    #               tool: cargo-audit, cargo-outdated, just
-    #         - run: just prepare check
-    #         - run: just audit
-    #           if: github.ref_type == 'tag'
+    check:
+        runs-on: macos-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: taiki-e/install-action@v2
+              with:
+                  tool: cargo-audit, cargo-outdated, just
+            - run: just prepare check
+            - run: just audit
+              if: github.ref_type == 'tag'
 
     build-poodio:
-        # if: startsWith(github.ref, 'refs/tags/poodio@')
-        # needs: check
+        if: startsWith(github.ref, 'refs/tags/poodio@')
+        needs: check
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
@@ -75,10 +75,8 @@ jobs:
             - name: Configure Cross-compilation for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu-')
               run: |
-                  APT_PKGS=(libasound2-dev)
-
                   sudo apt-get update
-                  sudo apt-get install -y "${APT_PKGS[@]}"
+                  sudo apt-get install -y libasound2-dev
 
                   if [[ -n "$PKG_CONFIG_SYSROOT" ]]; then
                     echo "PKG_CONFIG_SYSROOT_DIR=$PKG_CONFIG_SYSROOT" >> $GITHUB_ENV
