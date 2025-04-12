@@ -8,7 +8,7 @@ const assert = require("uvu/assert");
 const PKG_PATH = "../../../dist/npm";
 
 test.before(() => {
-    require("node:child_process").execSync(`npm link --silent ${PKG_PATH}`, {
+    require("node:child_process").execSync(`npm i -s --no-save ${PKG_PATH}`, {
         stdio: "inherit",
         windowsHide: true,
     });
