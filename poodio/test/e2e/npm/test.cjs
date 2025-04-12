@@ -16,13 +16,7 @@ test.before(() => {
 });
 
 test("Package can be required", () => {
-    assert.not.throws(
-        () => require("poodio"),
-        execSync("npm ls", {
-            encoding: "utf8",
-            windowsHide: true,
-        }),
-    );
+    assert.not.throws(() => require("poodio"), "Not found: try running 'npm ls'");
 });
 
 test("Package executable version is correct", () => {
