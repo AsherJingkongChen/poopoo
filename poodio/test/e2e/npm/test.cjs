@@ -6,7 +6,7 @@ const { test } = require("uvu");
 const assert = require("uvu/assert");
 
 test.before(() => {
-    require("node:child_process").execSync("npm i -s --no-save ../../../dist/npm/", {
+    require("node:child_process").execSync("npm i --no-save ../../../dist/npm/", {
         stdio: "inherit",
         windowsHide: true,
     });
