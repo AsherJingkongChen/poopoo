@@ -15,7 +15,7 @@ check:
 check-fix:
     npx prettier --write .
     cargo fmt --all
-    cargo clippy --all-features --allow-dirty --allow-staged --locked --fix
+    cargo clippy --all-features --allow-dirty --allow-staged --fix
 
 # + clean-*
 clean: clean-build clean-cargo clean-npm
