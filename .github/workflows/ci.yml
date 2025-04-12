@@ -33,46 +33,46 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - os: macos-15
-                      target: common
-                      test:
-                    - os: macos-15
-                      target: aarch64-apple-darwin
-                      test: e2e-bin e2e-npm
-                    - os: macos-13
-                      target: x86_64-apple-darwin
-                      test: e2e-bin e2e-npm
-                    - os: ubuntu-24.04-arm
-                      target: aarch64-unknown-linux-gnu
-                      test: e2e-bin e2e-npm
+                    # - os: macos-15
+                    #   target: common
+                    #   test:
+                    # - os: macos-15
+                    #   target: aarch64-apple-darwin
+                    #   test: e2e-bin e2e-npm
+                    # - os: macos-13
+                    #   target: x86_64-apple-darwin
+                    #   test: e2e-bin e2e-npm
+                    # - os: ubuntu-24.04-arm
+                    #   target: aarch64-unknown-linux-gnu
+                    #   test: e2e-bin e2e-npm
                     # - os: ubuntu-24.04-arm
                     #   target: aarch64-unknown-linux-musl
                     #   test:
-                    - os: ubuntu-24.04
-                      target: i686-unknown-linux-gnu
-                      test:
-                    - os: ubuntu-24.04
-                      target: x86_64-unknown-linux-gnu
-                      test: e2e-bin e2e-npm
+                    # - os: ubuntu-24.04
+                    #   target: i686-unknown-linux-gnu
+                    #   test:
+                    # - os: ubuntu-24.04
+                    #   target: x86_64-unknown-linux-gnu
+                    #   test: e2e-bin e2e-npm
                     # - os: ubuntu-24.04
                     #   target: x86_64-unknown-linux-musl
                     #   test:
-                    - os: windows-2025
-                      target: aarch64-pc-windows-msvc
-                      test:
+                    # - os: windows-2025
+                    #   target: aarch64-pc-windows-msvc
+                    #   test:
                     - os: windows-2025
                       target: i686-pc-windows-msvc
                       test: e2e-bin e2e-npm
-                    - os: windows-2025
-                      target: x86_64-pc-windows-msvc
-                      test: e2e-bin e2e-npm
+                    # - os: windows-2025
+                    #   target: x86_64-pc-windows-msvc
+                    #   test: e2e-bin e2e-npm
         steps:
             - uses: actions/checkout@v4
             - uses: taiki-e/setup-cross-toolchain-action@v1
               if: matrix.target != 'common'
               with:
                   target: ${{ matrix.target }}
-            - name: Configure Cross-compilation for Ubuntu Linux
+            - name: Set up Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu-')
               run: |
                   sudo apt-get update
@@ -85,8 +85,12 @@ jobs:
               with:
                   name: ${{ matrix.target }}
                   path: poodio/dist/
+            - name: Pre-test
+              run: npm ls
             - run: just poodio::test "${{ matrix.test }}"
               if: matrix.test
+            - name: Post-test
+              run: npm ls
 
     publish-poodio:
         # if: startsWith(github.ref, 'refs/tags/poodio@')
