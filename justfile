@@ -33,8 +33,8 @@ clean-npm:
 prepare: prepare-npm
 
 prepare-npm:
-    npm ci --ignore-scripts --no-audit --no-fund --omit optional
+    npm ci --omit optional
 
 update:
     cargo update
-    npm up --ignore-scripts --no-audit --no-fund --omit optional
+    npm up --omit optional
