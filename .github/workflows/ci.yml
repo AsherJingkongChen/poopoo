@@ -133,8 +133,9 @@ jobs:
                   echo "contributors=$CONTRIBUTORS" >> $GITHUB_OUTPUT
                   echo "installation=$INSTALLATION" >> $GITHUB_OUTPUT
             - name: Publish to github.com (Attestation)
-              uses: actions/attest-build-provenance@v2
               id: attest
+              if: false
+              uses: actions/attest-build-provenance@v2
               with:
                   subject-path: dist/*/bin/*.tgz
             - name: Publish to github.com
