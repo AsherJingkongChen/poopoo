@@ -108,7 +108,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
-            - name: Publish to github.com (Packaging)
+            - name: Publish to github.com (Packing)
+              id: github-pack
               run: |
                   for dir in dist/*; do
                     TARGET="$(basename "$dir")"
@@ -119,9 +120,7 @@ jobs:
                     tar -vvczf "$ASSET" *
                     cd - > /dev/null
                   done
-            - name: Publish to github.com (Generating Release Notes)
-              id: github-release-notes
-              run: |
+
                   LAST_TAG="$(git describe --tags --abbrev=0 HEAD~)"
                   HEAD_TAG="${{ github.ref_name }}"
                   GITHUB_REPO_URL="${{ github.server_url }}/${{ github.repository }}"
@@ -133,7 +132,7 @@ jobs:
                   echo "contributors=$CONTRIBUTORS" >> $GITHUB_OUTPUT
                   echo "installation=$INSTALLATION" >> $GITHUB_OUTPUT
             - name: Publish to github.com (Attestation)
-              id: attest
+              id: github-attest
               if: false
               uses: actions/attest-build-provenance@v2
               with:
@@ -142,11 +141,11 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                   body: |
-                      - [**Changelog**](${{ steps.github-release-notes.outputs.changelog }})
-                      - [**Attestation**](${{ steps.attest.outputs.attestation-url }})
+                      - [**Changelog**](${{ steps.github-pack.outputs.changelog }})
+                      - [**Attestation**](${{ steps.github-attest.outputs.attestation-url }})
                       - [**Installation**](https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#install)
                       - **Contributors**
-                      ${{ steps.github-release-notes.outputs.contributors }}
+                      ${{ steps.github-pack.outputs.contributors }}
                   files: dist/*/bin/*.tgz
             - name: Publish to npmjs.com
               run: |
