@@ -59,7 +59,7 @@ jobs:
                     #   test:
                     - os: windows-2025
                       target: aarch64-pc-windows-msvc
-                      test: e2e-bin
+                      test:
                     - os: windows-2025
                       target: i686-pc-windows-msvc
                       test: e2e-bin
