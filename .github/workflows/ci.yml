@@ -85,15 +85,11 @@ jobs:
               with:
                   name: ${{ matrix.target }}
                   path: poodio/dist/
-            - name: Pre-test
-              run: npm ls
             - run: just poodio::test "${{ matrix.test }}"
               if: matrix.test
-            - name: Post-test
-              run: npm ls
 
     publish-poodio:
-        # if: startsWith(github.ref, 'refs/tags/poodio@')
+        if: startsWith(github.ref, 'refs/tags/poodio@')
         needs: build-poodio
         runs-on: macos-latest
         permissions:
