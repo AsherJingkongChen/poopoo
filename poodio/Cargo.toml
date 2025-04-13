@@ -2,24 +2,22 @@
 color-eyre.workspace = true
 napi-build.workspace = true
 package-json.workspace = true
+pyo3-build-config.workspace = true
 serde.features = ["derive"]
 serde.workspace = true
 serde_json.workspace = true
 
 [dependencies]
-anstream.workspace = true
-clap.features = ["default", "derive"]
-clap.workspace = true
-color-eyre.features = ["track-caller"]
-color-eyre.workspace = true
-cpal.workspace = true
-log.workspace = true
-napi-derive.features = ["type-def"]
-napi-derive.workspace = true
-napi.features = ["dyn-symbols"]
-napi.workspace = true
-simple_logger.features = ["colors", "stderr"]
-simple_logger.workspace = true
+anstream = {workspace = true, features = ["auto"]}
+clap = {workspace = true, features = ["default", "derive"]}
+color-eyre = {workspace = true, features = ["track-caller"]}
+cpal = {workspace = true, features = []}
+log = {workspace = true, features = []}
+napi = {workspace = true, features = ["dyn-symbols"]}
+napi-derive = {workspace = true, features = ["type-def"]}
+pyo3 = {workspace = true, features = ["macros"]}
+pyo3-stub-gen = {workspace = true, features = []}
+simple_logger = {workspace = true, features = ["colors", "stderr"]}
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -32,7 +30,7 @@ path = "src/rust/bin.rs"
 
 [package]
 authors.workspace = true
-categories = ["command-line-utilities", "multimedia::audio", "simulation"]
+categories = ["api-bindings", "command-line-utilities", "multimedia::audio", "simulation"]
 description = "💩 💨 Farts poo poo audio 💨 💩"
 edition.workspace = true
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#readme"

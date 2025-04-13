@@ -11,11 +11,10 @@ use std::{
 };
 
 fn main() -> Result<()> {
-    println!("cargo:rerun-if-changed=build.rs");
-
     std::env::set_var("RUST_BACKTRACE", "full");
     color_eyre::install()?;
     napi_build::setup();
+    pyo3_build_config::use_pyo3_cfgs();
     build_npm_pkg()?;
     Ok(())
 }
@@ -44,26 +43,24 @@ fn build_npm_pkg() -> Result<()> {
                 .or_else(|_| fs::remove_file(&npm_pkg_file_path).map(|_| Default::default()))
         })?;
 
-    npm_pkg.author = option_env!("CARGO_PKG_AUTHORS").map(|v| People::Literal(v.into()));
+    npm_pkg.author = Some(People::Literal(env!("CARGO_PKG_AUTHORS").into()));
     npm_pkg.bin = Some(Bin::Record(
         [(NPM_PKG_NAME.into(), NPM_PKG_ENTRY.into())].into(),
     ));
-    npm_pkg.description = option_env!("CARGO_PKG_DESCRIPTION").map(Into::into);
-    npm_pkg.homepage = option_env!("CARGO_PKG_HOMEPAGE").map(Into::into);
+    npm_pkg.description = Some(env!("CARGO_PKG_DESCRIPTION").into());
+    npm_pkg.homepage = Some(env!("CARGO_PKG_HOMEPAGE").into());
     npm_pkg
         .keywords
         .get_or_insert(Default::default())
         .sort_unstable();
-    npm_pkg.license = option_env!("CARGO_PKG_LICENSE").map(Into::into);
+    npm_pkg.license = Some(env!("CARGO_PKG_LICENSE").into());
     npm_pkg.main = NPM_PKG_ENTRY.into();
     npm_pkg.name = NPM_PKG_NAME.into();
-    npm_pkg.repository = option_env!("CARGO_PKG_REPOSITORY").map(|v| {
-        Repository::Record(RepositoryRecord {
-            directory: Some("poodio".into()),
-            r#type: "git".into(),
-            url: format!("git+{v}"),
-        })
-    });
+    npm_pkg.repository = Some(Repository::Record(RepositoryRecord {
+        directory: Some("poodio".into()),
+        r#type: "git".into(),
+        url: format!("git+{}", env!("CARGO_PKG_REPOSITORY")),
+    }));
     npm_pkg.r#type = "commonjs".into();
     npm_pkg.types = Some("src/node/index.d.ts".to_string());
     npm_pkg.version = NPM_PKG_VERSION.into();
