@@ -1,85 +1,133 @@
-use color_eyre::eyre::Result;
-use serde::{Deserialize, Serialize};
-use serde_json::{
-    from_reader as read_json, from_value as from_json, ser::PrettyFormatter, to_value as into_json,
-    Serializer, Value as Json,
-};
-use std::{
-    fs::{self, File},
-    io::Write,
-    path::Path,
-};
+use color_eyre::eyre::{ContextCompat, Result};
+use serde::Serialize;
+use serde_json::{json, ser::PrettyFormatter, Serializer};
+use std::{collections::BTreeMap, fs, path::Path, sync::LazyLock};
 
 fn main() -> Result<()> {
     std::env::set_var("RUST_BACKTRACE", "full");
     color_eyre::install()?;
     napi_build::setup();
     pyo3_build_config::use_pyo3_cfgs();
-    build_npm_pkg()?;
+    build_npm_dist()?;
     Ok(())
 }
 
-fn build_npm_pkg() -> Result<()> {
-    use package_json::{
-        PackageBin as Bin, PackageJson, PackagePeople as People, PackageRepository as Repository,
-        PackageRepositoryRecord as RepositoryRecord, PACKAGE_JSON_FILENAME,
-    };
+static CARGO_TO_NPM_TARGET: LazyLock<BTreeMap<String, [String; 3]>> = LazyLock::new(|| {
+    [
+        ("aarch64-apple-darwin", ["arm64", "darwin", "unknown"]),
+        ("aarch64-pc-windows-msvc", ["arm64", "win32", "unknown"]),
+        ("aarch64-unknown-linux-gnu", ["arm64", "linux", "glibc"]),
+        ("i686-pc-windows-msvc", ["ia32", "win32", "unknown"]),
+        ("i686-unknown-linux-gnu", ["ia32", "linux", "glibc"]),
+        ("x86_64-apple-darwin", ["x64", "darwin", "unknown"]),
+        ("x86_64-pc-windows-msvc", ["x64", "win32", "unknown"]),
+        ("x86_64-unknown-linux-gnu", ["x64", "linux", "glibc"]),
+    ]
+    .into_iter()
+    .map(|(k, v)| (k.into(), v.map(Into::into)))
+    .collect()
+});
 
+static NPM_KEYWORDS: LazyLock<Vec<String>> = LazyLock::new(|| {
+    let mut result = r#"
+        addon agent ai api audio binding cli easy
+        fast fun funny joke lightweight llm mcp minimal
+        multimedia napi native node performance poodio
+        python rust server simple simulation sound speed test
+    "#
+    .split_ascii_whitespace()
+    .map(Into::into)
+    .collect::<Vec<_>>();
+    result.sort_unstable();
+    result.dedup();
+    result
+});
+
+fn build_npm_dist() -> Result<()> {
     if std::env::var("DOCS_RS").is_ok() {
         return Ok(());
     }
 
-    const NPM_PKG_NAME: &str = env!("CARGO_PKG_NAME");
-    const NPM_PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
-    const NPM_PKG_ENTRY: &str = "src/node/index.cjs";
+    let name = env!("CARGO_PKG_NAME");
+    let version = env!("CARGO_PKG_VERSION");
+    let target = std::env::var("TARGET")?;
+    let [cpu, os, libc] = CARGO_TO_NPM_TARGET
+        .get(&target)
+        .cloned()
+        .wrap_err("Unsupported target")?;
 
-    println!("cargo:rerun-if-changed=package.json");
+    let dist_dir = Path::new("dist/npm");
+    let dist_plat_dir = dist_dir.join("plat");
+    let dist_plat_cfg_file = dist_plat_dir.join("package.json");
+    let dist_plat_license_file = dist_plat_dir.join("LICENSE.txt");
+    let dist_plat_readme_file = dist_plat_dir.join("README.md");
+    let dist_pure_dir = dist_dir.join("pure");
+    let dist_pure_cfg_file = dist_pure_dir.join("package.json");
+    let dist_pure_license_file = dist_pure_dir.join("LICENSE.txt");
+    let dist_pure_readme_file = dist_pure_dir.join("README.md");
+    let orig_license_file = Path::new("LICENSE.txt");
+    let orig_readme_file = Path::new("README.md");
 
-    let npm_pkg_file_path = Path::new(env!("CARGO_MANIFEST_DIR")).join(PACKAGE_JSON_FILENAME);
-    let mut npm_pkg: PackageJson = File::create_new(&npm_pkg_file_path)
-        .map(|_| Default::default())
-        .or_else(|_| {
-            read_json(File::open(&npm_pkg_file_path)?)
-                .or_else(|_| fs::remove_file(&npm_pkg_file_path).map(|_| Default::default()))
-        })?;
+    println!("cargo:rerun-if-changed={dist_plat_cfg_file:?}");
+    println!("cargo:rerun-if-changed={dist_pure_cfg_file:?}");
 
-    npm_pkg.author = Some(People::Literal(env!("CARGO_PKG_AUTHORS").into()));
-    npm_pkg.bin = Some(Bin::Record(
-        [(NPM_PKG_NAME.into(), NPM_PKG_ENTRY.into())].into(),
-    ));
-    npm_pkg.description = Some(env!("CARGO_PKG_DESCRIPTION").into());
-    npm_pkg.homepage = Some(env!("CARGO_PKG_HOMEPAGE").into());
-    npm_pkg
-        .keywords
-        .get_or_insert(Default::default())
-        .sort_unstable();
-    npm_pkg.license = Some(env!("CARGO_PKG_LICENSE").into());
-    npm_pkg.main = NPM_PKG_ENTRY.into();
-    npm_pkg.name = NPM_PKG_NAME.into();
-    npm_pkg.repository = Some(Repository::Record(RepositoryRecord {
-        directory: Some("poodio".into()),
-        r#type: "git".into(),
-        url: format!("git+{}", env!("CARGO_PKG_REPOSITORY")),
-    }));
-    npm_pkg.r#type = "commonjs".into();
-    npm_pkg.types = Some("src/node/index.d.ts".to_string());
-    npm_pkg.version = NPM_PKG_VERSION.into();
+    let cfg = json!({
+        "author": env!("CARGO_PKG_AUTHORS"),
+        "description": env!("CARGO_PKG_DESCRIPTION"),
+        "homepage": env!("CARGO_PKG_HOMEPAGE"),
+        "keywords": *NPM_KEYWORDS,
+        "license": env!("CARGO_PKG_LICENSE"),
+        "repository": {
+            "type": "git",
+            "url": format!("git+{}", env!("CARGO_PKG_REPOSITORY")),
+            "directory": "poodio"
+        },
+        "type": "commonjs",
+        "version": version,
+    });
 
-    let mut npm_pkg_fp = File::create(&npm_pkg_file_path)?;
-    into_sorted_json(npm_pkg)?.serialize(&mut Serializer::with_formatter(
-        &mut npm_pkg_fp,
+    let mut dist_plat_cfg = cfg.to_owned();
+    let o = dist_plat_cfg.as_object_mut().unwrap();
+    o.insert(
+        "name".into(),
+        format!("@{name}/{name}-{cpu}-{os}-{libc}").into(),
+    );
+
+    let mut dist_pure_cfg = cfg.to_owned();
+    let o = dist_pure_cfg.as_object_mut().unwrap();
+    o.insert("bin".into(), json!({ name: "index.js" }));
+    o.insert("dependencies".into(), json!({ "tell-libc": "^0.0.0" }));
+    o.insert(
+        "optionalDependencies".into(),
+        CARGO_TO_NPM_TARGET
+            .values()
+            .map(|[cpu, os, libc]| {
+                (
+                    format!("@{name}/{name}-{cpu}-{os}-{libc}"),
+                    version.to_owned(),
+                )
+            })
+            .collect(),
+    );
+    o.insert("name".into(), name.into());
+
+    fs::remove_dir_all(dist_dir).ok();
+    fs::create_dir_all(&dist_plat_dir)?;
+    fs::create_dir_all(&dist_pure_dir)?;
+
+    fs::copy(orig_license_file, &dist_plat_license_file)?;
+    fs::copy(orig_license_file, &dist_pure_license_file)?;
+    fs::copy(orig_readme_file, &dist_plat_readme_file)?;
+    fs::copy(orig_readme_file, &dist_pure_readme_file)?;
+
+    dist_plat_cfg.serialize(&mut Serializer::with_formatter(
+        &mut fs::File::create(&dist_plat_cfg_file)?,
         PrettyFormatter::with_indent(b"    "),
     ))?;
-    npm_pkg_fp.write_all(b"\n")?;
+    dist_pure_cfg.serialize(&mut Serializer::with_formatter(
+        &mut fs::File::create(&dist_pure_cfg_file)?,
+        PrettyFormatter::with_indent(b"    "),
+    ))?;
 
     Ok(())
-}
-
-fn into_sorted_json(value: impl Serialize) -> Result<Json> {
-    #[derive(Deserialize, Serialize)]
-    struct SortedJson {
-        #[serde(flatten)]
-        __rest: Json,
-    }
-    Ok(into_json(from_json::<SortedJson>(into_json(value)?)?)?)
 }

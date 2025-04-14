@@ -1,4 +1,5 @@
 {
     "bin": "index.cjs",
+    "name": "@poodio/test-e2e",
     "private": true
 }

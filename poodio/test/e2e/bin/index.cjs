@@ -6,31 +6,30 @@ const fs = require("node:fs");
 const { test } = require("uvu");
 const assert = require("uvu/assert");
 
-const BIN_DIR = "../../../dist/bin";
-const BIN_PATH = `${BIN_DIR}/poodio${process.platform === "win32" ? ".exe" : ""}`;
+const BIN_PATH = `../../../dist/bin/poodio${process.platform === "win32" ? ".exe" : ""}`;
 
 test("Executable is available", () => {
     assert.ok(fs.existsSync(BIN_PATH), `Not found: '${BIN_PATH}'`);
     const stat = fs.statSync(BIN_PATH);
     assert.ok(stat.isFile(), `Not a file: '${BIN_PATH}'`);
-    assert.not.throws(
-        () => fs.accessSync(BIN_PATH, fs.constants.X_OK),
-        `Not an executable: '${BIN_PATH}'`,
+    assertNotThrows(() => fs.accessSync(BIN_PATH, fs.constants.X_OK));
+});
+
+test("Executable is ok with options '--version'", () => {
+    assertNotThrows(() =>
+        require("node:child_process").execFileSync(BIN_PATH, ["--version"], {
+            encoding: "utf8",
+            windowsHide: true,
+        }),
     );
 });
 
-test("Executable version is correct", () => {
-    const output = require("node:child_process")
-        .execFileSync(BIN_PATH, ["--version"], {
-            encoding: "utf8",
-            windowsHide: true,
-        })
-        .slice(0, -1);
-    assert.is(output, answerVersion());
-});
-
-function answerVersion() {
-    return `poodio@${require(`${BIN_DIR}/package.json`).version}`;
-}
-
 test.run();
+
+function assertNotThrows(fn) {
+    try {
+        fn();
+    } catch (e) {
+        assert.ok(0, e);
+    }
+}

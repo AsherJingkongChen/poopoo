@@ -12,8 +12,8 @@
         "printWidth": 90
     },
     "workspaces": [
-        "poodio",
-        "poodio/test/e2e/bin",
+        "poodio/dist/npm/plat",
+        "poodio/dist/npm/pure",
         "poodio/test/e2e/npm"
     ]
 }
