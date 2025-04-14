@@ -111,7 +111,6 @@ fn build_npm_dist() -> Result<()> {
     );
     o.insert("name".into(), name.into());
 
-    fs::remove_dir_all(dist_dir).ok();
     fs::create_dir_all(&dist_bind_dir)?;
     fs::create_dir_all(&dist_wrap_dir)?;
 
