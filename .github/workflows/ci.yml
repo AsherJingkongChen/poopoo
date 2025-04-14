@@ -111,7 +111,7 @@ jobs:
         needs:
             - check
             - build-poodio
-        runs-on: macos-latest
+        runs-on: ubuntu-latest
         permissions:
             attestations: write
             contents: write
