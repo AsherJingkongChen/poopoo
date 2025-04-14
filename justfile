@@ -30,7 +30,7 @@ clean-npm:
     rm -rf node_modules/
 
 prepare:
-    npm ci
+    npm ci --verbose
 
 update:
     cargo update

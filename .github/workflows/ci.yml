@@ -65,14 +65,6 @@ jobs:
                       test: e2e-bin e2e-npm
         steps:
             - uses: actions/checkout@v4
-            - uses: taiki-e/setup-cross-toolchain-action@v1
-              with:
-                  target: ${{ matrix.target }}
-            - name: Set up Ubuntu Linux
-              if: startsWith(matrix.os, 'ubuntu')
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y libasound2-dev
             - name: Cache Cargo
               uses: actions/cache@v4
               with:
@@ -85,10 +77,8 @@ jobs:
                   key: cargo-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       cargo-${{ matrix.os }}-${{ matrix.target }}-
-            - run: npm get cache
             - name: Set up Cache Npm directory
               run: npm set cache .npm/
-            - run: npm get cache
             - name: Cache Npm
               uses: actions/cache@v4
               with:
@@ -96,17 +86,25 @@ jobs:
                   key: npm-${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}
                   restore-keys: |
                       npm-${{ matrix.os }}-
+            - uses: taiki-e/setup-cross-toolchain-action@v1
+              with:
+                  target: ${{ matrix.target }}
+            - name: Set up Ubuntu Linux
+              if: startsWith(matrix.os, 'ubuntu')
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y libasound2-dev
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
             - run: just prepare
-            # - run: poodio::build "${{ matrix.target }}"
-            # - run: just poodio::test "${{ matrix.test }}"
-            #   if: matrix.test
-            # - uses: actions/upload-artifact@v4
-            #   with:
-            #       name: ${{ matrix.target }}
-            #       path: poodio/dist/
+            - run: poodio::build "${{ matrix.target }}"
+            - run: just poodio::test "${{ matrix.test }}"
+              if: matrix.test
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ matrix.target }}
+                  path: poodio/dist/
 
     publish-poodio:
         if: startsWith(github.ref, 'refs/tags/poodio@')
