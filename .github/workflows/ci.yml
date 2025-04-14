@@ -75,7 +75,9 @@ jobs:
                   sudo apt-get install -y libasound2-dev
             - name: Get Npm cache dir path
               id: npm-cache
-              run: echo "dir=$(npm config get cache)" >> "$GITHUB_OUTPUT"
+              run: |
+                  echo "dir=$(npm config get cache)"
+                  npm config ls -l
             - name: Cache Cargo
               uses: actions/cache@v4
               with:
