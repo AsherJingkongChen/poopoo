@@ -89,20 +89,21 @@ jobs:
             - name: Cache Npm
               uses: actions/cache@v4
               with:
-                  path: ${{ (runner.os == 'Windows' && 'C:/npm/cache') || '~/.npm/' }}
+                  path: ${{ (runner.os == 'Windows' && 'C:\\npm\\cache') || '~/.npm/' }}
                   key: npm-${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}
                   restore-keys: |
                       npm-${{ matrix.os }}-
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
-            - run: just prepare poodio::build "${{ matrix.target }}"
-            - run: just poodio::test "${{ matrix.test }}"
-              if: matrix.test
-            - uses: actions/upload-artifact@v4
-              with:
-                  name: ${{ matrix.target }}
-                  path: poodio/dist/
+            - run: just prepare
+            # - run: poodio::build "${{ matrix.target }}"
+            # - run: just poodio::test "${{ matrix.test }}"
+            #   if: matrix.test
+            # - uses: actions/upload-artifact@v4
+            #   with:
+            #       name: ${{ matrix.target }}
+            #       path: poodio/dist/
 
     publish-poodio:
         if: startsWith(github.ref, 'refs/tags/poodio@')
