@@ -76,7 +76,7 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
-            - name: Cache cargo dependencies
+            - name: Cache cargo
               uses: actions/cache@v4
               with:
                   path: |
@@ -85,17 +85,16 @@ jobs:
                       ~/.cargo/registry/cache/
                       ~/.cargo/git/db/
                       target/
-                  key: cargo-${{ runner.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
+                  key: cargo-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
-                      cargo-${{ runner.os }}-${{ matrix.target }}-
-                      cargo-${{ runner.os }}-
-            - name: Cache npm dependencies
+                      cargo-${{ matrix.os }}-${{ matrix.target }}-
+            - name: Cache npm
               uses: actions/cache@v4
               with:
                   path: ~/.npm
-                  key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+                  key: npm-${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}
                   restore-keys: |
-                      npm-${{ runner.os }}-
+                      npm-${{ matrix.os }}-
             - run: just prepare poodio::build "${{ matrix.target }}"
             - run: just poodio::test "${{ matrix.test }}"
               if: matrix.test
