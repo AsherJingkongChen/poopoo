@@ -1,7 +1,7 @@
 [build-dependencies]
 color-eyre.workspace = true
 napi-build.workspace = true
-pyo3-build-config.workspace = true
+# pyo3-build-config.workspace = true
 serde.features = ["derive"]
 serde.workspace = true
 serde_json.workspace = true
@@ -15,8 +15,8 @@ cpal = {workspace = true, features = []}
 log = {workspace = true, features = []}
 napi = {workspace = true, features = ["dyn-symbols"]}
 napi-derive = {workspace = true, features = ["type-def"]}
-pyo3 = {workspace = true, features = ["macros"]}
-pyo3-stub-gen = {workspace = true, features = []}
+# pyo3 = {workspace = true, features = ["macros"]}
+# pyo3-stub-gen = {workspace = true, features = []}
 simple_logger = {workspace = true, features = ["colors", "stderr"]}
 
 [lib]
