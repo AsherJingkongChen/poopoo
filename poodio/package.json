@@ -3,6 +3,9 @@
     "bin": {
         "poodio": "src/node/index.cjs"
     },
+    "dependencies": {
+        "tell-libc": "^0.0.0"
+    },
     "description": "💩 💨 Farts poo poo audio 💨 💩",
     "homepage": "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#readme",
     "keywords": [

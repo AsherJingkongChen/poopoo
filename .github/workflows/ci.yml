@@ -31,6 +31,7 @@ jobs:
         # needs: check
         runs-on: ${{ matrix.os }}
         strategy:
+            fail-fast: false
             matrix:
                 include:
                     - os: macos-15
@@ -150,6 +151,6 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
             - name: Publish to crates.io
-              run: cargo publish --dry-run --locked -vp poodio --no-verify
+              run: cargo publish --dry-run --locked --package poodio --no-verify --verbose
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.POODIO_CRATE_TOKEN }}

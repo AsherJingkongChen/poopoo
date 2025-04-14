@@ -18,21 +18,18 @@ check-fix:
     cargo clippy --all-features --allow-dirty --allow-staged --fix
 
 # + clean-*
-clean: clean-build clean-cargo clean-npm
-
-clean-build:
-    rm -rf poodio/dist/
+clean: clean-cargo clean-dist clean-npm
 
 clean-cargo:
     rm -rf target/
 
+clean-dist:
+    rm -rf poodio/dist/
+
 clean-npm:
     rm -rf node_modules/
 
-# + prepare-*
-prepare: prepare-npm
-
-prepare-npm:
+prepare:
     npm ci
 
 update:

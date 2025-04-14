@@ -2,6 +2,10 @@ build TARGET="":
     node build.js --target {{ TARGET }}
 
 test SUBJECTS:
-    for SUBJECT in {{ SUBJECTS }}; do \
-        npx "@poodio/test-$SUBJECT"; \
-    done
+    just $(for s in {{ SUBJECTS }}; do printf "test-$s "; done)
+
+test-e2e-bin:
+    node test/e2e/bin/index.cjs
+
+test-e2e-npm:
+    npx test/e2e/npm
