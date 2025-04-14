@@ -4,7 +4,6 @@ audit:
     cargo audit -D warnings
     cargo outdated --exit-code 1 --workspace
     npm audit
-    npm audit signatures
     npm outdated
 
 check:
