@@ -12,17 +12,11 @@ build TARGET:
     @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/wrap/index.js
     chmod +x dist/npm/wrap/index.js
 
-    npm i --no-package-lock --no-save ./dist/npm/*/
+    npm update --no-save
 
 test SUBJECTS='':
     #! /usr/bin/env bash
-    for s in {{ SUBJECTS }}; do just test-$s; done
-
-test-e2e-bin:
-    node test/e2e/bin/index.cjs
-
-test-e2e-npm:
-    npx test/e2e/npm
+    for s in {{ SUBJECTS }}; do npx @poodio/test-$s; done
 
 BIN_EXT := if os() == 'windows' { '.exe' } else { '' }
 NPM_DIST_PURE_MAIN_DATA := '''

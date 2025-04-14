@@ -1,5 +1,18 @@
 {
     "bin": "index.cjs",
-    "name": "@poodio/test-e2e",
+    "dependencies": {
+        "poodio": "file:../../../dist/npm/wrap/"
+    },
+    "name": "@poodio/test-e2e-npm",
+    "optionalDependencies": {
+        "@poodio/poodio-arm64-darwin-unknown": "file:../../../dist/npm/bind/",
+        "@poodio/poodio-arm64-linux-glibc": "file:../../../dist/npm/bind/",
+        "@poodio/poodio-arm64-win32-unknown": "file:../../../dist/npm/bind/",
+        "@poodio/poodio-ia32-linux-glibc": "file:../../../dist/npm/bind/",
+        "@poodio/poodio-ia32-win32-unknown": "file:../../../dist/npm/bind/",
+        "@poodio/poodio-x64-darwin-unknown": "file:../../../dist/npm/bind/",
+        "@poodio/poodio-x64-linux-glibc": "file:../../../dist/npm/bind/",
+        "@poodio/poodio-x64-win32-unknown": "file:../../../dist/npm/bind/"
+    },
     "private": true
 }
