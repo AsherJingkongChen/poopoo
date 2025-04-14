@@ -141,8 +141,8 @@ jobs:
             - name: Publish to npmjs.com
               run: |
                   npm set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
-                  npm --dry-run publish "$(set -- dist/*; echo "$1")/npm/pure/"
-                  for pkg in dist/*; do npm --dry-run publish "./$pkg/npm/plat/"; done
+                  npm --dry-run publish "$(set -- dist/*; echo "$1")/npm/wrap/"
+                  for pkg in dist/*; do npm --dry-run publish "./$pkg/npm/bind/"; done
                   npm set //registry.npmjs.org/:_authToken
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}

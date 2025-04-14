@@ -1,16 +1,16 @@
 build TARGET:
     @printf '{}' > package.json
     npx napi build --cargo-flags=--locked --no-dts-header --release \
-        --target '{{ TARGET }}' dist/npm/plat/
+        --target '{{ TARGET }}' dist/npm/bind/
     @rm -f package.json
 
     @mkdir -p dist/bin/
     cp ../target/{{ TARGET }}/release/poodio{{ BIN_EXT }} \
         dist/bin/
-    cp dist/npm/plat/index.d.ts dist/npm/pure/
+    cp dist/npm/bind/index.d.ts dist/npm/wrap/
 
-    @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/pure/index.js
-    chmod +x dist/npm/pure/index.js
+    @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/wrap/index.js
+    chmod +x dist/npm/wrap/index.js
 
     npm i --no-package-lock --no-save ./dist/npm/*/
 
