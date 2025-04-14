@@ -19,6 +19,27 @@ jobs:
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v4
+            - name: Cache Cargo
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.cargo/bin/
+                      ~/.cargo/git/db/
+                      ~/.cargo/registry/cache/
+                      ~/.cargo/registry/index/
+                      target/
+                  key: cargo-check-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: |
+                      cargo-check-${{ runner.os }}-${{ runner.arch }}-
+            - name: Set up Cache Npm directory
+              run: npm set cache .npm/
+            - name: Cache Npm
+              uses: actions/cache@v4
+              with:
+                  path: .npm/
+                  key: npm-caheck-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-check-${{ runner.os }}-
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-audit, cargo-outdated, just
