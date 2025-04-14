@@ -1,18 +1,16 @@
 [build-dependencies]
-color-eyre.workspace = true
-napi-build.workspace = true
-# pyo3-build-config.workspace = true
-serde.features = ["derive"]
-serde.workspace = true
-serde_json.workspace = true
-serde_json.features = ["default"]
+color-eyre = {workspace = true, features = ["track-caller"]}
+napi-build = {workspace = true, features = []}
+# pyo3-build-config = {workspace = true, features = []}
+serde = {workspace = true, features = ["std"]}
+serde_json = {workspace = true, features = ["std"]}
 
 [dependencies]
 anstream = {workspace = true, features = ["auto"]}
 clap = {workspace = true, features = ["default", "derive"]}
 color-eyre = {workspace = true, features = ["track-caller"]}
 cpal = {workspace = true, features = []}
-log = {workspace = true, features = []}
+log = {workspace = true, features = ["std"]}
 napi = {workspace = true, features = ["dyn-symbols"]}
 napi-derive = {workspace = true, features = ["type-def"]}
 # pyo3 = {workspace = true, features = ["macros"]}

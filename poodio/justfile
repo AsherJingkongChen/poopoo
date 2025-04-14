@@ -1,5 +1,5 @@
 build TARGET:
-    @echo '{}' > package.json
+    @printf '{}' > package.json
     npx napi build --cargo-flags=--locked --no-dts-header --release \
         --target '{{ TARGET }}' dist/npm/plat/
     @rm -f package.json
@@ -9,7 +9,7 @@ build TARGET:
         dist/bin/
     cp dist/npm/plat/index.d.ts dist/npm/pure/
 
-    @echo '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/pure/index.js
+    @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/pure/index.js
     chmod +x dist/npm/pure/index.js
 
     npm i --no-save dist/npm/*/
@@ -24,12 +24,12 @@ test-e2e-npm:
     npx test/e2e/npm
 
 BIN_EXT := if os() == 'windows' { '.exe' } else { '' }
-NPM_DIST_PURE_MAIN_DATA := """\
+NPM_DIST_PURE_MAIN_DATA := '''
 #! /usr/bin/env node
 require("tell-libc");
 const { name } = require("./package.json");
 const { argv, arch: cpu, platform: os, libc } = process;
 const m = require(`@${name}/${name}-${cpu}-${os}-${libc || "unknown"}`);
 module.exports = m;
-require.main === module && m.main(argv.slice(1));\
-"""
+require.main === module && m.main(argv.slice(1));
+'''
