@@ -85,11 +85,14 @@ jobs:
                   key: cargo-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       cargo-${{ matrix.os }}-${{ matrix.target }}-
-            - run: echo $HOME && pwd
+            - run: npm get cache
+            - name: Set up Cache Npm directory
+              run: npm set cache .npm/
+            - run: npm get cache
             - name: Cache Npm
               uses: actions/cache@v4
               with:
-                  path: ${{ (runner.os == 'Windows' && 'C:\\npm\\cache') || '~/.npm/' }}
+                  path: .npm/
                   key: npm-${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}
                   restore-keys: |
                       npm-${{ matrix.os }}-
