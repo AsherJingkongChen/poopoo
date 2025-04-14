@@ -15,9 +15,8 @@ build TARGET:
     npm i --no-package-lock --no-save ./dist/npm/*/
 
 test SUBJECTS='':
-    if [[ '{{ SUBJECTS }}' != '' ]]; then \
-        for s in {{ SUBJECTS }}; do just test-$s; done; \
-    fi
+    #! /usr/bin/env bash
+    for s in {{ SUBJECTS }}; do just test-$s; done
 
 test-e2e-bin:
     node test/e2e/bin/index.cjs
