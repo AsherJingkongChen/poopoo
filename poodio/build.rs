@@ -88,10 +88,15 @@ fn build_npm_dist() -> Result<()> {
 
     let mut dist_bind_cfg = cfg.to_owned();
     let o = dist_bind_cfg.as_object_mut().unwrap();
+    o.insert("cpu".into(), json!([cpu]));
+    o.insert("os".into(), json!([os]));
     o.insert(
         "name".into(),
         format!("@{name}/{name}-{cpu}-{os}-{libc}").into(),
     );
+    if libc != "unknown" {
+        o.insert("libc".into(), json!([libc]));
+    }
 
     let mut dist_wrap_cfg = cfg.to_owned();
     let o = dist_wrap_cfg.as_object_mut().unwrap();
