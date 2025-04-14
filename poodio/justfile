@@ -15,10 +15,8 @@ build TARGET:
     npm i --no-package-lock --no-save ./dist/npm/*/
 
 test SUBJECTS='':
-    if [[ -n '{{ SUBJECTS }}' ]]; then \
-        for s in {{ SUBJECTS }}; do \
-            just test-$s; \
-        done \
+    if [[ '{{ SUBJECTS }}' != '' ]]; then \
+        for s in {{ SUBJECTS }}; do just test-$s; done; \
     fi
 
 test-e2e-bin:
