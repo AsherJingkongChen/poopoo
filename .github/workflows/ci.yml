@@ -69,32 +69,35 @@ jobs:
               with:
                   target: ${{ matrix.target }}
             - name: Set up Ubuntu Linux
-              if: startsWith(matrix.os, 'ubuntu-')
+              if: startsWith(matrix.os, 'ubuntu')
               run: |
                   sudo apt-get update
                   sudo apt-get install -y libasound2-dev
-            - uses: taiki-e/install-action@v2
-              with:
-                  tool: just
-            - name: Cache cargo
+            - name: Get Npm cache dir path
+              id: npm-cache
+              run: echo "dir=$(npm config get cache)" >> "$GITHUB_OUTPUT"
+            - name: Cache Cargo
               uses: actions/cache@v4
               with:
                   path: |
                       ~/.cargo/bin/
-                      ~/.cargo/registry/index/
-                      ~/.cargo/registry/cache/
                       ~/.cargo/git/db/
+                      ~/.cargo/registry/cache/
+                      ~/.cargo/registry/index/
                       target/
                   key: cargo-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       cargo-${{ matrix.os }}-${{ matrix.target }}-
-            - name: Cache npm
+            - name: Cache Npm
               uses: actions/cache@v4
               with:
-                  path: ~/.npm
+                  path: ${{ steps.npm-cache.outputs.dir }}
                   key: npm-${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}
                   restore-keys: |
                       npm-${{ matrix.os }}-
+            - uses: taiki-e/install-action@v2
+              with:
+                  tool: just
             - run: just prepare poodio::build "${{ matrix.target }}"
             - run: just poodio::test "${{ matrix.test }}"
               if: matrix.test
@@ -140,9 +143,9 @@ jobs:
                   CONTRIBUTORS="$(git log --pretty=format:'  + @%an' "$LAST_TAG".."$HEAD_TAG" | sort -u)"
                   INSTALLATION="$GITHUB_REPO_URL/tree/$HEAD_TAG/poodio#install"
 
-                  echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
-                  echo "contributors=$CONTRIBUTORS" >> $GITHUB_OUTPUT
-                  echo "installation=$INSTALLATION" >> $GITHUB_OUTPUT
+                  echo "changelog=$CHANGELOG" >> "$GITHUB_OUTPUT"
+                  echo "contributors=$CONTRIBUTORS" >> "$GITHUB_OUTPUT"
+                  echo "installation=$INSTALLATION" >> "$GITHUB_OUTPUT"
             - name: Publish to github.com (Attestation)
               id: github-attest
               uses: actions/attest-build-provenance@v2
