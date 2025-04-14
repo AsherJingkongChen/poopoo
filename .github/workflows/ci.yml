@@ -97,10 +97,10 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
-            - run: just prepare
-            - run: poodio::build "${{ matrix.target }}"
-            - run: just poodio::test "${{ matrix.test }}"
-              if: matrix.test
+            - run: >
+                  just prepare
+                  poodio::build "${{ matrix.target }}"
+                  poodio::test "${{ matrix.test }}"
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
