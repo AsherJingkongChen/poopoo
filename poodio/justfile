@@ -12,7 +12,7 @@ build TARGET:
     @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/pure/index.js
     chmod +x dist/npm/pure/index.js
 
-    npm i --no-save dist/npm/*/
+    npm i --no-package-lock --no-save ./dist/npm/*/
 
 test SUBJECTS:
     just $(for s in {{ SUBJECTS }}; do printf "test-$s "; done)

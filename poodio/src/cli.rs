@@ -60,7 +60,7 @@ pub fn main<I: IntoIterator<Item = T>, T: Clone + Into<std::ffi::OsString>>(argv
 
 /// Command Line Interface (CLI) entry point for `poodio`
 #[napi(js_name = "main")]
-pub fn main_js(argv: Vec<String>) {
+pub fn main_(argv: Vec<String>) {
     main(argv)
 }
 
