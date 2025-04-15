@@ -160,7 +160,7 @@ jobs:
                   GITHUB_REPO_URL="${{ github.server_url }}/${{ github.repository }}"
                   CHANGELOG="$GITHUB_REPO_URL/compare/$LAST_TAG...$HEAD_TAG"
                   CONTRIBUTORS="$(git log --pretty=format:'  + @%an' "$LAST_TAG".."$HEAD_TAG" | sort -u)"
-                  INSTALLATION="$GITHUB_REPO_URL/tree/$HEAD_TAG/poodio#install"
+                  INSTALLATION="$GITHUB_REPO_URL/blob/$HEAD_TAG/poodio/README.md#install"
 
                   echo "changelog=$CHANGELOG" >> "$GITHUB_OUTPUT"
                   echo "contributors=$CONTRIBUTORS" >> "$GITHUB_OUTPUT"
