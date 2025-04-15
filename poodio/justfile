@@ -12,7 +12,7 @@ build TARGET:
     @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/wrap/index.js
     chmod +x dist/npm/wrap/index.js
 
-    npm i --no-package-lock
+    npm i
 
 test SUBJECTS='':
     #! /usr/bin/env bash
