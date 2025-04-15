@@ -1,7 +1,7 @@
 [build-dependencies]
 color-eyre = {workspace = true, features = ["track-caller"]}
-napi-build = {workspace = true, features = []}
-pyo3-build-config = {workspace = true, features = ["resolve-config"]}
+napi-build = {workspace = true, features = [], optional = true}
+pyo3-build-config = {workspace = true, features = ["extension-module", "resolve-config"], optional = true}
 serde = {workspace = true, features = ["std"]}
 serde_json = {workspace = true, features = ["std"]}
 
@@ -11,11 +11,16 @@ clap = {workspace = true, features = ["default", "derive"]}
 color-eyre = {workspace = true, features = ["track-caller"]}
 cpal = {workspace = true, features = []}
 log = {workspace = true, features = ["std"]}
-napi = {workspace = true, features = ["dyn-symbols"]}
-napi-derive = {workspace = true, features = ["type-def"]}
-pyo3 = {workspace = true, features = ["extension-module", "macros"]}
+napi = {workspace = true, features = ["dyn-symbols"], optional = true}
+napi-derive = {workspace = true, features = ["type-def"], optional = true}
+pyo3 = {workspace = true, features = ["extension-module", "macros"], optional = true}
 # pyo3-stub-gen = {workspace = true, features = []}
 simple_logger = {workspace = true, features = ["colors", "stderr"]}
+
+[features]
+bind-napi = ["dep:napi", "dep:napi-build", "dep:napi-derive"]
+bind-pyo3 = ["dep:pyo3", "dep:pyo3-build-config"]
+default = []
 
 [lib]
 crate-type = ["cdylib", "rlib"]

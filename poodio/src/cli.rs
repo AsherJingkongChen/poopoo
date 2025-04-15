@@ -4,13 +4,17 @@ pub use clap::Parser;
 
 use clap::builder::styling::{AnsiColor, Styles};
 use color_eyre::{owo_colors::OwoColorize, Result};
-use napi_derive::napi;
-use pyo3::pyfunction;
 use std::{
     env,
     io::{stderr, Write},
     process::exit,
 };
+
+#[cfg(feature = "bind-napi")]
+use napi_derive::napi;
+
+#[cfg(feature = "bind-pyo3")]
+use pyo3::pyfunction as pyfn;
 
 #[derive(Clone, Debug, Parser, PartialEq)]
 #[command(
@@ -33,8 +37,8 @@ use std::{
 pub struct Arguments {}
 
 /// Command Line Interface (CLI) entry point for [`poodio`](https://docs.rs/poodio).
-#[pyfunction(name = "main")]
-#[napi(js_name = "main")]
+#[cfg_attr(feature = "bind-pyo3", pyfn)]
+#[cfg_attr(feature = "bind-napi", napi)]
 pub fn main(argv: Vec<String>) {
     || -> Result<()> {
         init()?;
@@ -62,8 +66,8 @@ pub fn main(argv: Vec<String>) {
 }
 
 /// Version tag
-#[pyfunction]
-#[napi]
+#[cfg_attr(feature = "bind-pyo3", pyfn)]
+#[cfg_attr(feature = "bind-napi", napi)]
 pub const fn version() -> &'static str {
     concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
 }
