@@ -37,7 +37,9 @@ jobs:
                   cache-dependency-path: "**/package.json"
             - uses: astral-sh/setup-uv@v4
               with:
-                  cache-suffix: ${{ runner.os }}-${{ runner.arch }}
+                  cache-dependency-glob: |
+                      **/pyproject.toml
+                      **/uv.lock
                   enable-cache: true
             - uses: taiki-e/install-action@v2
               with:
