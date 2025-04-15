@@ -9,7 +9,8 @@ fn main() -> Result<()> {
     #[cfg(feature = "bind-napi")]
     bind_napi::write_cfgs()?;
 
-    #[cfg(feature = "bind-pyo3")] {
+    #[cfg(feature = "bind-pyo3")]
+    {
         pyo3_build_config::add_extension_module_link_args();
         pyo3_build_config::add_python_framework_link_args();
         pyo3_build_config::use_pyo3_cfgs();
