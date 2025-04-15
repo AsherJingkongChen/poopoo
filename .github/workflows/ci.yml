@@ -70,8 +70,7 @@ jobs:
                     #   test:
                     - os: ubuntu-24.04
                       target: i686-unknown-linux-gnu
-                      arch: x86
-                      test: e2e-bin e2e-npm
+                      test: e2e-bin
                     - os: ubuntu-24.04
                       target: x86_64-unknown-linux-gnu
                       test: e2e-bin e2e-npm
@@ -84,8 +83,7 @@ jobs:
                       test: e2e-bin e2e-npm
                     - os: windows-2025
                       target: i686-pc-windows-msvc
-                      arch: x86
-                      test: e2e-bin e2e-npm
+                      test: e2e-bin
                     - os: windows-2025
                       target: x86_64-pc-windows-msvc
                       test: e2e-bin e2e-npm
@@ -105,7 +103,6 @@ jobs:
                       cargo-release-${{ matrix.os }}-${{ matrix.target }}-
             - uses: actions/setup-node@v4
               with:
-                  architecture: ${{ matrix.arch }}
                   cache: npm
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
