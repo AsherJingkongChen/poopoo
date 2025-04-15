@@ -58,34 +58,24 @@ jobs:
                 include:
                     - os: macos-15
                       target: aarch64-apple-darwin
-                      test: e2e-bin e2e-npm
                     - os: macos-13
                       target: x86_64-apple-darwin
-                      test: e2e-bin e2e-npm
                     - os: ubuntu-24.04-arm
                       target: aarch64-unknown-linux-gnu
-                      test: e2e-bin e2e-npm
-                    # - os: ubuntu-24.04-arm
+                    # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   target: aarch64-unknown-linux-musl
-                    #   test:
-                    - os: ubuntu-24.04
-                      target: i686-unknown-linux-gnu
-                      test: e2e-bin e2e-npm
+                    # - os: ubuntu-24.04 ## Deprecated 32-bit
+                    #   target: i686-unknown-linux-gnu
                     - os: ubuntu-24.04
                       target: x86_64-unknown-linux-gnu
-                      test: e2e-bin e2e-npm
-                    # - os: ubuntu-24.04
+                    # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   target: x86_64-unknown-linux-musl
-                    #   test:
-                    # - os: windows-2025
+                    # - os: windows-2025 ## Needed Windows ARM runner
                     #   target: aarch64-pc-windows-msvc
-                    #   test:
-                    - os: windows-2025
-                      target: i686-pc-windows-msvc
-                      test: e2e-bin
+                    # - os: windows-2025 ## Deprecated 32-bit
+                    #   target: i686-pc-windows-msvc
                     - os: windows-2025
                       target: x86_64-pc-windows-msvc
-                      test: e2e-bin e2e-npm
         steps:
             - uses: actions/checkout@v4
             - name: Cache cargo
@@ -117,10 +107,6 @@ jobs:
             - name: Set up Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
               run: |
-                  if [ "${{ matrix.target }}" == "i686-unknown-linux-gnu" ]; then
-                      sudo dpkg --add-architecture i386
-                  fi
-
                   sudo apt-get update
                   sudo apt-get install -y libasound2-dev
             - uses: taiki-e/install-action@v2
@@ -129,7 +115,7 @@ jobs:
             - run: >
                   just prepare
                   poodio::build "${{ matrix.target }}"
-                  poodio::test "${{ matrix.test }}"
+                  poodio::test "e2e-bin e2e-npm"
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
