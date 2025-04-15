@@ -1,7 +1,7 @@
 build TARGET:
     @printf '{}' > 'package.json'
     npx napi build --cargo-flags=--locked --no-dts-header --release \
-        --target '{{ TARGET }}' 'dist/npm/bind/'
+        --features bind-napi --target '{{ TARGET }}' 'dist/npm/bind/'
     @rm -f 'package.json'
 
     @mkdir -p 'dist/bin/'
@@ -11,9 +11,11 @@ build TARGET:
     @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > 'dist/npm/wrap/index.js'
     chmod +x 'dist/npm/wrap/index.js'
 
-    npm i
+    npm install 'dist/npm/'*
 
-    uv run maturin build --target '{{ TARGET }}' --out 'dist/uv/'
+    uv run maturin build \
+        --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/uv/'
+    uv pip install --no-deps --verbose 'dist/uv/'*
 
 test SUBJECTS='':
     #! /usr/bin/env bash

@@ -31,22 +31,14 @@ jobs:
                   key: cargo-check-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       cargo-check-${{ runner.os }}-${{ runner.arch }}-
-            - name: Set up npm cache directory
-              run: npm set cache .npm/
-            - name: Cache npm
-              uses: actions/cache@v4
+            - uses: actions/setup-node@v4
               with:
-                  path: .npm/
-                  key: npm-check-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-                  restore-keys: |
-                      npm-check-${{ runner.os }}-
-            - name: Cache uv
-              uses: actions/cache@v4
+                  cache: npm
+                  cache-dependency-path: "**/package.json"
+            - uses: astral-sh/setup-uv@v4
               with:
-                  path: ~/.cache/uv
-                  key: uv-check-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
-                  restore-keys: |
-                      uv-check-${{ runner.os }}-${{ runner.arch }}-
+                  cache-suffix: ${{ runner.os }}-${{ runner.arch }}
+                  enable-cache: true
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-audit, cargo-outdated, just
@@ -55,7 +47,7 @@ jobs:
               if: github.ref_type == 'tag'
 
     build-poodio:
-        # if: startsWith(github.ref, 'refs/tags/poodio@')
+        if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
@@ -105,15 +97,10 @@ jobs:
                   key: cargo-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       cargo-${{ matrix.os }}-${{ matrix.target }}-
-            - name: Set up npm cache directory
-              run: npm set cache .npm/
-            - name: Cache npm
-              uses: actions/cache@v4
+            - uses: actions/setup-node@v4
               with:
-                  path: .npm/
-                  key: npm-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/package.json') }}
-                  restore-keys: |
-                      npm-${{ matrix.os }}-${{ matrix.target }}-
+                  cache: npm
+                  cache-dependency-path: "**/package.json"
             - uses: taiki-e/setup-cross-toolchain-action@v1
               with:
                   target: ${{ matrix.target }}
