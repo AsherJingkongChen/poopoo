@@ -45,9 +45,7 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-audit, cargo-outdated, just
-            - run: just prepare check
-            - run: just audit
-              if: github.ref_type == 'tag'
+            - run: just prepare check audit
 
     build-poodio:
         # if: startsWith(github.ref, 'refs/tags/poodio@')
@@ -115,7 +113,7 @@ jobs:
             - run: >
                   just prepare
                   poodio::build "${{ matrix.target }}"
-                  poodio::test "e2e-bin e2e-npm"
+                  poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}

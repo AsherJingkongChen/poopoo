@@ -26,9 +26,10 @@ build-bind-pyo3 TARGET:
         --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/uv/'
     uv pip install 'dist/uv/'*
 
-test SUBJECTS='':
-    #! /usr/bin/env bash
-    for s in {{ SUBJECTS }}; do npx @poodio/test-$s; done
+test: test-e2e
+
+test-e2e:
+    for t in "./test/e2e/"*; do npx $t; done
 
 BIN_EXT := if os() == 'windows' { '.exe' } else { '' }
 NPM_DIST_PURE_MAIN_DATA := '''
