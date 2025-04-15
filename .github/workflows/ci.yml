@@ -28,13 +28,14 @@ jobs:
                       ~/.cargo/registry/cache/
                       ~/.cargo/registry/index/
                       target/
-                  key: cargo-check-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
+                  key: cargo-dev-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
-                      cargo-check-${{ runner.os }}-${{ runner.arch }}-
+                      cargo-dev-${{ runner.os }}-${{ runner.arch }}-
             - uses: actions/setup-node@v4
               with:
                   cache: npm
                   cache-dependency-path: "**/package.json"
+                  node-version-file: .node-version
             - uses: astral-sh/setup-uv@v4
               with:
                   cache-dependency-glob: |
@@ -49,7 +50,7 @@ jobs:
               if: github.ref_type == 'tag'
 
     build-poodio:
-        if: startsWith(github.ref, 'refs/tags/poodio@')
+        # if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
@@ -81,7 +82,8 @@ jobs:
                       test:
                     - os: windows-2025
                       target: i686-pc-windows-msvc
-                      test: e2e-bin
+                      test: e2e-bin e2e-npm
+                      arch: x86
                     - os: windows-2025
                       target: x86_64-pc-windows-msvc
                       test: e2e-bin e2e-npm
@@ -96,13 +98,21 @@ jobs:
                       ~/.cargo/registry/cache/
                       ~/.cargo/registry/index/
                       target/
-                  key: cargo-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
+                  key: cargo-release-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
-                      cargo-${{ matrix.os }}-${{ matrix.target }}-
+                      cargo-release-${{ matrix.os }}-${{ matrix.target }}-
             - uses: actions/setup-node@v4
               with:
+                  architecture: ${{ matrix.arch }}
                   cache: npm
                   cache-dependency-path: "**/package.json"
+                  node-version-file: .node-version
+            - uses: astral-sh/setup-uv@v4
+              with:
+                  cache-dependency-glob: |
+                      **/pyproject.toml
+                      **/uv.lock
+                  enable-cache: true
             - uses: taiki-e/setup-cross-toolchain-action@v1
               with:
                   target: ${{ matrix.target }}
@@ -141,6 +151,12 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
+            - uses: actions/setup-node@v4
+              with:
+                  cache: npm
+                  cache-dependency-path: "**/package.json"
+                  node-version-file: .node-version
+                  registry-url: https://registry.npmjs.org/
             - name: Publish to github.com (Packaging)
               id: github-pack
               run: |
@@ -180,10 +196,8 @@ jobs:
                   files: dist/*/bin/*.tgz
             - name: Publish to npmjs.com
               run: |
-                  npm set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
                   npm publish "$(set -- dist/*; echo "$1")/npm/wrap/"
                   for pkg in dist/*; do npm publish "./$pkg/npm/bind/"; done
-                  npm set //registry.npmjs.org/:_authToken
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
             - name: Publish to crates.io
