@@ -1,19 +1,5 @@
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools>=75.0"]
-
-[project]
-dynamic = ["version"]
-name = "poopoo"
-requires-python = ">=3.8"
-
-[tool.ruff.lint]
-ignore = ["COM812", "D203", "D213"]
-select = ["ALL"]
-
-[tool.setuptools]
-packages = ["poodio"]
+[dependency-groups]
+dev = ["maturin", "pip-audit", "ruff"]
 
 [tool.uv]
-dev-dependencies = ["maturin", "pip-audit", "ruff"]
 workspace = {members = ["poodio"]}

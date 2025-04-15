@@ -9,7 +9,13 @@ resolution-markers = [
 [manifest]
 members = [
     "poodio",
-    "poopoo",
+]
+
+[manifest.dependency-groups]
+dev = [
+    { name = "maturin" },
+    { name = "pip-audit" },
+    { name = "ruff" },
 ]
 
 [[package]]
@@ -483,27 +489,6 @@ wheels = [
 [[package]]
 name = "poodio"
 source = { editable = "poodio" }
-
-[[package]]
-name = "poopoo"
-source = { editable = "." }
-
-[package.dev-dependencies]
-dev = [
-    { name = "maturin" },
-    { name = "pip-audit", version = "2.7.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
-    { name = "pip-audit", version = "2.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "maturin" },
-    { name = "pip-audit" },
-    { name = "ruff" },
-]
 
 [[package]]
 name = "py-serializable"
