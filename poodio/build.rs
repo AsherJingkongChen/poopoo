@@ -4,6 +4,8 @@ use serde_json::{json, ser::PrettyFormatter, Serializer};
 use std::{collections::BTreeMap, fs, io::Write, path::Path, sync::LazyLock};
 
 fn main() -> Result<()> {
+    println!("cargo:rerun-if-changed=");
+
     std::env::set_var("RUST_BACKTRACE", "full");
     color_eyre::install()?;
     napi_build::setup();
@@ -124,9 +126,6 @@ fn build_npm_dist() -> Result<()> {
 
     write_json_pretty(fs::File::create(&dist_bind_cfg_file)?, &dist_bind_cfg)?;
     write_json_pretty(fs::File::create(&dist_wrap_cfg_file)?, &dist_wrap_cfg)?;
-
-    println!("cargo:rerun-if-changed={dist_bind_cfg_file:?}");
-    println!("cargo:rerun-if-changed={dist_wrap_cfg_file:?}");
 
     Ok(())
 }

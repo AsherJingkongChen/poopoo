@@ -5,14 +5,14 @@ build TARGET:
     @rm -f package.json
 
     @mkdir -p dist/bin/
-    cp ../target/{{ TARGET }}/release/poodio{{ BIN_EXT }} \
+    cp '../target/{{ TARGET }}/release/poodio{{ BIN_EXT }}' \
         dist/bin/
     cp dist/npm/bind/index.d.ts dist/npm/wrap/
 
     @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > dist/npm/wrap/index.js
     chmod +x dist/npm/wrap/index.js
 
-    npm update --no-save
+    npm i --no-package-lock
 
 test SUBJECTS='':
     #! /usr/bin/env bash

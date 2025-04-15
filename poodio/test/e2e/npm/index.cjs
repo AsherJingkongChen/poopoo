@@ -11,7 +11,7 @@ test("Package can be required", () => {
 
 test("Package executable version is correct", () => {
     const output = require("node:child_process")
-        .execSync("npx -y poodio --version", {
+        .execSync("npx poodio --version", {
             encoding: "utf8",
             windowsHide: true,
         })
@@ -27,7 +27,7 @@ test("'version()' is correct", () => {
 test.run();
 
 function answerVersion() {
-    return `poodio@${require(`poodio/package.json`).version}`;
+    return `poodio@${require("poodio/package.json").version}`;
 }
 
 function assertNotThrows(fn) {
