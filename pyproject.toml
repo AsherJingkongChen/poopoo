@@ -1,3 +1,7 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools"]
+
 [project]
 dynamic = ["version"]
 name = "poopoo"
@@ -11,7 +15,7 @@ select = ["ALL"]
 packages = ["poodio"]
 
 [tool.uv.workspace]
-members = []
+members = ["poodio"]
 
 [tool.uv]
 dev-dependencies = ["maturin", "pip-audit", "ruff"]

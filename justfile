@@ -27,26 +27,25 @@ check-fix:
     uv run ruff check --fix
     uv run ruff format
 
-clean: clean-cargo clean-dist clean-npm
+clean: clean-cargo clean-dist clean-npm clean-uv
 
 clean-cargo:
-    rm -rf target/
+    rm -rf 'target/'
 
 clean-dist:
-    rm -rf poodio/dist/
+    rm -rf 'poodio/dist/'
 
 clean-npm:
-    rm -rf node_modules/
+    rm -rf 'node_modules/'
 
-clean-pip:
-    rm -rf .ruff_cache/ .venv/ poodio.egg-info/
+clean-uv:
+    rm -rf 'poodio.egg-info/' '.venv/'
 
 prepare:
     npm i
     uv sync
 
 update:
-    cargo update
+    cargo update --verbose
     npm update
     uv lock
-    uv sync

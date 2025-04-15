@@ -5,6 +5,7 @@ pub use clap::Parser;
 use clap::builder::styling::{AnsiColor, Styles};
 use color_eyre::{owo_colors::OwoColorize, Result};
 use napi_derive::napi;
+use pyo3::pyfunction;
 use std::{
     env,
     io::{stderr, Write},
@@ -31,8 +32,10 @@ use std::{
 /// Poodio farts poo poo audio
 pub struct Arguments {}
 
-/// Command Line Interface (CLI) entry point for [`poodio`](crate)
-pub fn main<I: IntoIterator<Item = T>, T: Clone + Into<std::ffi::OsString>>(argv: I) {
+/// Command Line Interface (CLI) entry point for [`poodio`](https://docs.rs/poodio).
+#[pyfunction(name = "main")]
+#[napi(js_name = "main")]
+pub fn main(argv: Vec<String>) {
     || -> Result<()> {
         init()?;
         let _args = match Arguments::try_parse_from(argv) {
@@ -58,13 +61,8 @@ pub fn main<I: IntoIterator<Item = T>, T: Clone + Into<std::ffi::OsString>>(argv
     });
 }
 
-/// Command Line Interface (CLI) entry point for `poodio`
-#[napi(js_name = "main")]
-pub fn main_(argv: Vec<String>) {
-    main(argv)
-}
-
 /// Version tag
+#[pyfunction]
 #[napi]
 pub const fn version() -> &'static str {
     concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))

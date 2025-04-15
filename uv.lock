@@ -6,6 +6,12 @@ resolution-markers = [
     "python_full_version < '3.9'",
 ]
 
+[manifest]
+members = [
+    "poodio",
+    "poopoo",
+]
+
 [[package]]
 name = "boolean-py"
 version = "5.0"
@@ -475,8 +481,12 @@ wheels = [
 ]
 
 [[package]]
+name = "poodio"
+source = { editable = "poodio" }
+
+[[package]]
 name = "poopoo"
-source = { virtual = "." }
+source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [

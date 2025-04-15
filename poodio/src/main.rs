@@ -1,3 +1,3 @@
 fn main() {
-    poodio::cli::main(std::env::args_os());
+    poodio::cli::main(std::env::args().collect());
 }

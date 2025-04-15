@@ -5,13 +5,14 @@ use std::{collections::BTreeMap, fs, io::Write, path::Path, sync::LazyLock};
 
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=");
-
     std::env::set_var("RUST_BACKTRACE", "full");
+
     color_eyre::install()?;
     napi_build::setup();
-    // pyo3_build_config::use_pyo3_cfgs();
+    pyo3_build_config::use_pyo3_cfgs();
     build_npm_dist()?;
     build_npm_test()?;
+
     Ok(())
 }
 
