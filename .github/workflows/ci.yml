@@ -19,7 +19,7 @@ jobs:
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Cache Cargo
+            - name: Cache cargo
               uses: actions/cache@v4
               with:
                   path: |
@@ -31,19 +31,28 @@ jobs:
                   key: cargo-check-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       cargo-check-${{ runner.os }}-${{ runner.arch }}-
-            - name: Set up Cache Npm directory
+            - name: Set up npm cache directory
               run: npm set cache .npm/
-            - name: Cache Npm
+            - name: Cache npm
               uses: actions/cache@v4
               with:
                   path: .npm/
-                  key: npm-caheck-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+                  key: npm-check-${{ runner.os }}-${{ hashFiles('**/package.json') }}
                   restore-keys: |
                       npm-check-${{ runner.os }}-
+            - name: Cache uv
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/uv
+                  key: uv-check-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
+                  restore-keys: |
+                      uv-check-${{ runner.os }}-${{ runner.arch }}-
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-audit, cargo-outdated, just
-            - run: just prepare check audit
+            - run: just prepare check
+            - run: just audit
+              if: github.ref_type == 'tag'
 
     build-poodio:
         if: startsWith(github.ref, 'refs/tags/poodio@')
@@ -84,7 +93,7 @@ jobs:
                       test: e2e-bin e2e-npm
         steps:
             - uses: actions/checkout@v4
-            - name: Cache Cargo
+            - name: Cache cargo
               uses: actions/cache@v4
               with:
                   path: |
@@ -96,15 +105,15 @@ jobs:
                   key: cargo-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       cargo-${{ matrix.os }}-${{ matrix.target }}-
-            - name: Set up Cache Npm directory
+            - name: Set up npm cache directory
               run: npm set cache .npm/
-            - name: Cache Npm
+            - name: Cache npm
               uses: actions/cache@v4
               with:
                   path: .npm/
-                  key: npm-${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}
+                  key: npm-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/package.json') }}
                   restore-keys: |
-                      npm-${{ matrix.os }}-
+                      npm-${{ matrix.os }}-${{ matrix.target }}-
             - uses: taiki-e/setup-cross-toolchain-action@v1
               with:
                   target: ${{ matrix.target }}

@@ -1,22 +1,32 @@
 mod poodio
 
+export RUFF_NO_CACHE := 'true'
+
 audit:
     cargo audit -D warnings
     cargo outdated --exit-code 1 --workspace
     npm audit
     npm outdated
+    uv lock --check
+    uv sync --check
+    uv run pip-audit --skip-editable --progress-spinner off
+
+audit-fix: update
 
 check:
-    npx prettier --check .
     cargo fmt --all --check
     cargo clippy --all-features --locked -- -D warnings
+    npx prettier --check .
+    uv run ruff check
+    uv run ruff format --check
 
 check-fix:
-    npx prettier --write .
     cargo fmt --all
     cargo clippy --all-features --allow-dirty --allow-staged --fix
+    npx prettier --write .
+    uv run ruff check --fix
+    uv run ruff format
 
-# + clean-*
 clean: clean-cargo clean-dist clean-npm
 
 clean-cargo:
@@ -28,9 +38,15 @@ clean-dist:
 clean-npm:
     rm -rf node_modules/
 
+clean-pip:
+    rm -rf .ruff_cache/ .venv/ poodio.egg-info/
+
 prepare:
-    npm i --verbose
+    npm i
+    uv sync
 
 update:
     cargo update
     npm update
+    uv lock
+    uv sync

@@ -1,17 +1,13 @@
+.venv/
+__pycache__/
 build/
 dist/
 node_modules/
 target/
 
+*.egg-info/
+
 # The best way to clean your git repository
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
 .DS_Store
 .DS_Store
 .DS_Store

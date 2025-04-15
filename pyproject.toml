@@ -1,0 +1,17 @@
+[project]
+dynamic = ["version"]
+name = "poopoo"
+requires-python = ">=3.8"
+
+[tool.ruff.lint]
+ignore = ["COM812", "D203", "D213"]
+select = ["ALL"]
+
+[tool.setuptools]
+packages = ["poodio"]
+
+[tool.uv.workspace]
+members = []
+
+[tool.uv]
+dev-dependencies = ["maturin", "pip-audit", "ruff"]
