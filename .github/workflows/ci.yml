@@ -70,6 +70,8 @@ jobs:
                     #   target: x86_64-unknown-linux-musl
                     - os: windows-2025 ## Needed Windows ARM runner
                       target: aarch64-pc-windows-msvc
+                      node:
+                          architecture: arm64
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   target: i686-pc-windows-msvc
                     - os: windows-2025
@@ -90,6 +92,7 @@ jobs:
                       cargo-release-${{ matrix.os }}-${{ matrix.target }}-
             - uses: actions/setup-node@v4
               with:
+                  architecture: ${{ matrix.node.architecture }}
                   cache: npm
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
