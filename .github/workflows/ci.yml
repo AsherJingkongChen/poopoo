@@ -126,10 +126,10 @@ jobs:
                   sudo apt-get install -y $(cat apt-get.txt)
 
             - run: >
-                just prepare
-                poodio::build "${{ matrix.target }}"
-                poodio::install
-                poodio::test-e2e
+                  just prepare
+                  poodio::build "${{ matrix.target }}"
+                  poodio::install
+                  poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
