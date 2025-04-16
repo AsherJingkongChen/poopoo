@@ -5,6 +5,7 @@ dist/
 node_modules/
 target/
 
+.*cache/
 *.egg-info/
 
 # The best way to clean your git repository

@@ -38,6 +38,7 @@ jobs:
 
             - uses: astral-sh/setup-uv@v4
               with:
+                  cache-local-path: .cache/uv/
                   enable-cache: true
 
             - name: Check
@@ -46,7 +47,7 @@ jobs:
                   just prepare check audit
 
     build-poodio:
-        # if: startsWith(github.ref, 'refs/tags/poodio@')
+        if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -111,6 +112,9 @@ jobs:
             #       key: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
             #       restore-keys: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-
             - uses: astral-sh/setup-uv@v4
+              with:
+                  cache-local-path: .cache/uv/
+                  enable-cache: true
             - if: matrix.os == 'windows-11-arm'
               run: uv python pin "${{ steps.python.outputs.python-path }}"
 

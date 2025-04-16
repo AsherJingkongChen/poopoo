@@ -8,7 +8,7 @@ audit:
     cargo outdated --exit-code 1 --workspace
     npm audit
     cargo audit -D warnings
-    uv run --no-sync pip-audit --skip-editable
+    uv run --no-sync pip-audit --progress-spinner off --skip-editable
 
 audit-fix: update
 
