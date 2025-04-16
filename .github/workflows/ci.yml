@@ -28,7 +28,10 @@ jobs:
                   components: clippy, rustfmt
             - uses: taiki-e/install-action@v2
               with:
-                  tool: cargo-audit, cargo-outdated, just
+                  tool: >
+                      cargo-audit@0.21.2,
+                      cargo-outdated@0.17.0,
+                      just@1.40.0
 
             - uses: actions/setup-node@v4
               with:
@@ -40,11 +43,13 @@ jobs:
               with:
                   enable-cache: true
 
-            - run: ./show-toolchains.sh
-            - run: just prepare check audit
+            - name: Check
+              run: |
+                  ./show-toolchains.sh
+                  just prepare check audit
 
     build-poodio:
-        if: startsWith(github.ref, 'refs/tags/poodio@')
+        # if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -53,12 +58,12 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - os: macos-15
-                      target: aarch64-apple-darwin
-                    - os: macos-13
-                      target: x86_64-apple-darwin
-                    - os: ubuntu-24.04-arm
-                      target: aarch64-unknown-linux-gnu
+                    # - os: macos-15
+                    #   target: aarch64-apple-darwin
+                    # - os: macos-13
+                    #   target: x86_64-apple-darwin
+                    # - os: ubuntu-24.04-arm
+                    #   target: aarch64-unknown-linux-gnu
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   target: aarch64-unknown-linux-musl
                     # - os: ubuntu-24.04 ## Deprecated 32-bit
@@ -72,8 +77,8 @@ jobs:
                       arch: arm64
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   target: i686-pc-windows-msvc
-                    - os: windows-2025
-                      target: x86_64-pc-windows-msvc
+                    # - os: windows-2025
+                    #   target: x86_64-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
@@ -86,7 +91,7 @@ jobs:
             - uses: actions-rust-lang/setup-rust-toolchain@v1
             - uses: taiki-e/install-action@v2
               with:
-                  tool: just
+                  tool: just@1.40.0
 
             - uses: actions/setup-node@v4
               with:
@@ -100,14 +105,14 @@ jobs:
               with:
                   architecture: arm64
                   python-version: 3.11
-            - name: Restore cache for uv
-              uses: actions/cache@v4
-              with:
-                  path: |
-                      ~/.cache/uv
-                      ~/.local/share/uv
-                  key: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
-                  restore-keys: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-
+            # - name: Restore cache for uv
+            #   uses: actions/cache@v4
+            #   with:
+            #       path: |
+            #           ~/.cache/uv
+            #           ~/.local/share/uv
+            #       key: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
+            #       restore-keys: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-
             - uses: astral-sh/setup-uv@v4
             - if: matrix.os == 'windows-11-arm'
               run: uv python pin "${{ steps.python.outputs.python-path }}"
@@ -125,11 +130,10 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y $(cat apt-get.txt)
 
-            - run: >
-                  just prepare
-                  poodio::build "${{ matrix.target }}"
-                  poodio::install
-                  poodio::test-e2e
+            - run: |
+                  ./show-toolchains.sh
+                  just prepare poodio::build "${{ matrix.target }}" \
+                  poodio::install poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
