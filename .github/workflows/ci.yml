@@ -19,18 +19,12 @@ jobs:
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Cache cargo
-              uses: actions/cache@v4
+            - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
-                  path: |
-                      ~/.cargo/bin/
-                      ~/.cargo/git/db/
-                      ~/.cargo/registry/cache/
-                      ~/.cargo/registry/index/
-                      target/
-                  key: cargo-dev-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/Cargo.lock') }}
-                  restore-keys: |
-                      cargo-dev-${{ runner.os }}-${{ runner.arch }}-
+                  components: clippy, rustfmt
+            - uses: taiki-e/install-action@v2
+              with:
+                  tool: cargo-audit, cargo-outdated, just
             - uses: actions/setup-node@v4
               with:
                   cache: npm
@@ -42,9 +36,6 @@ jobs:
                       **/pyproject.toml
                       **/uv.lock
                   enable-cache: true
-            - uses: taiki-e/install-action@v2
-              with:
-                  tool: cargo-audit, cargo-outdated, just
             - run: just prepare check audit
 
     build-poodio:
@@ -76,18 +67,10 @@ jobs:
                       target: x86_64-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
-            - name: Cache cargo
-              uses: actions/cache@v4
+            - uses: actions-rust-lang/setup-rust-toolchain@v1
+            - uses: taiki-e/install-action@v2
               with:
-                  path: |
-                      ~/.cargo/bin/
-                      ~/.cargo/git/db/
-                      ~/.cargo/registry/cache/
-                      ~/.cargo/registry/index/
-                      target/
-                  key: cargo-release-${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
-                  restore-keys: |
-                      cargo-release-${{ matrix.os }}-${{ matrix.target }}-
+                  tool: just
             - uses: actions/setup-node@v4
               with:
                   cache: npm
@@ -99,20 +82,14 @@ jobs:
                       **/pyproject.toml
                       **/uv.lock
                   enable-cache: true
-            - uses: taiki-e/setup-cross-toolchain-action@v1
-              with:
-                  target: ${{ matrix.target }}
             - name: Set up Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
               run: |
                   sudo apt-get update
                   sudo apt-get install -y libasound2-dev
-            - uses: taiki-e/install-action@v2
-              with:
-                  tool: just
             - run: >
                   just prepare
-                  poodio::build${{ (matrix.target == 'aarch64-pc-windows-msvc' && '-bind-napi') || '' }} "${{ matrix.target }}"
+                  poodio::build "${{ matrix.target }}"
                   poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
