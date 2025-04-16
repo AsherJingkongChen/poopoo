@@ -110,7 +110,7 @@ jobs:
             - uses: astral-sh/setup-uv@v4
             - shell: bash
               if: matrix.os == 'windows-11-arm'
-              run: uv python pin ${{ steps.python.outputs.python-path }}
+              run: uv python pin "${{ steps.python.outputs.python-path }}"
 
             - name: Install Dev-dependencies for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
