@@ -114,7 +114,8 @@ jobs:
             - if: matrix.os == 'windows-11-arm'
               run: uv python pin "${{ steps.python.outputs.python-path }}"
 
-            - uses: awalsh128/cache-apt-pkgs-action@v1
+            - if: startsWith(matrix.os, 'ubuntu-')
+              uses: awalsh128/cache-apt-pkgs-action@v1
               with:
                   packages: libasound2-dev
 
