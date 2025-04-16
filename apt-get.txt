@@ -1,1 +1,0 @@
-libasound2-dev
