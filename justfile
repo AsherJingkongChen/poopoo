@@ -38,7 +38,7 @@ clean-npm:
     rm -rf 'node_modules/'
 
 clean-uv:
-    rm -rf 'poodio.egg-info/' '.venv/'
+    rm -rf '.venv/'
 
 prepare:
     uv sync --no-install-workspace --locked

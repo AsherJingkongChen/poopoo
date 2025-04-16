@@ -46,6 +46,9 @@ jobs:
     build-poodio:
         if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
+        defaults:
+            run:
+                shell: bash
         strategy:
             fail-fast: false
             matrix:
@@ -76,7 +79,6 @@ jobs:
             # See https://github.com/actions/partner-runner-images/issues/77
             - if: matrix.os == 'windows-11-arm'
               name: Install rustup on Windows ARM
-              shell: bash
               run: |
                   curl -LOs https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe
                   ./rustup-init.exe -y --default-toolchain stable --no-modify-path
@@ -108,7 +110,6 @@ jobs:
                   restore-keys: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-
             - uses: astral-sh/setup-uv@v4
             - if: matrix.os == 'windows-11-arm'
-              shell: bash
               run: uv python pin "${{ steps.python.outputs.python-path }}"
 
             - if: startsWith(matrix.os, 'ubuntu')
@@ -120,13 +121,15 @@ jobs:
                   restore-keys: apt-build-poodio-${{ runner.os }}-${{ runner.arch }}-
             - if: startsWith(matrix.os, 'ubuntu')
               name: Install apt packages for Ubuntu Linux
-              shell: bash
               run: |
                   sudo apt-get update
                   sudo apt-get install -y $(cat apt-get.txt)
 
-            - shell: bash
-              run: just prepare poodio::build "${{ matrix.target }}" poodio::test-e2e
+            - run: >
+                just prepare
+                poodio::build "${{ matrix.target }}"
+                poodio::install
+                poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}

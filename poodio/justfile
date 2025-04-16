@@ -19,13 +19,13 @@ build-bind-napi TARGET:
     @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > 'dist/npm/wrap/index.js'
     chmod +x 'dist/npm/wrap/index.js'
 
-    npm install --no-save
-
 build-bind-pyo3 TARGET:
     uv run --no-sync maturin build --bindings pyo3 --locked --release \
-        --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/uv/'
+        --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/pip/'
 
-    uv pip install --reinstall 'dist/uv/'*
+install:
+    npm install --no-save
+    uv pip install --reinstall 'dist/pip/'*
 
 test: test-e2e
 
