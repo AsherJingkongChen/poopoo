@@ -73,8 +73,10 @@ jobs:
               run: |
                 curl -LO https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe
                 chmod +x rustup-init.exe
-                ./rustup-init.exe -y --no-modify-path --default-toolchain stable
-                echo "$(cygpath -w $HOME/.cargo/bin)" >> $GITHUB_PATH
+                ./rustup-init.exe -y --default-toolchain stable
+                echo "CARGO_HOME=$HOME/.cargo" >> $GITHUB_ENV
+                echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+                echo "HOME=$HOME"
             - uses: actions-rust-lang/setup-rust-toolchain@v1
             - uses: taiki-e/install-action@v2
               with:
