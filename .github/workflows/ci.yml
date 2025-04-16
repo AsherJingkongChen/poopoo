@@ -67,6 +67,10 @@ jobs:
                       target: x86_64-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
+            # See <actions/partner-runner-images#77>
+            - name: Install Rustup for Windows ARM
+              uses: dtolnay/rust-toolchain@stable
+              if: matrix.os == 'windows-11-arm'
             - uses: actions-rust-lang/setup-rust-toolchain@v1
             - uses: taiki-e/install-action@v2
               with:
@@ -82,7 +86,7 @@ jobs:
                       **/pyproject.toml
                       **/uv.lock
                   enable-cache: true
-            - name: Set up Ubuntu Linux
+            - name: Install Dev-dependencies for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
               run: |
                   sudo apt-get update
