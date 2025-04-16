@@ -64,6 +64,7 @@ jobs:
                     #   target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
                       target: aarch64-pc-windows-msvc
+                      arch: arm64
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   target: i686-pc-windows-msvc
                     - os: windows-2025
@@ -87,6 +88,10 @@ jobs:
                   cache: npm
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
+            - uses: actions/setup-python@v5
+              with:
+                  architecture: ${{ matrix.arch }}
+                  python-version-file: .python-version
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
@@ -98,8 +103,8 @@ jobs:
             - uses: astral-sh/setup-uv@v4
             - shell: bash
               run: |
-                  uv python install "$(cat .python-version)"
                   uv python list --only-installed
+                  uv python install "$(cat .python-version)"
             - name: Install Dev-dependencies for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
               run: |
