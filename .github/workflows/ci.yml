@@ -96,16 +96,17 @@ jobs:
                   key: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
                   restore-keys: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-
             - uses: astral-sh/setup-uv@v4
+            - shell: bash
+              run: |
+                  uv python install "$(cat .python-version)"
+                  uv python list --only-installed
             - name: Install Dev-dependencies for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
               run: |
                   sudo apt-get update
                   sudo apt-get install -y libasound2-dev
             - shell: bash
-              run: >
-                  just prepare
-                  poodio::build "${{ matrix.target }}"
-                  poodio::test-e2e
+              run: just prepare poodio::build "${{ matrix.target }}" poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.target }}
