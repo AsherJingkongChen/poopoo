@@ -68,8 +68,8 @@ jobs:
                       target: x86_64-unknown-linux-gnu
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   target: x86_64-unknown-linux-musl
-                    # - os: windows-2025 ## Needed Windows ARM runner
-                    #   target: aarch64-pc-windows-msvc
+                    - os: windows-2025 ## Needed Windows ARM runner
+                      target: aarch64-pc-windows-msvc
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   target: i686-pc-windows-msvc
                     - os: windows-2025
@@ -112,7 +112,7 @@ jobs:
                   tool: just
             - run: >
                   just prepare
-                  poodio::build "${{ matrix.target }}"
+                  poodio::build${{ (matrix.target == 'aarch64-pc-windows-msvc' && '-bind-napi') || '' }} "${{ matrix.target }}"
                   poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
