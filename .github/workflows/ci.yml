@@ -68,7 +68,7 @@ jobs:
                       target: x86_64-unknown-linux-gnu
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   target: x86_64-unknown-linux-musl
-                    - os: windows-2025 ## Needed Windows ARM runner
+                    - os: windows-2022
                       target: aarch64-pc-windows-msvc
                       node:
                           architecture: arm64
