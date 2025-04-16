@@ -25,11 +25,13 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-audit, cargo-outdated, just
+
             - uses: actions/setup-node@v4
               with:
                   cache: npm
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
+
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
@@ -39,6 +41,7 @@ jobs:
                   key: uv-check-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
                   restore-keys: uv-check-${{ runner.os }}-${{ runner.arch }}-
             - uses: astral-sh/setup-uv@v4
+
             - run: just prepare check audit
 
     build-poodio:
@@ -83,12 +86,15 @@ jobs:
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
+
             - uses: actions/setup-node@v4
               with:
                   cache: npm
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
+
             - uses: actions/setup-python@v5
+              id: python
               if: matrix.os == 'windows-11-arm'
               with:
                   architecture: arm64
@@ -103,13 +109,15 @@ jobs:
                   restore-keys: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-
             - uses: astral-sh/setup-uv@v4
             - shell: bash
-              run: |
-                  uv python list --only-installed
+              if: matrix.os == 'windows-11-arm'
+              run: uv python pin ${{ steps.python.outputs.python-path }}
+
             - name: Install Dev-dependencies for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
               run: |
                   sudo apt-get update
                   sudo apt-get install -y libasound2-dev
+
             - shell: bash
               run: just prepare poodio::build "${{ matrix.target }}" poodio::test-e2e
             - uses: actions/upload-artifact@v4
