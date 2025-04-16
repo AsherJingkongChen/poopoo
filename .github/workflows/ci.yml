@@ -89,9 +89,10 @@ jobs:
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
             - uses: actions/setup-python@v5
+              if: matrix.os == 'windows-11-arm'
               with:
-                  architecture: ${{ matrix.arch }}
-                  python-version-file: .python-version
+                  architecture: arm64
+                  python-version: 3.11
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
@@ -104,7 +105,6 @@ jobs:
             - shell: bash
               run: |
                   uv python list --only-installed
-                  uv python install "$(cat .python-version)"
             - name: Install Dev-dependencies for Ubuntu Linux
               if: startsWith(matrix.os, 'ubuntu')
               run: |
