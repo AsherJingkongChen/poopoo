@@ -114,18 +114,9 @@ jobs:
             - if: matrix.os == 'windows-11-arm'
               run: uv python pin "${{ steps.python.outputs.python-path }}"
 
-            - if: startsWith(matrix.os, 'ubuntu')
-              name: Restore cache for apt
-              uses: actions/cache@v4
+            - uses: awalsh128/cache-apt-pkgs-action@v1
               with:
-                  path: /var/cache/apt/archives
-                  key: apt-build-poodio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('apt-get.txt') }}
-                  restore-keys: apt-build-poodio-${{ runner.os }}-${{ runner.arch }}-
-            - if: startsWith(matrix.os, 'ubuntu')
-              name: Install apt packages for Ubuntu Linux
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y $(cat apt-get.txt)
+                  packages: libasound2-dev
 
             - run: |
                   ./show-toolchains.sh
