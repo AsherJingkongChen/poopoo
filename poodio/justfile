@@ -23,7 +23,7 @@ build-bind-napi TARGET:
 
 build-bind-pyo3 TARGET:
     uv run --no-sync maturin build --bindings pyo3 --locked --release \
-        --features bind-pyo3 --target '{{ TARGET }}' 
+        --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/uv/'
 
     uv pip install --reinstall 'dist/uv/'*
 
