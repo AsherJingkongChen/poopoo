@@ -75,8 +75,8 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
-            - name: Install rustup on Windows ARM
-              if: matrix.os == 'windows-11-arm'
+            - if: matrix.os == 'windows-11-arm'
+              name: Install rustup on Windows ARM
               shell: bash
               run: |
                   curl -LOs https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe
@@ -93,9 +93,9 @@ jobs:
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
 
-            - uses: actions/setup-python@v5
+            - if: matrix.os == 'windows-11-arm'
+              uses: actions/setup-python@v5
               id: python
-              if: matrix.os == 'windows-11-arm'
               with:
                   architecture: arm64
                   python-version: 3.11
@@ -108,15 +108,22 @@ jobs:
                   key: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
                   restore-keys: uv-build-poodio-${{ runner.os }}-${{ runner.arch }}-
             - uses: astral-sh/setup-uv@v4
-            - shell: bash
-              if: matrix.os == 'windows-11-arm'
+            - if: matrix.os == 'windows-11-arm'
+              shell: bash
               run: uv python pin "${{ steps.python.outputs.python-path }}"
 
-            - name: Install Dev-dependencies for Ubuntu Linux
-              if: startsWith(matrix.os, 'ubuntu')
+            - name: Restore cache for apt
+              uses: actions/cache@v4
+              with:
+                  path: /var/cache/apt/archives
+                  key: apt-build-poodio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('apt-get.txt') }}
+                  restore-keys: apt-build-poodio-${{ runner.os }}-${{ runner.arch }}-
+            - if: startsWith(matrix.os, 'ubuntu')
+              name: Install apt packages for Ubuntu Linux
+              shell: bash
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y libasound2-dev
+                  sudo apt-get install -y $(cat apt-get.txt)
 
             - shell: bash
               run: just prepare poodio::build "${{ matrix.target }}" poodio::test-e2e
