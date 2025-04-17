@@ -108,7 +108,7 @@ mod bind_napi {
         let mut common_config = config.to_owned();
         let v = common_config.as_object_mut().unwrap();
         v.insert("bin".into(), json!({ name: "index.js" }));
-        v.insert("dependencies".into(), json!({ "tell-libc": "^0.0.0" }));
+        v.insert("dependencies".into(), json!({ "tell-libc": "0.0.0" }));
         v.insert(
             "optionalDependencies".into(),
             CARGO_TO_NPM_TARGET

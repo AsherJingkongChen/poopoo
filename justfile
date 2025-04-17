@@ -38,29 +38,45 @@ clean-npm:
     rm -rf 'node_modules/'
 
 clean-pip:
-    rm -rf '.ruff_cache/' '.venv/'
+    rm -rf '.ruff_cache/' '.venv/' 
 
-prepare: prepare-npm prepare-pip tools
+prepare: prepare-pip prepare-npm prepare-cargo
+
+prepare-cargo:
+    cargo update --locked --verbose
+    @just tool-cargo
 
 prepare-npm:
     npm ci
+    @just tool-npm
 
 prepare-pip:
-    uv sync --locked
+    uv sync --locked --quiet
+    @uv sync --check --color always 2>&1 | tail -n 2
+    @just tool-pip
 
-tools:
-    @echo "node: $(node --print 'p=process;`${p.arch}-${p.platform}-${p.version}`')"
-    @echo "python: $(uv run --no-sync python -c "import sys as s,sysconfig as c;print(f'{s.implementation.cache_tag}-{c.get_platform()}')")"
-    @echo "rust: $(rustup show active-toolchain)"
+tool: tool-cargo tool-npm tool-pip
 
-update: update-cargo update-npm update-pip tools
+tool-cargo:
+    @echo "cargo (rust): $(rustup show active-toolchain)"
+
+tool-npm:
+    @echo "npm (node): $(node -p 'p=process;`${p.version}-${p.platform}-${p.arch}`')"
+
+tool-pip:
+    @echo "pip (python): $(uv run --no-sync --quiet python -c \
+        "import sys as s,sysconfig as c;print(f'{s.implementation.cache_tag}-{c.get_platform()}')")"
+
+update: update-pip update-npm update-cargo
 
 update-cargo:
     cargo update --verbose
+    @just tool-cargo
 
 update-npm:
     npm update
+    @just tool-npm
 
 update-pip:
     uv lock --upgrade
-    just prepare-pip
+    @just tool-pip

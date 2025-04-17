@@ -22,17 +22,17 @@ license = "MIT"
 repository = "https://github.com/AsherJingkongChen/poopoo.git"
 
 [workspace.dependencies]
-anstream = {version = "0.6.18", default-features = false}
-clap = {version = "4.5.35", default-features = false}
-color-eyre = {version = "0.6.3", default-features = false}
-cpal = {version = "0.15.3", default-features = false}
-log = {version = "0.4.27", default-features = false}
-napi = {version = "2.16.17", default-features = false}
-napi-build = {version = "2.1.6", default-features = false}
-napi-derive = {version = "2.16.13", default-features = false}
-pyo3 = {version = "0.24.1", default-features = false}
-pyo3-build-config = {version = "0.24.1", default-features = false}
+anstream = {version = "0.6", default-features = false}
+clap = {version = "4.5", default-features = false}
+color-eyre = {version = "0.6", default-features = false}
+cpal = {version = "0.15", default-features = false}
+log = {version = "0.4", default-features = false}
+napi = {version = "2.16", default-features = false}
+napi-build = {version = "2.1", default-features = false}
+napi-derive = {version = "2.16", default-features = false}
+pyo3 = {version = "0.24", default-features = false}
+pyo3-build-config = {version = "0.24", default-features = false}
 # pyo3-stub-gen = {version = "0.7.0", default-features = false}
-serde = {version = "1.0.219", default-features = false}
-serde_json = {version = "1.0.140", default-features = false}
-simple_logger = {version = "5.0.0", default-features = false}
+serde = {version = "1.0", default-features = false}
+serde_json = {version = "1.0", default-features = false}
+simple_logger = {version = "5.0", default-features = false}
