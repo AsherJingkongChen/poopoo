@@ -41,8 +41,8 @@ jobs:
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
-                  path: ${{ env.UV_CACHE_DIR }}
                   key: uv-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
+                  path: ${{ env.UV_CACHE_DIR }}
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
 
             - name: Check
@@ -61,25 +61,28 @@ jobs:
             matrix:
                 include:
                     - os: macos-15
-                      target: aarch64-apple-darwin
+                      rustc-target: aarch64-apple-darwin
                     - os: macos-13
-                      target: x86_64-apple-darwin
+                      rustc-target: x86_64-apple-darwin
                     - os: ubuntu-24.04-arm
-                      target: aarch64-unknown-linux-gnu
+                      rustc-target: aarch64-unknown-linux-gnu
+                      python-version: 3.9
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
-                    #   target: aarch64-unknown-linux-musl
+                    #   rustc-target: aarch64-unknown-linux-musl
                     # - os: ubuntu-24.04 ## Deprecated 32-bit
-                    #   target: i686-unknown-linux-gnu
+                    #   rustc-target: i686-unknown-linux-gnu
                     - os: ubuntu-24.04
-                      target: x86_64-unknown-linux-gnu
+                      rustc-target: x86_64-unknown-linux-gnu
+                      python-version: 3.9
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
-                    #   target: x86_64-unknown-linux-musl
+                    #   rustc-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
-                      target: aarch64-pc-windows-msvc
+                      rustc-target: aarch64-pc-windows-msvc
+                      python-version: 3.11
                     # - os: windows-2025 ## Deprecated 32-bit
-                    #   target: i686-pc-windows-msvc
+                    #   rustc-target: i686-pc-windows-msvc
                     - os: windows-2022
-                      target: x86_64-pc-windows-msvc
+                      rustc-target: x86_64-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
@@ -101,24 +104,23 @@ jobs:
                   node-version-file: .node-version
 
             # See <https://github.com/astral-sh/python-build-standalone/pull/387>
-            - if: matrix.os == 'windows-11-arm'
-              name: Install Python on Windows ARM
-              uses: actions/setup-python@v5
+            - uses: actions/setup-python@v5
               id: python
               with:
-                  architecture: arm64
                   python-version: 3.11
-            - uses: astral-sh/setup-uv@v4
-              if: matrix.os != 'windows-11-arm'
-            - uses: astral-sh/setup-uv@v4
-              if: matrix.os == 'windows-11-arm'
+            - if: matrix.os != 'windows-11-arm'
+              uses: astral-sh/setup-uv@v4
+              with:
+                  python-version: ${{ matrix.python-version }}
+            - if: matrix.os == 'windows-11-arm'
+              uses: astral-sh/setup-uv@v4
               with:
                   python-version: ${{ steps.python.outputs.python-version }}
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
-                  path: ${{ env.UV_CACHE_DIR }}
                   key: uv-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
+                  path: ${{ env.UV_CACHE_DIR }}
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
 
             - if: startsWith(matrix.os, 'ubuntu-')
@@ -129,11 +131,11 @@ jobs:
             - name: Build
               run: |
                   ./show-toolchains.sh
-                  just prepare poodio::build "${{ matrix.target }}" \
+                  just prepare poodio::build "${{ matrix.rustc-target }}" \
                   poodio::install poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
-                  name: ${{ matrix.target }}
+                  name: ${{ matrix.rustc-target }}
                   path: poodio/dist/
 
     publish-poodio:
