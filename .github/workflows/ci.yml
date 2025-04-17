@@ -126,7 +126,8 @@ jobs:
               with:
                   packages: libasound2-dev
 
-            - run: |
+            - name: Build
+              run: |
                   ./show-toolchains.sh
                   just prepare poodio::build "${{ matrix.target }}" \
                   poodio::install poodio::test-e2e
