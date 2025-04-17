@@ -51,7 +51,7 @@ jobs:
                   just prepare check audit
 
     build-poodio:
-        if: startsWith(github.ref, 'refs/tags/poodio@')
+        # if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -60,12 +60,12 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    # - os: macos-15
-                    #   target: aarch64-apple-darwin
-                    # - os: macos-13
-                    #   target: x86_64-apple-darwin
-                    # - os: ubuntu-24.04-arm
-                    #   target: aarch64-unknown-linux-gnu
+                    - os: macos-15
+                      target: aarch64-apple-darwin
+                    - os: macos-13
+                      target: x86_64-apple-darwin
+                    - os: ubuntu-24.04-arm
+                      target: aarch64-unknown-linux-gnu
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   target: aarch64-unknown-linux-musl
                     # - os: ubuntu-24.04 ## Deprecated 32-bit
@@ -79,8 +79,8 @@ jobs:
                       arch: arm64
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   target: i686-pc-windows-msvc
-                    # - os: windows-2025
-                    #   target: x86_64-pc-windows-msvc
+                    - os: windows-2025
+                      target: x86_64-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
@@ -101,19 +101,22 @@ jobs:
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
 
+            # See <https://github.com/astral-sh/python-build-standalone/pull/387>
             - if: matrix.os == 'windows-11-arm'
+              name: Install Python on Windows ARM
               uses: actions/setup-python@v5
               id: python
               with:
                   architecture: arm64
                   python-version: 3.11
+            - uses: astral-sh/setup-uv@v4
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
                   path: ${{ env.UV_CACHE_DIR }}
                   key: uv-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
-            - uses: astral-sh/setup-uv@v4
+            # See <name: Install Python on Windows ARM>
             - if: matrix.os == 'windows-11-arm'
               run: uv python pin "${{ steps.python.outputs.python-path }}"
 
