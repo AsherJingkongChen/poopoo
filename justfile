@@ -40,18 +40,27 @@ clean-npm:
 clean-pip:
     rm -rf '.ruff_cache/' '.venv/'
 
-prepare:
-    uv sync --locked --no-install-workspace
-    npm install
-    just tools
+prepare: prepare-npm prepare-pip tools
+
+prepare-npm:
+    npm ci
+
+prepare-pip:
+    uv sync --locked
 
 tools:
     @echo "node: $(node --print 'p=process;`${p.arch}-${p.platform}-${p.version}`')"
     @echo "python: $(uv run --no-sync python -c "import sys as s,sysconfig as c;print(f'{s.implementation.cache_tag}-{c.get_platform()}')")"
     @echo "rust: $(rustup show active-toolchain)"
 
-update:
-    npm update
-    uv lock --upgrade
+update: update-cargo update-npm update-pip tools
+
+update-cargo:
     cargo update --verbose
-    just prepare
+
+update-npm:
+    npm update
+
+update-pip:
+    uv lock --upgrade
+    just prepare-pip
