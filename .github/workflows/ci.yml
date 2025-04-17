@@ -59,36 +59,36 @@ jobs:
                 include:
                     - os: macos-15
                       rustc-target: aarch64-apple-darwin
-                      test:
-                          python: "3.9 3.10 3.11 3.12 3.13"
+                      extra-tests:
+                          python: "3.10 3.11 3.12 3.13"
                     - os: macos-13
                       rustc-target: x86_64-apple-darwin
-                      test:
-                          python: "3.9 3.10 3.11 3.12 3.13"
+                      extra-tests:
+                          python: "3.10 3.11 3.12 3.13"
                     - os: ubuntu-24.04-arm
                       rustc-target: aarch64-unknown-linux-gnu
-                      test:
-                          python: "3.9 3.10 3.11 3.12 3.13"
+                      extra-tests:
+                          python: "3.10 3.11 3.12 3.13"
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   rustc-target: aarch64-unknown-linux-musl
                     # - os: ubuntu-24.04 ## Deprecated 32-bit
                     #   rustc-target: i686-unknown-linux-gnu
                     - os: ubuntu-24.04
                       rustc-target: x86_64-unknown-linux-gnu
-                      test:
-                          python: "3.9 3.10 3.11 3.12 3.13"
+                      extra-tests:
+                          python: "3.10 3.11 3.12 3.13"
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   rustc-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
                       rustc-target: aarch64-pc-windows-msvc
-                      test:
-                          python: "3.11"
+                      extra-tests:
+                          python: ""
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   rustc-target: i686-pc-windows-msvc
                     - os: windows-2022
                       rustc-target: x86_64-pc-windows-msvc
-                      test:
-                          python: "3.9 3.10 3.11 3.12 3.13"
+                      extra-tests:
+                          python: "3.10 3.11 3.12 3.13"
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
@@ -132,16 +132,16 @@ jobs:
               with:
                   packages: libasound2-dev
 
-            - name: Build
-              run: |
-                  just prepare tool poodio::build "${{ matrix.rustc-target }}"
+            - name: Build and Test
+              run: >
+                  just prepare tool
+                       poodio::build "${{ matrix.rustc-target }}"
+                       poodio::test-e2e
 
-            - name: Test
+            - name: Test (Extra)
               run: |
-                  just poodio::test-e2e-bin poodio::test-e2e-npm
-                  for p in ${{ matrix.test.python }}; do
-                      UV_PYTHON="$p" \
-                      just prepare-pip poodio::test-e2e-pip || exit 2
+                  for p in ${{ matrix.extra-tests.python }}; do
+                      UV_PYTHON="$p" just prepare-pip poodio::test-e2e-pip || exit 2
                   done
 
             - uses: actions/upload-artifact@v4
