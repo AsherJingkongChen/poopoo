@@ -124,8 +124,8 @@ jobs:
                   packages: libasound2-dev
 
             - name: Build
-              run: >
-                  just prepare poodio::build "${{ matrix.rustc-target }}"
+              run: |
+                  just prepare poodio::build "${{ matrix.rustc-target }}" \
                        poodio::install poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
