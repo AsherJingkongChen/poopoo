@@ -136,7 +136,7 @@ jobs:
             - name: Test
               run: |
                   for p in ${{ matrix.test.python }}; do
-                      UV_PYTHON="$p" just --shell echo prepare poodio::test-e2e-pip || exit 2
+                      UV_PYTHON="$p" just prepare poodio::test-e2e-pip || exit 2
                   done
 
             - uses: actions/upload-artifact@v4

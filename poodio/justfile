@@ -1,3 +1,6 @@
+set windows-shell := ['bash', '-cu']
+set shell := ['bash', '-cu']
+
 build TARGET:
     @just \
         build-bin '{{ TARGET }}' \
