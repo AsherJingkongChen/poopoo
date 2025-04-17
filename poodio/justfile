@@ -1,4 +1,4 @@
-set shell := ['bash', '-c']
+set shell := ['/usr/bin/env', 'bash', '-c']
 
 build TARGET:
     @just \
@@ -14,7 +14,7 @@ build-bin TARGET:
 
 build-npm TARGET:
     @rm -rf '{{ DIST_NPM }}'
-    npx napi build --cargo-flags '\--locked --lib' --no-dts-header --release \
+    npx napi build --cargo-flags='--locked --lib' --no-dts-header --release \
         --features bind-napi --target '{{ TARGET }}' '{{ DIST_NPM }}bind/'
     cp '{{ DIST_NPM }}bind/index.d.ts' '{{ DIST_NPM }}wrap/'
     @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > '{{ DIST_NPM }}wrap/index.js'
