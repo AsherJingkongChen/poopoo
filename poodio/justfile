@@ -1,3 +1,5 @@
+set shell := ['bash', '-c']
+
 build TARGET:
     @just \
         build-bin '{{ TARGET }}' \
@@ -31,9 +33,9 @@ test-e2e:
     && echo '[PASS] test-e2e'
 
 test-e2e-bin:
-    [[ -x '{{ BIN_PATH }}' && ! -d '{{ BIN_PATH }}' ]] || \
+    @[[ -x '{{ BIN_PATH }}' && ! -d '{{ BIN_PATH }}' ]] || \
         (echo '[FAIL] permission' && exit 2)
-    [[ "$('{{ BIN_PATH }}' --version)" == "{{ VERS }}" ]] || \
+    @[[ "$('{{ BIN_PATH }}' --version)" == "{{ VERS }}" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @echo '[PASS] test-e2e-bin'
@@ -41,9 +43,9 @@ test-e2e-bin:
 test-e2e-npm:
     @npm install --no-save --silent '{{ DIST_NPM }}'*
 
-    [[ "$(npx --no poodio -- --version)" == "{{ VERS }}" ]] || \
+    @[[ "$(npx --no poodio -- --version)" == "{{ VERS }}" ]] || \
         (echo '[FAIL] --version' && exit 2)
-    [[ "$(node --print 'require("poodio").version()')" == "{{ VERS }}" ]] || \
+    @[[ "$(node --print 'require("poodio").version()')" == "{{ VERS }}" ]] || \
         (echo '[FAIL] .version()' && exit 2)
     @npm prune --silent
     @echo '[PASS] test-e2e-npm'
@@ -51,7 +53,7 @@ test-e2e-npm:
 test-e2e-pip:
     @uv pip install --reinstall --quiet '{{ DIST_PIP }}'*
 
-    [[ "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" == "{{ VERS }}" ]] || \
+    @[[ "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" == "{{ VERS }}" ]] || \
         (echo '[FAIL] .version()' && exit 2)
     @# TODO: --version
 
