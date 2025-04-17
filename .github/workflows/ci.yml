@@ -130,12 +130,14 @@ jobs:
                   packages: libasound2-dev
 
             - name: Build
-              run: just prepare poodio::build "${{ matrix.rustc-target }}" poodio::test-e2e
+              shell: bash
+              run: just --shell bash prepare poodio::build "${{ matrix.rustc-target }}" poodio::test-e2e
 
             - name: Test
+              shell: bash
               run: |
                   for p in ${{ matrix.test.python }}; do
-                      UV_PYTHON="$p" just prepare poodio::test-e2e-pip || exit 2
+                      UV_PYTHON="$p" just --shell bash prepare poodio::test-e2e-pip || exit 2
                   done
 
             - uses: actions/upload-artifact@v4

@@ -1,5 +1,3 @@
-set shell := ['/usr/bin/env', 'bash', '-c']
-
 build TARGET:
     @just \
         build-bin '{{ TARGET }}' \
