@@ -51,19 +51,21 @@ prepare-npm:
     @just tool-npm
 
 prepare-pip:
-    uv sync --color always --locked 2>&1 | tail -n 2
+    uv sync --locked --color always 2>&1 | head -n 3
     @just tool-pip
 
-tool: tool-cargo tool-npm tool-pip
+tool:
+    @echo ''
+    just tool-cargo tool-npm tool-pip
 
 tool-cargo:
-    @echo "cargo (rust): $(rustup show active-toolchain)"
+    @echo "[TOOL] cargo (rust): $(rustup show active-toolchain)"
 
 tool-npm:
-    @echo "npm (node): $(node -p 'p=process;`${p.version}-${p.platform}-${p.arch}`')"
+    @echo "[TOOL] npm (nodejs): $(node -p 'p=process;`${p.version}-${p.platform}-${p.arch}`')"
 
 tool-pip:
-    @echo "pip (python): $(uv run --no-sync --quiet python -c \
+    @echo "[TOOL] pip (python): $(uv run --no-sync --quiet python -c \
         "import sys as s,sysconfig as c;print(f'{s.implementation.cache_tag}-{c.get_platform()}')")"
 
 update: update-pip update-npm update-cargo
@@ -78,4 +80,5 @@ update-npm:
 
 update-pip:
     uv lock --upgrade
+    uv sync --locked 2> /dev/null
     @just tool-pip
