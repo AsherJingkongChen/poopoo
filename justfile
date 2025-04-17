@@ -26,7 +26,7 @@ check-fix:
     npx prettier --write .
     cargo clippy --all-features --allow-dirty --allow-staged --fix
 
-clean: clean-cargo clean-dist clean-npm clean-uv
+clean: clean-cargo clean-dist clean-npm clean-pip
 
 clean-cargo:
     rm -rf 'target/'
@@ -37,7 +37,7 @@ clean-dist:
 clean-npm:
     rm -rf 'node_modules/'
 
-clean-uv:
+clean-pip:
     rm -rf '.ruff_cache/' '.venv/'
 
 prepare:

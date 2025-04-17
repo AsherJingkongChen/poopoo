@@ -1,27 +1,27 @@
 build TARGET:
     @just \
-        build-default '{{ TARGET }}' \
-        build-bind-napi '{{ TARGET }}' \
-        build-bind-pyo3 '{{ TARGET }}'
+        build-bin '{{ TARGET }}' \
+        build-npm '{{ TARGET }}' \
+        build-pip '{{ TARGET }}'
 
-build-default TARGET:
-    cargo build --locked --release --target '{{ TARGET }}'
-    @mkdir -p 'dist/bin/'
-    cp '../target/{{ TARGET }}/release/{{ BIN_NAME }}' 'dist/bin/'
+build-bin TARGET:
+    @rm -rf '{{ DIST_BIN }}'
+    cargo build --bin poodio --locked --release --target '{{ TARGET }}'
+    @mkdir -p '{{ DIST_BIN }}'
+    cp '../target/{{ TARGET }}/release/{{ BIN_NAME }}' '{{ BIN_PATH }}'
 
-build-bind-napi TARGET:
-    @printf '{}' > 'package.json'
-    npx napi build --cargo-flags=--locked --no-dts-header --release \
-        --features bind-napi --target '{{ TARGET }}' 'dist/npm/bind/'
-    @rm -f 'package.json'
+build-npm TARGET:
+    @rm -rf '{{ DIST_NPM }}'
+    npx napi build --cargo-flags '\--locked --lib' --no-dts-header --release \
+        --features bind-napi --target '{{ TARGET }}' '{{ DIST_NPM }}bind/'
+    cp '{{ DIST_NPM }}bind/index.d.ts' '{{ DIST_NPM }}wrap/'
+    @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > '{{ DIST_NPM }}wrap/index.js'
+    chmod +x '{{ DIST_NPM }}wrap/index.js'
 
-    cp 'dist/npm/bind/index.d.ts' 'dist/npm/wrap/'
-    @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > 'dist/npm/wrap/index.js'
-    chmod +x 'dist/npm/wrap/index.js'
-
-build-bind-pyo3 TARGET:
+build-pip TARGET:
+    @rm -rf '{{ DIST_PIP }}'
     uv run --no-sync maturin build --bindings pyo3 --locked --release \
-        --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/pip/'
+        --features bind-pyo3 --target '{{ TARGET }}' --out '{{ DIST_PIP }}'
 
 test-e2e:
     @just \
@@ -31,33 +31,38 @@ test-e2e:
     && echo '[PASS] test-e2e'
 
 test-e2e-bin:
-    @[ -x '{{ DIST_BIN }}' -a ! -d '{{ DIST_BIN }}' ] || \
+    [[ -x '{{ BIN_PATH }}' && ! -d '{{ BIN_PATH }}' ]] || \
         (echo '[FAIL] permission' && exit 2)
-    @[ "$('./{{ DIST_BIN }}' --version)" == "{{ VERS }}" ] || \
+    [[ "$('{{ BIN_PATH }}' --version)" == "{{ VERS }}" ]] || \
         (echo '[FAIL] --version' && exit 2)
+
     @echo '[PASS] test-e2e-bin'
 
 test-e2e-npm:
-    @npm install --no-save --silent {{ DIST_NPM }}
-    @[ "$(npm exec --no poodio -- --version)" == "{{ VERS }}" ] || \
+    @npm install --no-save --silent '{{ DIST_NPM }}'*
+
+    [[ "$(npx --no poodio -- --version)" == "{{ VERS }}" ]] || \
         (echo '[FAIL] --version' && exit 2)
-    @[ "$(node -p 'require("poodio").version()')" == "{{ VERS }}" ] || \
+    [[ "$(node --print 'require("poodio").version()')" == "{{ VERS }}" ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @npm --silent prune
+    @npm prune --silent
     @echo '[PASS] test-e2e-npm'
 
 test-e2e-pip:
-    @uv pip install --reinstall --quiet {{ DIST_PIP }}
-    @[ "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" == "{{ VERS }}" ] || \
+    @uv pip install --reinstall --quiet '{{ DIST_PIP }}'*
+
+    [[ "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" == "{{ VERS }}" ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @# uv run --no-sync poodio --version
+    @# TODO: --version
+
     @uv pip uninstall --quiet poodio
     @echo '[PASS] test-e2e-pip'
 
 BIN_NAME := 'poodio' + if os() == 'windows' { '.exe' } else { '' }
-DIST_BIN := 'dist/bin/' + BIN_NAME
-DIST_NPM := 'dist/npm/*'
-DIST_PIP := 'dist/pip/*.whl'
+BIN_PATH := DIST_BIN + BIN_NAME
+DIST_BIN := 'dist/bin/'
+DIST_NPM := 'dist/npm/'
+DIST_PIP := 'dist/pip/'
 NPM_DIST_PURE_MAIN_DATA := '''
 #! /usr/bin/env node
 require("tell-libc");
