@@ -48,7 +48,7 @@ jobs:
               run: just prepare check audit
 
     build-poodio:
-        if: startsWith(github.ref, 'refs/tags/poodio@')
+        # if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         defaults:
             run:
