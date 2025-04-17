@@ -15,11 +15,13 @@ build-bin TARGET:
 
 build-npm TARGET:
     @rm -rf '{{ DIST_NPM }}'
+    @echo '{}' > 'package.json'
     npx napi build --cargo-flags='--locked --lib' --no-dts-header --release \
-        --features bind-napi --target '{{ TARGET }}' '{{ DIST_NPM }}bind/'
-    cp '{{ DIST_NPM }}bind/index.d.ts' '{{ DIST_NPM }}wrap/'
-    @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > '{{ DIST_NPM }}wrap/index.js'
-    chmod +x '{{ DIST_NPM }}wrap/index.js'
+        --features bind-napi --target '{{ TARGET }}' '{{ DIST_NPM }}native/'
+    @rm -rf 'package.json'
+    cp '{{ DIST_NPM }}native/index.d.ts' '{{ DIST_NPM }}common/'
+    @printf '{{ NPM_DIST_PURE_MAIN_DATA }}' > '{{ DIST_NPM }}common/index.js'
+    chmod +x '{{ DIST_NPM }}common/index.js'
 
 build-pip TARGET:
     @rm -rf '{{ DIST_PIP }}'

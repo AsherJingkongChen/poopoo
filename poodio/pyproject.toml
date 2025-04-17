@@ -1,8 +1,0 @@
-[build-system]
-build-backend = "maturin"
-requires = ["cffi", "maturin>=1.8"]
-
-[project]
-dynamic = ["version"]
-name = "poodio"
-requires-python = ">=3.9"

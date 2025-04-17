@@ -9,7 +9,5 @@
         "useTabs": false,
         "printWidth": 90
     },
-    "workspaces": [
-        "poodio"
-    ]
+    "workspaces": []
 }

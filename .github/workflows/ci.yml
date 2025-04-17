@@ -136,10 +136,11 @@ jobs:
 
             - name: Build
               run: |
-                  just prepare poodio::build "${{ matrix.rustc-target }}" poodio::test-e2e
+                  just prepare poodio::build "${{ matrix.rustc-target }}"
 
             - name: Test
               run: |
+                  just poodio::test-e2e-bin poodio::test-e2e-npm
                   for p in ${{ matrix.test.python }}; do
                       UV_PYTHON="$p" just prepare poodio::test-e2e-pip || exit 2
                   done
@@ -215,9 +216,9 @@ jobs:
 
             - name: Publish to npmjs.com
               run: |
-                  npm publish "$(set -- dist/*; echo "$1")/npm/wrap/"
+                  npm publish "./$(set -- dist/*; echo "$1")/npm/common/"
                   for pkg in dist/*; do
-                      npm publish "./$pkg/npm/bind/" || exit 2
+                      npm publish "./$pkg/npm/native/" || exit 2
                   done
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
