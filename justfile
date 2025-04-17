@@ -38,7 +38,7 @@ clean-npm:
     rm -rf 'node_modules/'
 
 clean-pip:
-    rm -rf '.ruff_cache/' '.venv/' 
+    rm -rf '.ruff_cache/' '.venv/' 'workspace.egg-info/'
 
 prepare: prepare-pip prepare-npm prepare-cargo
 
@@ -51,8 +51,7 @@ prepare-npm:
     @just tool-npm
 
 prepare-pip:
-    uv sync --locked --quiet
-    @uv sync --check --color always 2>&1 | tail -n 2
+    uv sync --color always --locked 2>&1 | tail -n 2
     @just tool-pip
 
 tool: tool-cargo tool-npm tool-pip

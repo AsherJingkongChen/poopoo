@@ -16,10 +16,8 @@ build-bin TARGET:
 
 build-npm TARGET:
     @rm -rf '{{ NPM_DIST }}'
-    @echo '{}' > 'package.json'
     npx napi build --cargo-flags='--locked --lib' --no-dts-header --release \
         --features bind-napi --target '{{ TARGET }}' '{{ NPM_DIST }}native/'
-    @rm -rf 'package.json'
     cp '{{ NPM_DIST }}native/index.d.ts' '{{ NPM_DIST }}common/'
 
 build-pip TARGET:

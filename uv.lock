@@ -2,6 +2,12 @@ version = 1
 revision = 1
 requires-python = ">=3.9"
 
+[manifest]
+members = [
+    "poodio",
+    "workspace",
+]
+
 [[package]]
 name = "boolean-py"
 version = "5.0"
@@ -353,6 +359,10 @@ sdist = { url = "https://files.pythonhosted.org/packages/b6/2d/7d512a3913d60623e
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6d/45/59578566b3275b8fd9157885918fcd0c4d74162928a5310926887b856a51/platformdirs-4.3.7-py3-none-any.whl", hash = "sha256:a03875334331946f13c549dbd8f4bac7a13a50a895a0eb1e8c6a8ace80d40a94", size = 18499 },
 ]
+
+[[package]]
+name = "poodio"
+source = { editable = "poodio" }
 
 [[package]]
 name = "py-serializable"
