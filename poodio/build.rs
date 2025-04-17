@@ -7,7 +7,10 @@ fn main() -> Result<()> {
     color_eyre::install()?;
 
     #[cfg(feature = "bind-napi")]
-    bind_napi::write_cfgs()?;
+    {
+        bind_napi::write_cfgs()?;
+        bind_napi::write_common_main()?;
+    }
 
     #[cfg(feature = "bind-pyo3")]
     {
@@ -68,9 +71,9 @@ mod bind_napi {
             .get(target.as_str())
             .wrap_err("Unsupported target")?;
 
-        let dir = Path::new("dist/npm/");
-        let common_dir = dir.join("common/");
-        let native_dir = dir.join("native/");
+        let dist = Path::new("dist/npm/");
+        let common_dist = dist.join("common/");
+        let native_dist = dist.join("native/");
         let config_name = Path::new("package.json");
         let license_name = Path::new("LICENSE.txt");
         let readme_name = Path::new(env!("CARGO_PKG_README"));
@@ -115,20 +118,43 @@ mod bind_napi {
         );
         v.insert("name".into(), name.into());
 
-        fs::create_dir_all(&common_dir)?;
-        fs::create_dir_all(&native_dir)?;
-        fs::copy(license_name, common_dir.join(license_name))?;
-        fs::copy(license_name, native_dir.join(license_name))?;
-        fs::copy(readme_name, common_dir.join(readme_name))?;
-        fs::copy(readme_name, native_dir.join(readme_name))?;
+        fs::create_dir_all(&common_dist)?;
+        fs::create_dir_all(&native_dist)?;
+        fs::copy(license_name, common_dist.join(license_name))?;
+        fs::copy(license_name, native_dist.join(license_name))?;
+        fs::copy(readme_name, common_dist.join(readme_name))?;
+        fs::copy(readme_name, native_dist.join(readme_name))?;
         write_json_pretty(
-            fs::File::create(common_dir.join(config_name))?,
+            fs::File::create(common_dist.join(config_name))?,
             &common_config,
         )?;
         write_json_pretty(
-            fs::File::create(native_dir.join(config_name))?,
+            fs::File::create(native_dist.join(config_name))?,
             &native_config,
         )?;
+
+        Ok(())
+    }
+
+    pub fn write_common_main() -> Result<()> {
+        let dir = Path::new("dist/npm/common/");
+        let name = env!("CARGO_PKG_NAME");
+        let data = format!(
+            "#!/usr/bin/env node\n\
+            require(\"tell-libc\");let{{argv:r,arch:e,platform:o,libc:i}}=process;\n\
+            module.exports=require(`@{name}/{name}-${{e}}-${{o}}-${{i||\"unknown\"}}`);\n\
+            require.main===module&&module.exports.main(r.slice(1));\n"
+        );
+
+        let mut file = fs::File::create(dir.join("index.js"))?;
+        file.write_all(data.as_bytes())?;
+        let mut perm = file.metadata()?.permissions();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            perm.set_mode(perm.mode() | 0o111);
+        }
+        file.set_permissions(perm)?;
 
         Ok(())
     }
