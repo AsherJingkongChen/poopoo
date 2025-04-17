@@ -1,13 +1,13 @@
 build TARGET:
-    just \
-    build-default '{{ TARGET }}' \
-    build-bind-napi '{{ TARGET }}' \
-    build-bind-pyo3 '{{ TARGET }}'
+    @just \
+        build-default '{{ TARGET }}' \
+        build-bind-napi '{{ TARGET }}' \
+        build-bind-pyo3 '{{ TARGET }}'
 
 build-default TARGET:
-    cargo build --locked --release --features default --target '{{ TARGET }}'
+    cargo build --locked --release --target '{{ TARGET }}'
     @mkdir -p 'dist/bin/'
-    cp '../target/{{ TARGET }}/release/poodio{{ BIN_EXT }}' 'dist/bin/'
+    cp '../target/{{ TARGET }}/release/{{ BIN_NAME }}' 'dist/bin/'
 
 build-bind-napi TARGET:
     @printf '{}' > 'package.json'
@@ -23,16 +23,41 @@ build-bind-pyo3 TARGET:
     uv run --no-sync maturin build --bindings pyo3 --locked --release \
         --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/pip/'
 
-install:
-    npm install --no-save 'dist/npm/'*
-    uv pip install --reinstall 'dist/pip/'*
-
-test: test-e2e
-
 test-e2e:
-    for t in "./test/e2e/"*; do npx $t; done
+    @just \
+        test-e2e-bin \
+        test-e2e-npm \
+        test-e2e-pip \
+    && echo '[PASS] test-e2e'
 
-BIN_EXT := if os() == 'windows' { '.exe' } else { '' }
+test-e2e-bin:
+    @[[ -x '{{ DIST_BIN }}' && ! -d '{{ DIST_BIN }}' ]] || \
+        (echo '[FAIL] permission' && exit 2)
+    @[[ "$('./{{ DIST_BIN }}' --version)" == "{{ VERS }}" ]] || \
+        (echo '[FAIL] --version' && exit 2)
+    @echo '[PASS] test-e2e-bin'
+
+test-e2e-npm:
+    @npm install --no-save --silent {{ DIST_NPM }}
+    @[[ "$(npm exec --no poodio -- --version)" == "{{ VERS }}" ]] || \
+        (echo '[FAIL] --version' && exit 2)
+    @[[ "$(node -p 'require("poodio").version()')" == "{{ VERS }}" ]] || \
+        (echo '[FAIL] .version()' && exit 2)
+    @npm --silent prune
+    @echo '[PASS] test-e2e-npm'
+
+test-e2e-pip:
+    @uv pip install --reinstall --quiet {{ DIST_PIP }}
+    @[[ "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" == "{{ VERS }}" ]] || \
+        (echo '[FAIL] .version()' && exit 2)
+    @# uv run --no-sync poodio --version
+    @uv pip uninstall --quiet poodio
+    @echo '[PASS] test-e2e-pip'
+
+BIN_NAME := 'poodio' + if os() == 'windows' { '.exe' } else { '' }
+DIST_BIN := 'dist/bin/' + BIN_NAME
+DIST_NPM := 'dist/npm/*'
+DIST_PIP := 'dist/pip/*.whl'
 NPM_DIST_PURE_MAIN_DATA := '''
 #! /usr/bin/env node
 require("tell-libc");
@@ -41,3 +66,4 @@ const { argv, arch, platform, libc } = require("process");
 module.exports = require(`@${name}/${name}-${arch}-${platform}-${libc || "unknown"}`);
 require.main === module && module.exports.main(argv.slice(1));
 '''
+VERS := '$(cargo pkgid -p poodio | sed -E "s|.+/(.+)#|\1@|")'

@@ -82,7 +82,6 @@ mod bind_napi {
         let dist_wrap_cfg_file = dist_wrap_dir.join("package.json");
         let dist_wrap_license_file = dist_wrap_dir.join("LICENSE.txt");
         let dist_wrap_readme_file = dist_wrap_dir.join("README.md");
-        let test_cfg_file = Path::new("test/e2e/npm/package.json");
 
         // cfg
         let dist_cfg = json!({
@@ -134,33 +133,6 @@ mod bind_napi {
         );
         o.insert("name".into(), name.into());
 
-        let dist_dir = Path::new("../../../").join(dist_dir);
-
-        // cfg
-        let mut test_cfg = json!({
-            "bin": "index.cjs",
-            "name": format!("@{name}/test-e2e-npm"),
-            "private": true,
-        });
-
-        let o = test_cfg.as_object_mut().unwrap();
-        o.insert(
-            "optionalDependencies".into(),
-            CARGO_TO_NPM_TARGET
-                .values()
-                .map(|[cpu, os, libc]| {
-                    (
-                        format!("@{name}/{name}-{cpu}-{os}-{libc}"),
-                        format!("file:{}", dist_dir.join("bind/").to_str().unwrap()),
-                    )
-                })
-                .chain([(
-                    name.to_owned(),
-                    format!("file:{}", dist_dir.join("wrap/").to_str().unwrap()),
-                )])
-                .collect(),
-        );
-
         fs::create_dir_all(&dist_bind_dir)?;
         fs::create_dir_all(&dist_wrap_dir)?;
         fs::copy(orig_license_file, &dist_bind_license_file)?;
@@ -169,7 +141,6 @@ mod bind_napi {
         fs::copy(orig_readme_file, &dist_wrap_readme_file)?;
         write_json_pretty(fs::File::create(&dist_bind_cfg_file)?, &dist_bind_cfg)?;
         write_json_pretty(fs::File::create(&dist_wrap_cfg_file)?, &dist_wrap_cfg)?;
-        write_json_pretty(fs::File::create(test_cfg_file)?, &test_cfg)?;
 
         Ok(())
     }

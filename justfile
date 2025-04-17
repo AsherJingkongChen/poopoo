@@ -46,9 +46,9 @@ prepare:
     just tools
 
 tools:
-    @echo 'rust:' $(rustup show active-toolchain)
-    @echo 'node:' $(node --print 'p=process;`${p.arch}-${p.platform}-${p.version}`')
-    @echo 'python:' $(uv run --no-sync python -c 'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
+    @echo "node: $(node --print 'p=process;`${p.arch}-${p.platform}-${p.version}`')"
+    @echo "python: $(uv run --no-sync python -c "import sys as s,sysconfig as c;print(f'{s.implementation.cache_tag}-{c.get_platform()}')")"
+    @echo "rust: $(rustup show active-toolchain)"
 
 update:
     npm update
