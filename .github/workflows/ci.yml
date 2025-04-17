@@ -78,7 +78,7 @@ jobs:
                       target: aarch64-pc-windows-msvc
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   target: i686-pc-windows-msvc
-                    - os: windows-2025
+                    - os: windows-2022
                       target: x86_64-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
