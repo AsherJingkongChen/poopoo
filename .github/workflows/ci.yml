@@ -34,7 +34,6 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
-                  cache-dependency-path: "**/package-lock.json"
                   node-version-file: .node-version
 
             - uses: astral-sh/setup-uv@v4
@@ -49,7 +48,7 @@ jobs:
               run: just prepare check audit
 
     build-poodio:
-        # if: startsWith(github.ref, 'refs/tags/poodio@')
+        if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -107,7 +106,6 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
-                  cache-dependency-path: "**/package-lock.json"
                   node-version-file: .node-version
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
@@ -142,7 +140,8 @@ jobs:
               run: |
                   just poodio::test-e2e-bin poodio::test-e2e-npm
                   for p in ${{ matrix.test.python }}; do
-                      UV_PYTHON="$p" just update-pip poodio::test-e2e-pip || exit 2
+                      UV_PYTHON="$p"
+                      just update-pip poodio::test-e2e-pip || exit 2
                   done
 
             - uses: actions/upload-artifact@v4
