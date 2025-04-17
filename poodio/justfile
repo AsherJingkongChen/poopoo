@@ -1,5 +1,5 @@
+set shell := ['/usr/bin/env', 'bash', '-cu']
 set windows-shell := ['C:/Program Files/Git/bin/bash.exe', '-cu']
-set shell := ['bash', '-cu']
 
 build TARGET:
     @just \
