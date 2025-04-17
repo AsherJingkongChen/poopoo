@@ -31,24 +31,24 @@ test-e2e:
     && echo '[PASS] test-e2e'
 
 test-e2e-bin:
-    @[[ -x '{{ DIST_BIN }}' && ! -d '{{ DIST_BIN }}' ]] || \
+    @[ -x '{{ DIST_BIN }}' -a ! -d '{{ DIST_BIN }}' ] || \
         (echo '[FAIL] permission' && exit 2)
-    @[[ "$('./{{ DIST_BIN }}' --version)" == "{{ VERS }}" ]] || \
+    @[ "$('./{{ DIST_BIN }}' --version)" == "{{ VERS }}" ] || \
         (echo '[FAIL] --version' && exit 2)
     @echo '[PASS] test-e2e-bin'
 
 test-e2e-npm:
     @npm install --no-save --silent {{ DIST_NPM }}
-    @[[ "$(npm exec --no poodio -- --version)" == "{{ VERS }}" ]] || \
+    @[ "$(npm exec --no poodio -- --version)" == "{{ VERS }}" ] || \
         (echo '[FAIL] --version' && exit 2)
-    @[[ "$(node -p 'require("poodio").version()')" == "{{ VERS }}" ]] || \
+    @[ "$(node -p 'require("poodio").version()')" == "{{ VERS }}" ] || \
         (echo '[FAIL] .version()' && exit 2)
     @npm --silent prune
     @echo '[PASS] test-e2e-npm'
 
 test-e2e-pip:
     @uv pip install --reinstall --quiet {{ DIST_PIP }}
-    @[[ "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" == "{{ VERS }}" ]] || \
+    @[ "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" == "{{ VERS }}" ] || \
         (echo '[FAIL] .version()' && exit 2)
     @# uv run --no-sync poodio --version
     @uv pip uninstall --quiet poodio
