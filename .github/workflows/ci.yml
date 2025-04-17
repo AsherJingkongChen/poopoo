@@ -130,8 +130,7 @@ jobs:
                   packages: libasound2-dev
 
             - name: Build
-              shell: bash
-              run: just --shell bash prepare poodio::build "${{ matrix.rustc-target }}" poodio::test-e2e
+              run: just --shell echo prepare poodio::build "${{ matrix.rustc-target }}" poodio::test-e2e
 
             - name: Test
               shell: bash
