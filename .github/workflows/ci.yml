@@ -76,7 +76,6 @@ jobs:
                     #   target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
                       target: aarch64-pc-windows-msvc
-                      arch: arm64
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   target: i686-pc-windows-msvc
                     - os: windows-2025
@@ -110,15 +109,17 @@ jobs:
                   architecture: arm64
                   python-version: 3.11
             - uses: astral-sh/setup-uv@v4
+              if: matrix.os != 'windows-11-arm'
+            - uses: astral-sh/setup-uv@v4
+              if: matrix.os == 'windows-11-arm'
+              with:
+                  python-version: ${{ steps.python.outputs.python-version }}
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
                   path: ${{ env.UV_CACHE_DIR }}
                   key: uv-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
-            # See <name: Install Python on Windows ARM>
-            - if: matrix.os == 'windows-11-arm'
-              run: uv python pin "${{ steps.python.outputs.python-path }}"
 
             - if: startsWith(matrix.os, 'ubuntu-')
               uses: awalsh128/cache-apt-pkgs-action@v1
