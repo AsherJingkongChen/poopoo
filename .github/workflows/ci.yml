@@ -134,9 +134,8 @@ jobs:
 
             - name: Build and Test
               run: >
-                  just prepare tool
-                       poodio::build "${{ matrix.rustc-target }}"
-                       poodio::test-e2e
+                  just prepare poodio::build "${{ matrix.rustc-target }}"
+                  tool poodio::test-e2e
 
             - name: Test (Extra)
               run: |
