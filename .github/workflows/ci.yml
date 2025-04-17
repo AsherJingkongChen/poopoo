@@ -34,7 +34,7 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
-                  cache-dependency-path: "**/package.json"
+                  cache-dependency-path: "**/package-lock.json"
                   node-version-file: .node-version
 
             - uses: astral-sh/setup-uv@v4
@@ -46,9 +46,7 @@ jobs:
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
 
             - name: Check
-              run: |
-                  ./show-toolchains.sh
-                  just prepare check audit
+              run: just prepare check audit
 
     build-poodio:
         # if: startsWith(github.ref, 'refs/tags/poodio@')
@@ -66,14 +64,12 @@ jobs:
                       rustc-target: x86_64-apple-darwin
                     - os: ubuntu-24.04-arm
                       rustc-target: aarch64-unknown-linux-gnu
-                      python-version: 3.9
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   rustc-target: aarch64-unknown-linux-musl
                     # - os: ubuntu-24.04 ## Deprecated 32-bit
                     #   rustc-target: i686-unknown-linux-gnu
                     - os: ubuntu-24.04
                       rustc-target: x86_64-unknown-linux-gnu
-                      python-version: 3.9
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   rustc-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
@@ -100,18 +96,17 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
-                  cache-dependency-path: "**/package.json"
+                  cache-dependency-path: "**/package-lock.json"
                   node-version-file: .node-version
 
             # See <https://github.com/astral-sh/python-build-standalone/pull/387>
-            - uses: actions/setup-python@v5
+            - if: matrix.os == 'windows-11-arm'
+              uses: actions/setup-python@v5
               id: python
               with:
-                  python-version: 3.11
+                  python-version: ${{ matrix.python-version }}
             - if: matrix.os != 'windows-11-arm'
               uses: astral-sh/setup-uv@v4
-              with:
-                  python-version: ${{ matrix.python-version }}
             - if: matrix.os == 'windows-11-arm'
               uses: astral-sh/setup-uv@v4
               with:
@@ -129,10 +124,9 @@ jobs:
                   packages: libasound2-dev
 
             - name: Build
-              run: |
-                  ./show-toolchains.sh
-                  just prepare poodio::build "${{ matrix.rustc-target }}" \
-                  poodio::install poodio::test-e2e
+              run: >
+                  just prepare poodio::build "${{ matrix.rustc-target }}"
+                       poodio::install poodio::test-e2e
             - uses: actions/upload-artifact@v4
               with:
                   name: ${{ matrix.rustc-target }}

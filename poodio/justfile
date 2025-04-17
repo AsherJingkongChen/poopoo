@@ -24,7 +24,7 @@ build-bind-pyo3 TARGET:
         --features bind-pyo3 --target '{{ TARGET }}' --out 'dist/pip/'
 
 install:
-    npm install --no-save
+    npm install --no-save 'dist/npm/'*
     uv pip install --reinstall 'dist/pip/'*
 
 test: test-e2e
@@ -37,8 +37,7 @@ NPM_DIST_PURE_MAIN_DATA := '''
 #! /usr/bin/env node
 require("tell-libc");
 const { name } = require("./package.json");
-const { argv, arch: cpu, platform: os, libc } = process;
-const m = require(`@${name}/${name}-${cpu}-${os}-${libc || "unknown"}`);
-module.exports = m;
-require.main === module && m.main(argv.slice(1));
+const { argv, arch, platform, libc } = require("process");
+module.exports = require(`@${name}/${name}-${arch}-${platform}-${libc || "unknown"}`);
+require.main === module && module.exports.main(argv.slice(1));
 '''

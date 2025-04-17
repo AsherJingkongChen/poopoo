@@ -38,13 +38,20 @@ clean-npm:
     rm -rf 'node_modules/'
 
 clean-uv:
-    rm -rf '.venv/'
+    rm -rf '.ruff_cache/' '.venv/'
 
 prepare:
-    uv sync --no-install-workspace --locked
-    npm i
+    uv sync --locked --no-install-workspace
+    npm install
+    just tools
+
+tools:
+    @echo 'rust:' $(rustup show active-toolchain)
+    @echo 'node:' $(node --print 'p=process;`${p.arch}-${p.platform}-${p.version}`')
+    @echo 'python:' $(uv run --no-sync python -c 'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
 
 update:
     npm update
     uv lock --upgrade
     cargo update --verbose
+    just prepare
