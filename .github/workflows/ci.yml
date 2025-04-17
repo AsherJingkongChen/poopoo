@@ -37,13 +37,13 @@ jobs:
                   cache-dependency-path: "**/package.json"
                   node-version-file: .node-version
 
+            - uses: astral-sh/setup-uv@v4
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
                   path: ${{ env.UV_CACHE_DIR }}
                   key: uv-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/uv.lock') }}
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
-            - uses: astral-sh/setup-uv@v4
 
             - name: Check
               run: |
