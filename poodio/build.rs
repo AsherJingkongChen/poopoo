@@ -148,13 +148,13 @@ mod bind_napi {
 
         let mut file = fs::File::create(dir.join("index.js"))?;
         file.write_all(data.as_bytes())?;
-        let mut perm = file.metadata()?.permissions();
         #[cfg(unix)]
         {
+            let mut perm = file.metadata()?.permissions();
             use std::os::unix::fs::PermissionsExt;
             perm.set_mode(perm.mode() | 0o111);
+            file.set_permissions(perm)?;
         }
-        file.set_permissions(perm)?;
 
         Ok(())
     }

@@ -51,7 +51,7 @@ prepare-npm:
     @just tool-npm
 
 prepare-pip:
-    uv sync --locked --color always 2>&1 | head -n 3
+    uv sync --locked --color always 2>&1 | head -n 4
     @just tool-pip
 
 tool:
