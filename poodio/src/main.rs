@@ -1,3 +1,6 @@
+use poodio::cli;
+
 fn main() {
-    poodio::cli::main(std::env::args().collect());
+    cli::init();
+    cli::main(std::env::args().collect());
 }

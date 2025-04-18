@@ -5,9 +5,10 @@ export RUFF_NO_CACHE := 'true'
 audit:
     uv lock --check
     npm outdated
-    cargo outdated --exit-code 1 --workspace
+    cargo update --locked
     npm audit
-    cargo audit -D warnings
+    npm audit signatures
+    cargo audit --deny warnings
     uv run --no-sync pip-audit --progress-spinner off --skip-editable
 
 audit-fix: update
@@ -17,14 +18,15 @@ check:
     uv run --no-sync ruff check
     npx prettier --check .
     cargo fmt --all --check
-    cargo clippy --all-features --locked -- -D warnings
+    cargo clippy --all-features --locked -- --forbid warnings
 
 check-fix:
-    cargo fmt --all
     uv run --no-sync ruff format
     uv run --no-sync ruff check --fix
     npx prettier --write .
+    cargo fmt --all
     cargo clippy --all-features --allow-dirty --allow-staged --fix
+    cargo clippy --all-features --locked -- --forbid warnings 2> /dev/null
 
 clean: clean-cargo clean-dist clean-npm clean-pip
 
@@ -51,22 +53,23 @@ prepare-npm:
     @just tool-npm
 
 prepare-pip:
-    uv sync --locked --color always 2>&1 | head -n 4
+    uv sync --locked --quiet || uv sync --check --color always
     @just tool-pip
 
 tool:
     @echo ''
-    just tool-cargo tool-npm tool-pip
+    @just tool-cargo tool-npm tool-pip
 
 tool-cargo:
-    @echo "[TOOL] cargo (rust): $(rustup show active-toolchain)"
+    @echo "[TOOL] cargo: rust-$(rustup show active-toolchain | cut -f1 -d' ')"
 
 tool-npm:
-    @echo "[TOOL] npm (nodejs): $(node -p 'p=process;`${p.version}-${p.platform}-${p.arch}`')"
+    @echo "[TOOL] npm: node-$(node -r tell-libc -p \
+        'p=process;p.version+`-`+p.platform+`-`+p.arch+(p.libc||``)')"
 
 tool-pip:
-    @echo "[TOOL] pip (python): $(uv run --no-sync --quiet python -c \
-        "import sys as s,sysconfig as c;print(f'{s.implementation.cache_tag}-{c.get_platform()}')")"
+    @echo "[TOOL] pip:" $(uv run --no-sync --quiet python -c \
+        'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
 
 update: update-pip update-npm update-cargo
 

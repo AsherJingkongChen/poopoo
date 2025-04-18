@@ -1,12 +1,13 @@
 //! Command Line Interface (CLI) for [`poodio`](crate)
 
-pub use clap::Parser;
-
-use clap::builder::styling::{AnsiColor, Styles};
-use color_eyre::{owo_colors::OwoColorize, Result};
+use clap::{
+    Parser,
+    builder::styling::{AnsiColor, Styles},
+};
+use color_eyre::{Result, owo_colors::OwoColorize};
 use std::{
     env,
-    io::{stderr, Write},
+    io::{Write, stderr},
     process::exit,
 };
 
@@ -34,69 +35,67 @@ use pyo3::pyfunction as pyfn;
     verbatim_doc_comment,
 )]
 /// Poodio farts poo poo audio
-pub struct Arguments {}
+struct Arguments {}
 
-/// Command Line Interface (CLI) entry point for [`poodio`](https://docs.rs/poodio).
+/// Command Line Interface (CLI) initializer for [`poodio`](https://docs.rs/poodio).
 #[cfg_attr(feature = "bind-pyo3", pyfn)]
 #[cfg_attr(feature = "bind-napi", napi)]
-pub fn main(argv: Vec<String>) {
-    || -> Result<()> {
-        init()?;
-        let _args = match Arguments::try_parse_from(argv) {
-            Err(e) => {
-                match e.kind() {
-                    clap::error::ErrorKind::DisplayVersion => println!("{}", version()),
-                    _ => e.print()?,
-                };
-                exit(e.exit_code());
-            },
-            r => r,
-        };
-        Ok(())
-    }()
-    .unwrap_or_else(|e| {
-        if anstream::AutoStream::auto(stderr().lock())
-            .write_all(format!("Error: {e:?}\n").as_bytes())
-            .is_err()
-        {
-            log::error!(target: "poodio::main", "Failed to write error to stderr");
-        }
-        exit(1);
-    });
-}
-
-/// Version tag
-#[cfg_attr(feature = "bind-pyo3", pyfn)]
-#[cfg_attr(feature = "bind-napi", napi)]
-pub const fn version() -> &'static str {
-    concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
-}
-
-fn init() -> Result<()> {
+pub fn init() {
     use log::LevelFilter::*;
 
-    std::env::set_var(
-        "RUST_BACKTRACE",
-        if cfg!(debug_assertions) { "full" } else { "0" },
-    );
-
-    if color_eyre::config::HookBuilder::blank()
-        .display_env_section(false)
+    color_eyre::config::HookBuilder::default()
+        .display_env_section(cfg!(debug_assertions))
         .panic_section(format!(
             "Report the Crash: {}",
             concat!(env!("CARGO_PKG_REPOSITORY"), "/issues/new").green()
         ))
         .install()
-        .is_err()
-    {
-        log::error!(target: "poodio::init", "Failed to install error hooks");
-    }
+        .ok();
     simple_logger::SimpleLogger::new()
         .with_colors(true)
         .with_level(if cfg!(debug_assertions) { Info } else { Warn })
         .env()
-        .init()?;
+        .init()
+        .ok();
     log::info!(target: "poodio::init", "Hi");
+}
+
+/// Command Line Interface (CLI) main function for [`poodio`](https://docs.rs/poodio).
+///
+/// ## Details
+///
+/// It does not initialize, use `init` instead.
+#[cfg_attr(feature = "bind-pyo3", pyfn)]
+#[cfg_attr(feature = "bind-napi", napi)]
+pub fn main(argv: Vec<String>) {
+    try_main(argv).unwrap_or_else(|e| {
+        anstream::AutoStream::auto(stderr().lock())
+            .write_all(format!("Error: {e:?}\n").as_bytes())
+            .expect("Failed to report error to stderr");
+        exit(1)
+    })
+}
+
+/// See [`main`] for details.
+fn try_main(argv: Vec<String>) -> Result<()> {
+    let _args = Arguments::try_parse_from(argv).map_err(|parse_err| {
+        match parse_err.kind() {
+            clap::error::ErrorKind::DisplayVersion => println!("{}", version()),
+            _ => {
+                if let Err(e) = parse_err.print() {
+                    return e;
+                }
+            },
+        };
+        exit(parse_err.exit_code())
+    })?;
 
     Ok(())
+}
+
+/// Version tag for [`poodio`](https://docs.rs/poodio).
+#[cfg_attr(feature = "bind-pyo3", pyfn)]
+#[cfg_attr(feature = "bind-napi", napi)]
+pub const fn version() -> &'static str {
+    concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
 }

@@ -8,22 +8,25 @@ build TARGET:
         build-pip '{{ TARGET }}'
 
 build-bin TARGET:
-    @rm -rf '{{ BIN_DIST }}'
+    rm -rf '{{ BIN_DIST }}'
     cargo build --bin poodio --locked \
         --features default --release --target '{{ TARGET }}'
-    @mkdir -p '{{ BIN_DIST }}'
+    mkdir -p '{{ BIN_DIST }}'
     cp '../target/{{ TARGET }}/release/{{ BIN_NAME }}' '{{ BIN_FILE }}'
+    @echo '[BUILD] poodio/{{ BIN_DIST }}'
 
 build-npm TARGET:
-    @rm -rf '{{ NPM_DIST }}'
+    rm -rf '{{ NPM_DIST }}'
     npx napi build --cargo-flags='--locked --lib' --no-dts-header --release \
         --features bind-napi --target '{{ TARGET }}' '{{ NPM_DIST }}native/'
     cp '{{ NPM_DIST }}native/index.d.ts' '{{ NPM_DIST }}common/'
+    @echo '[BUILD] poodio/{{ NPM_DIST }}'
 
 build-pip TARGET:
-    @rm -rf '{{ PIP_DIST }}'
+    rm -rf '{{ PIP_DIST }}'
     uv run --no-sync maturin build --bindings pyo3 --locked --release \
         --features bind-pyo3 --target '{{ TARGET }}' --out '{{ PIP_DIST }}'
+    @echo '[BUILD] poodio/{{ PIP_DIST }}'
 
 test-e2e:
     @just \
@@ -43,12 +46,12 @@ test-e2e-bin:
 test-e2e-npm:
     @npm install --no-save --silent '{{ NPM_DIST }}'*
 
+    @([[ "{{ VERS }}" == $(node --print 'require("poodio").version()') ]]) || \
+        (echo '[FAIL] .version()' && exit 2)
     @([[ "{{ VERS }}" == "$(npx --no poodio -- --version)" ]]) || \
         (echo '[FAIL] --version' && exit 2)
-    @([[ "{{ VERS }}" == "$(node --print 'require("poodio").version()')" ]]) || \
-        (echo '[FAIL] .version()' && exit 2)
 
-    @npm prune --silent
+    @cd '../' && npm prune --silent
     @echo '[PASS] test-e2e-npm'
 
 test-e2e-pip:

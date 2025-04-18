@@ -18,10 +18,18 @@ env:
 
 jobs:
     check:
-        runs-on: macos-latest
+        runs-on: ${{ matrix.os }}
         defaults:
             run:
                 shell: bash
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - os: macos-latest
+                      items: check audit
+                    - os: windows-latest
+                      items: check
         steps:
             - uses: actions/checkout@v4
             - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -29,7 +37,7 @@ jobs:
                   components: clippy, rustfmt
             - uses: taiki-e/install-action@v2
               with:
-                  tool: cargo-audit, cargo-outdated, just
+                  tool: cargo-audit, just
 
             - uses: actions/setup-node@v4
               with:
@@ -45,7 +53,7 @@ jobs:
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
 
             - name: Check
-              run: just prepare check audit
+              run: just prepare ${{ matrix.items }}
 
     build-poodio:
         # if: startsWith(github.ref, 'refs/tags/poodio@')
@@ -59,15 +67,15 @@ jobs:
                 include:
                     - os: macos-15
                       rustc-target: aarch64-apple-darwin
-                      extra-tests:
+                      more-test:
                           python: "3.10 3.11 3.12 3.13"
                     - os: macos-13
                       rustc-target: x86_64-apple-darwin
-                      extra-tests:
+                      more-test:
                           python: "3.10 3.11 3.12 3.13"
                     - os: ubuntu-24.04-arm
                       rustc-target: aarch64-unknown-linux-gnu
-                      extra-tests:
+                      more-test:
                           python: "3.10 3.11 3.12 3.13"
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   rustc-target: aarch64-unknown-linux-musl
@@ -75,19 +83,19 @@ jobs:
                     #   rustc-target: i686-unknown-linux-gnu
                     - os: ubuntu-24.04
                       rustc-target: x86_64-unknown-linux-gnu
-                      extra-tests:
+                      more-test:
                           python: "3.10 3.11 3.12 3.13"
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   rustc-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
                       rustc-target: aarch64-pc-windows-msvc
-                      extra-tests:
+                      more-test:
                           python: ""
                     # - os: windows-2025 ## Deprecated 32-bit
                     #   rustc-target: i686-pc-windows-msvc
                     - os: windows-2022
                       rustc-target: x86_64-pc-windows-msvc
-                      extra-tests:
+                      more-test:
                           python: "3.10 3.11 3.12 3.13"
         steps:
             - uses: actions/checkout@v4
@@ -132,15 +140,18 @@ jobs:
               with:
                   packages: libasound2-dev
 
-            - name: Build and Test
-              run: |
-                  just prepare poodio::build "${{ matrix.rustc-target }}" \
-                       tool poodio::test-e2e
+            - name: Build
+              run: just prepare poodio::build "${{ matrix.rustc-target }}"
+              env:
+                  RUSTFLAGS: "--deny warnings"
 
-            - name: Test (Extra)
+            - name: Test (E2E)
+              run: just tool poodio::test-e2e
+
+            - name: Test More (E2E)
               run: |
-                  for p in ${{ matrix.extra-tests.python }}; do
-                      UV_PYTHON="$p" just prepare-pip poodio::test-e2e-pip || exit 2
+                  for p in ${{ matrix.more-test.python }}; do
+                      UV_PYTHON="$p" just prepare-pip poodio::test-e2e-pip || exit 3
                   done
 
             - uses: actions/upload-artifact@v4
@@ -216,7 +227,7 @@ jobs:
               run: |
                   npm publish "./$(set -- dist/*; echo "$1")/npm/common/"
                   for pkg in dist/*; do
-                      npm publish "./$pkg/npm/native/" || exit 2
+                      npm publish "./$pkg/npm/native/" || exit 3
                   done
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}

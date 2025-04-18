@@ -2,21 +2,13 @@ use color_eyre::eyre::Result;
 
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=");
-    std::env::set_var("RUST_BACKTRACE", "full");
 
     color_eyre::install()?;
 
     #[cfg(feature = "bind-napi")]
     {
         bind_napi::write_cfgs()?;
-        bind_napi::write_common_main()?;
-    }
-
-    #[cfg(feature = "bind-pyo3")]
-    {
-        pyo3_build_config::add_extension_module_link_args();
-        pyo3_build_config::add_python_framework_link_args();
-        pyo3_build_config::use_pyo3_cfgs();
+        bind_napi::write_common_entry()?;
     }
     Ok(())
 }
@@ -25,7 +17,7 @@ fn main() -> Result<()> {
 mod bind_napi {
     use super::*;
     use serde::Serialize;
-    use serde_json::{json, ser::PrettyFormatter, Serializer};
+    use serde_json::{Serializer, json, ser::PrettyFormatter};
     use std::{collections::BTreeMap, fs, io::Write, path::Path, sync::LazyLock};
 
     static CARGO_TO_NPM_TARGET: LazyLock<BTreeMap<&str, [&str; 3]>> = LazyLock::new(|| {
@@ -60,10 +52,6 @@ mod bind_napi {
 
         napi_build::setup();
 
-        if std::env::var("DOCS_RS").is_ok() {
-            return Ok(());
-        }
-
         let name = env!("CARGO_PKG_NAME");
         let target = std::env::var("TARGET")?;
         let version = env!("CARGO_PKG_VERSION");
@@ -74,9 +62,10 @@ mod bind_napi {
         let dist = Path::new("dist/npm/");
         let common_dist = dist.join("common/");
         let native_dist = dist.join("native/");
-        let config_name = Path::new("package.json");
-        let license_name = Path::new("LICENSE.txt");
-        let readme_name = Path::new(env!("CARGO_PKG_README"));
+        let config_name = "package.json";
+        let entry_name = Path::new("index.js");
+        let license_name = "LICENSE.txt";
+        let readme_name = env!("CARGO_PKG_README");
 
         let config = json!({
             "author": env!("CARGO_PKG_AUTHORS"),
@@ -87,9 +76,10 @@ mod bind_napi {
             "repository": {
                 "directory": name,
                 "type": "git",
-                "url": format!("git+{}", env!("CARGO_PKG_REPOSITORY")),
+                "url": concat!("git+", env!("CARGO_PKG_REPOSITORY"), ".git"),
             },
             "type": "commonjs",
+            "types": "index.d.ts",
             "version": version,
         });
 
@@ -99,6 +89,7 @@ mod bind_napi {
         if libc != "unknown" {
             v.insert("libc".into(), json!([libc]));
         }
+        v.insert("main".into(), json!(entry_name.with_extension("node")));
         v.insert(
             "name".into(),
             format!("@{name}/{name}-{cpu}-{os}-{libc}").into(),
@@ -107,8 +98,10 @@ mod bind_napi {
 
         let mut common_config = config.to_owned();
         let v = common_config.as_object_mut().unwrap();
-        v.insert("bin".into(), json!({ name: "index.js" }));
-        v.insert("dependencies".into(), json!({ "tell-libc": "0.0.0" }));
+        v.insert("bin".into(), json!({ name: entry_name }));
+        v.insert("dependencies".into(), json!({ "tell-libc": "0.0.1" }));
+        v.insert("main".into(), json!(entry_name));
+        v.insert("name".into(), name.into());
         v.insert(
             "optionalDependencies".into(),
             CARGO_TO_NPM_TARGET
@@ -116,7 +109,6 @@ mod bind_napi {
                 .map(|[cpu, os, libc]| (format!("@{name}/{name}-{cpu}-{os}-{libc}"), version))
                 .collect(),
         );
-        v.insert("name".into(), name.into());
 
         fs::create_dir_all(&common_dist)?;
         fs::create_dir_all(&native_dist)?;
@@ -136,18 +128,20 @@ mod bind_napi {
         Ok(())
     }
 
-    pub fn write_common_main() -> Result<()> {
-        let dir = Path::new("dist/npm/common/");
-        let name = env!("CARGO_PKG_NAME");
-        let data = format!(
-            "#!/usr/bin/env node\n\
-            require(\"tell-libc\");let{{argv:r,arch:e,platform:o,libc:i}}=process;\n\
-            module.exports=require(`@{name}/{name}-${{e}}-${{o}}-${{i||\"unknown\"}}`);\n\
-            require.main===module&&module.exports.main(r.slice(1));\n"
+    pub fn write_common_entry() -> Result<()> {
+        const DATA: &str = concat!(
+            "#!/usr/bin/env node\n",
+            r#"require("tell-libc");"#,
+            r#"let{argv:e,arch:r,platform:o,libc:i}=process;"#,
+            r#"module.exports=require(`"#,
+            concat!("@", env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_NAME")),
+            r#"-${r}-${o}-${i||"unknown"}`);"#,
+            r#"module.exports.init();"#,
+            r#"require.main===module&&module.exports.main(e.slice(1));"#,
         );
 
-        let mut file = fs::File::create(dir.join("index.js"))?;
-        file.write_all(data.as_bytes())?;
+        let mut file = fs::File::create("dist/npm/common/index.js")?;
+        file.write_all(DATA.as_ref())?;
         #[cfg(unix)]
         {
             let mut perm = file.metadata()?.permissions();

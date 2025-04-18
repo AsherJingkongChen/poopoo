@@ -2,6 +2,7 @@
     "devDependencies": {
         "@napi-rs/cli": "^2.18",
         "prettier": "^3.5",
+        "tell-libc": "^0.0",
         "uvu": "^0.5"
     },
     "prettier": {
