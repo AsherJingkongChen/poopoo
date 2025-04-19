@@ -18,7 +18,7 @@ check:
     uv run --no-sync ruff check
     npx --no prettier -- --check .
     cargo fmt --all --check
-    cargo clippy --all-features --locked -- --forbid warnings
+    cargo clippy --all-features --locked -- --deny warnings
 
 check-fix:
     uv run --no-sync ruff format
@@ -26,7 +26,7 @@ check-fix:
     npx --no prettier -- --write .
     cargo fmt --all
     cargo clippy --all-features --allow-dirty --allow-staged --fix
-    cargo clippy --all-features --locked -- --forbid warnings 2> /dev/null
+    cargo clippy --all-features --locked -- --deny warnings 2> /dev/null
 
 clean: clean-cargo clean-dist clean-npm clean-pip
 

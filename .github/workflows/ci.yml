@@ -138,7 +138,16 @@ jobs:
             - if: startsWith(matrix.os, 'ubuntu-')
               uses: awalsh128/cache-apt-pkgs-action@v1
               with:
-                  packages: libasound2-dev
+                  packages: libasound2-dev pkg-config
+
+            - name: Find alsa.pc (Debug)
+              if: matrix.os == 'ubuntu-24.04-arm'
+              run: |
+                  echo "Searching for alsa.pc..."
+                  find /usr -name alsa.pc
+                  echo "Checking pkg-config path..."
+                  echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+                  pkg-config --libs --cflags alsa # Try running it directly
 
             - name: Build
               run: just prepare poodio::build "${{ matrix.rustc-target }}"
