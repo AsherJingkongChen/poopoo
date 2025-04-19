@@ -62,19 +62,21 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                python-versions:
-                    - 3.8 3.9 3.10 3.11 3.12 3.13
                 include:
                     - os: macos-15
                       rust-target: aarch64-apple-darwin
+                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
                     - os: macos-13
                       rust-target: x86_64-apple-darwin
+                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
                     - os: ubuntu-24.04-arm
                       rust-target: aarch64-unknown-linux-gnu
+                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   rust-target: aarch64-unknown-linux-musl
                     - os: ubuntu-24.04
                       rust-target: x86_64-unknown-linux-gnu
+                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   rust-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
@@ -83,6 +85,7 @@ jobs:
                       python-versions: 3.11
                     - os: windows-2025
                       rust-target: x86_64-pc-windows-msvc
+                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
