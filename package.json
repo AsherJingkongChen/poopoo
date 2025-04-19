@@ -5,10 +5,13 @@
         "tell-libc": "^0.0",
         "uvu": "^0.5"
     },
+    "name": "workspace",
+    "private": true,
     "prettier": {
         "tabWidth": 4,
         "useTabs": false,
-        "printWidth": 90
+        "printWidth": 90,
+        "endOfLine": "lf"
     },
     "workspaces": [
         "poodio"

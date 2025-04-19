@@ -13,20 +13,20 @@ build-bin TARGET:
         --features default --release --target '{{ TARGET }}'
     mkdir -p '{{ BIN_DIST }}'
     cp '../target/{{ TARGET }}/release/{{ BIN_NAME }}' '{{ BIN_FILE }}'
-    @echo '[BUILD] poodio/{{ BIN_DIST }}'
+    @echo '[DIST] poodio/{{ BIN_DIST }}'
 
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}'
     npx napi build --cargo-flags='--locked --lib' --no-dts-header --release \
         --features bind-napi --target '{{ TARGET }}' '{{ NPM_DIST }}native/'
     cp '{{ NPM_DIST }}native/index.d.ts' '{{ NPM_DIST }}common/'
-    @echo '[BUILD] poodio/{{ NPM_DIST }}'
+    @echo '[DIST] poodio/{{ NPM_DIST }}'
 
 build-pip TARGET:
     rm -rf '{{ PIP_DIST }}'
     uv run --no-sync maturin build --bindings pyo3 --locked --release \
         --features bind-pyo3 --target '{{ TARGET }}' --out '{{ PIP_DIST }}'
-    @echo '[BUILD] poodio/{{ PIP_DIST }}'
+    @echo '[DIST] poodio/{{ PIP_DIST }}'
 
 test-e2e:
     @just \
@@ -44,24 +44,27 @@ test-e2e-bin:
     @echo '[PASS] test-e2e-bin'
 
 test-e2e-npm:
-    @npm install --no-save --silent '{{ NPM_DIST }}'*
+    @# NOTE: it works in npm with node v16+
+    @for try in {1..2}; do \
+        npm install --no-save --silent '{{ NPM_DIST }}'* && break; \
+    done
 
     @([[ "{{ VERS }}" == $(node --print 'require("poodio").version()') ]]) || \
         (echo '[FAIL] .version()' && exit 2)
     @([[ "{{ VERS }}" == "$(npx --no poodio -- --version)" ]]) || \
         (echo '[FAIL] --version' && exit 2)
 
-    @cd '../' && npm prune --silent
+    @cd '../' && npm prune
     @echo '[PASS] test-e2e-npm'
 
 test-e2e-pip:
-    @uv pip install --reinstall --quiet '{{ PIP_DIST }}'*
+    @uv pip install --reinstall --quiet './{{ PIP_DIST }}'*
 
     @([[ "{{ VERS }}" == "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" ]]) || \
         (echo '[FAIL] .version()' && exit 2)
     @# TODO: --version
 
-    @uv pip uninstall --quiet poodio
+    @uv pip uninstall poodio
     @echo '[PASS] test-e2e-pip'
 
 BIN_NAME := 'poodio' + if os() == 'windows' { '.exe' } else { '' }

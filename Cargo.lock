@@ -581,12 +581,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "napi-build"
-version = "2.1.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e28acfa557c083f6e254a786e01ba253fc56f18ee000afcd4f79af735f73a6da"
-
-[[package]]
 name = "napi-derive"
 version = "2.16.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -764,7 +758,6 @@ dependencies = [
  "cpal",
  "log",
  "napi",
- "napi-build",
  "napi-derive",
  "pyo3",
  "serde",

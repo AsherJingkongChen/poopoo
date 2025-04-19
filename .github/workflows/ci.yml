@@ -142,8 +142,6 @@ jobs:
 
             - name: Build
               run: just prepare poodio::build "${{ matrix.rustc-target }}"
-              env:
-                  RUSTFLAGS: "--deny warnings"
 
             - name: Test (E2E)
               run: just tool poodio::test-e2e

@@ -50,8 +50,6 @@ mod bind_napi {
     pub fn write_cfgs() -> Result<()> {
         use color_eyre::eyre::ContextCompat;
 
-        napi_build::setup();
-
         let name = env!("CARGO_PKG_NAME");
         let target = std::env::var("TARGET")?;
         let version = env!("CARGO_PKG_VERSION");

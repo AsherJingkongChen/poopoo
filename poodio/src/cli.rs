@@ -96,6 +96,8 @@ fn try_main(argv: Vec<String>) -> Result<()> {
 /// Version tag for [`poodio`](https://docs.rs/poodio).
 #[cfg_attr(feature = "bind-pyo3", pyfn)]
 #[cfg_attr(feature = "bind-napi", napi)]
-pub const fn version() -> &'static str {
-    concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
+pub fn version() -> String {
+    let name = env!("CARGO_PKG_NAME");
+    let version = env!("CARGO_PKG_VERSION");
+    format!("{name}@{version}")
 }
