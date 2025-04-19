@@ -62,39 +62,27 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
+                python-versions:
+                    - 3.8 3.9 3.10 3.11 3.12 3.13
                 include:
                     - os: macos-15
-                      rustc-target: aarch64-apple-darwin
-                      more-test:
-                          python: 3.9 3.10 3.11 3.12 3.13
+                      rust-target: aarch64-apple-darwin
                     - os: macos-13
-                      rustc-target: x86_64-apple-darwin
-                      more-test:
-                          python: 3.9 3.10 3.11 3.12 3.13
+                      rust-target: x86_64-apple-darwin
                     - os: ubuntu-24.04-arm
-                      rustc-target: aarch64-unknown-linux-gnu
-                      more-test:
-                          python: 3.9 3.10 3.11 3.12 3.13
+                      rust-target: aarch64-unknown-linux-gnu
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
-                    #   rustc-target: aarch64-unknown-linux-musl
-                    # - os: ubuntu-24.04 ## Deprecated 32-bit
-                    #   rustc-target: i686-unknown-linux-gnu
+                    #   rust-target: aarch64-unknown-linux-musl
                     - os: ubuntu-24.04
-                      rustc-target: x86_64-unknown-linux-gnu
-                      more-test:
-                          python: 3.9 3.10 3.11 3.12 3.13
+                      rust-target: x86_64-unknown-linux-gnu
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
-                    #   rustc-target: x86_64-unknown-linux-musl
+                    #   rust-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
-                      rustc-target: aarch64-pc-windows-msvc
-                      more-test:
-                          python: ""
-                    # - os: windows-2025 ## Deprecated 32-bit
-                    #   rustc-target: i686-pc-windows-msvc
+                      rust-target: aarch64-pc-windows-msvc
+                      node-version: 20
+                      python-versions: 3.11
                     - os: windows-2025
-                      rustc-target: x86_64-pc-windows-msvc
-                      more-test:
-                          python: 3.9 3.10 3.11 3.12 3.13
+                      rust-target: x86_64-pc-windows-msvc
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
@@ -112,6 +100,7 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
+                  node-version: ${{ matrix.node-version }}
                   node-version-file: .node-version
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
@@ -139,30 +128,20 @@ jobs:
                   packages: libasound2-dev
                   version: ${{ matrix.os }}
 
-            - name: Find alsa.pc (Debug)
-              if: matrix.os == 'ubuntu-24.04-arm'
-              run: |
-                  echo "Searching for alsa.pc..."
-                  find /usr -name alsa.pc
-                  echo "Checking pkg-config path..."
-                  echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
-                  pkg-config --libs --cflags alsa # Try running it directly
-
             - name: Build
-              run: just prepare poodio::build "${{ matrix.rustc-target }}"
+              run: just prepare poodio::build "${{ matrix.rust-target }}"
 
-            - name: Test (E2E)
-              run: just tool poodio::test-e2e
-
-            - name: Test More (E2E)
+            - name: Test
               run: |
-                  for p in ${{ matrix.more-test.python }}; do
+                  just prepare tool
+                  just poodio::test-e2e-bin poodio::test-e2e-npm
+                  for p in ${{ matrix.python-versions }}; do
                       UV_PYTHON="$p" just prepare-pip poodio::test-e2e-pip || exit 3
                   done
 
             - uses: actions/upload-artifact@v4
               with:
-                  name: ${{ matrix.rustc-target }}
+                  name: ${{ matrix.rust-target }}
                   path: poodio/dist/
 
     publish-poodio:
