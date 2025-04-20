@@ -152,7 +152,10 @@ jobs:
         needs:
             - check
             - build-poodio
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
+        defaults:
+            run:
+                shell: bash
         permissions:
             attestations: write
             contents: write
@@ -168,8 +171,6 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
-                  cache-dependency-path: "**/package.json"
-                  node-version-file: .node-version
                   registry-url: https://registry.npmjs.org/
 
             - name: Publish to github.com (Packaging)
@@ -180,7 +181,7 @@ jobs:
                       ASSET="${{ github.ref_name }}-$TARGET.tgz"
                       cd "$dir/bin/"
                       echo "Packaging $ASSET ..."
-                      tar -vczf "$ASSET" * || exit 1
+                      tar -vczf "$ASSET" * || exit 3
                       cd - > /dev/null
                   done
 
@@ -195,12 +196,14 @@ jobs:
                   echo "contributors=$CONTRIBUTORS" >> "$GITHUB_OUTPUT"
                   echo "installation=$INSTALLATION" >> "$GITHUB_OUTPUT"
             - name: Publish to github.com (Attestation)
+              if: false
               id: github-attest
               uses: actions/attest-build-provenance@v2
               with:
                   subject-path: dist/*/bin/*.tgz
 
             - name: Publish to github.com
+              if: false
               uses: softprops/action-gh-release@v2
               with:
                   body: |
@@ -213,13 +216,14 @@ jobs:
 
             - name: Publish to npmjs.com
               run: |
-                  npm publish "./$(set -- dist/*; echo "$1")/npm/common/"
+                  npm publish --dry-run "./$(set -- dist/*; echo "$1")/npm/common/"
                   for pkg in dist/*; do
-                      npm publish "./$pkg/npm/native/" || exit 3
+                      npm publish --dry-run "./$pkg/npm/native/" || exit 3
                   done
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}
+
             - name: Publish to crates.io
-              run: cargo publish --locked --package poodio --no-verify --verbose
+              run: cargo publish --dry-run --locked --package poodio --no-verify --verbose
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.POODIO_CRATE_TOKEN }}
