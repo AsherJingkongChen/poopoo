@@ -1,24 +1,33 @@
-//! Command Line Interface (CLI) for [`poodio`](crate)
+//! Command Line Interface (CLI) for [`poodio`].
+//!
+//! ---
+//!
+//! [`init`]:   https://docs.rs/poodio/latest/poodio/cli/fn.init.html
+//! [`main`]:   https://docs.rs/poodio/latest/poodio/cli/fn.main.html
+//! [`poodio`]: https://docs.rs/poodio/latest/poodio/
 
+use crate::*;
 use clap::{
     Parser,
     builder::styling::{AnsiColor, Styles},
 };
-use color_eyre::{Result, owo_colors::OwoColorize};
+use color_eyre::{Report, owo_colors::OwoColorize};
+use err::Error::Exit;
 use std::{
-    env,
+    env::args_os,
+    ffi::OsString,
     io::{Write, stderr},
     process::exit,
 };
 
 #[cfg(feature = "bind-napi")]
 use napi_derive::napi;
-
 #[cfg(feature = "bind-pyo3")]
 use pyo3::pyfunction as pyfn;
 
 #[derive(Clone, Debug, Parser, PartialEq)]
 #[command(
+    about = "Poodio farts poo poo audio",
     after_help = format!("See '{}' for more information.", "https://docs.rs/poodio".cyan()),
     arg_required_else_help = true,
     help_template = "{about}\n\n{usage-heading} {usage}\n\n{all-args}{after-help}",
@@ -34,10 +43,18 @@ use pyo3::pyfunction as pyfn;
     version,
     verbatim_doc_comment,
 )]
-/// Poodio farts poo poo audio
-struct Arguments {}
+/// CLI arguments parser.
+pub struct Arguments {}
 
-/// Command Line Interface (CLI) initializer for [`poodio`](https://docs.rs/poodio).
+/// CLI initialization function.
+///
+/// ## Details
+///
+/// It initializes the error reporter and logger before the CLI [`main`] function.
+///
+/// ---
+///
+/// [`main`]: https://docs.rs/poodio/latest/poodio/cli/fn.main.html
 #[cfg_attr(feature = "bind-pyo3", pyfn)]
 #[cfg_attr(feature = "bind-napi", napi)]
 pub fn init() {
@@ -60,44 +77,73 @@ pub fn init() {
     log::info!(target: "poodio::init", "Hi");
 }
 
-/// Command Line Interface (CLI) main function for [`poodio`](https://docs.rs/poodio).
+/// CLI main function.
 ///
 /// ## Details
 ///
-/// It does not initialize, use `init` instead.
-#[cfg_attr(feature = "bind-pyo3", pyfn)]
-#[cfg_attr(feature = "bind-napi", napi)]
-pub fn main(argv: Vec<String>) {
-    try_main(argv).unwrap_or_else(|e| {
+/// [`main`] should be called after [`init`].
+pub fn main<I, T>(argv: I)
+where
+    I: IntoIterator<Item = T>,
+    T: Into<OsString> + Clone,
+{
+    let exit_code = try_main(argv).unwrap_or_else(|e| {
         anstream::AutoStream::auto(stderr().lock())
             .write_all(format!("Error: {e:?}\n").as_bytes())
             .expect("Failed to report error to stderr");
-        exit(1)
-    })
+        1
+    });
+    exit(exit_code);
 }
 
-/// See [`main`] for details.
-fn try_main(argv: Vec<String>) -> Result<()> {
-    let _args = Arguments::try_parse_from(argv).map_err(|parse_err| {
-        match parse_err.kind() {
-            clap::error::ErrorKind::DisplayVersion => println!("{}", version()),
-            _ => {
-                if let Err(e) = parse_err.print() {
-                    return e;
-                }
-            },
-        };
-        exit(parse_err.exit_code())
-    })?;
-
-    Ok(())
+/// It calls [`main`] with the default CLI arguments.
+pub fn main_from_argv_0() {
+    main(args_os());
 }
 
-/// Version tag for [`poodio`](https://docs.rs/poodio).
+/// It calls [`main`] with the default CLI arguments except for the first one.
+///
+/// ---
+///
+/// [`main`]: https://docs.rs/poodio/latest/poodio/cli/fn.main.html
+#[cfg_attr(feature = "bind-pyo3", pyfn(name = "main"))]
+#[cfg_attr(feature = "bind-napi", napi(js_name = "main"))]
+pub fn main_from_argv_1() {
+    main(args_os().skip(1));
+}
+
+/// The version tag for [`poodio`].
 #[cfg_attr(feature = "bind-pyo3", pyfn)]
 #[cfg_attr(feature = "bind-napi", napi)]
 pub fn version() -> String {
     let name = env!("CARGO_PKG_NAME");
     let version = env!("CARGO_PKG_VERSION");
     format!("{name}@{version}")
+}
+
+/// CLI main function for [`poodio`].
+///
+/// ## Details
+///
+/// It returns the process exit code if [`Ok`] or the error report if [`Err`].
+fn try_main<I, T>(argv: I) -> Result<i32, Report>
+where
+    I: IntoIterator<Item = T>,
+    T: Into<OsString> + Clone,
+{
+    let _args = match Arguments::try_parse_from(argv).map_err(|e| match e.kind() {
+        clap::error::ErrorKind::DisplayVersion => {
+            println!("{}", version());
+            Exit(e.exit_code())
+        },
+        _ => match e.print() {
+            Ok(_) => Exit(e.exit_code()),
+            Err(e) => e.into(),
+        },
+    }) {
+        Err(Exit(code)) => return Ok(code),
+        Err(e) => return Err(e.into()),
+        Ok(v) => v,
+    };
+    Ok(0)
 }

@@ -24,7 +24,7 @@ build-npm TARGET:
 
 build-pip TARGET:
     rm -rf '{{ PIP_DIST }}'
-    uv run --no-sync maturin build --bindings pyo3 --locked --release \
+    uv run maturin build --bindings pyo3 --locked --release \
         --features bind-pyo3 --target '{{ TARGET }}' --out '{{ PIP_DIST }}'
     @echo '[DIST] poodio/{{ PIP_DIST }}'
 
@@ -36,9 +36,9 @@ test-e2e:
     && echo '[PASS] test-e2e'
 
 test-e2e-bin:
-    @([[ -x '{{ BIN_FILE }}' && ! -d '{{ BIN_FILE }}' ]]) || \
+    @[[ -x '{{ BIN_FILE }}' && ! -d '{{ BIN_FILE }}' ]] || \
         (echo '[FAIL] permission' && exit 2)
-    @([[ "{{ VERS }}" == "$('{{ BIN_FILE }}' --version)" ]]) || \
+    @[[ "{{ VERS }}" == "$('{{ BIN_FILE }}' --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @echo '[PASS] test-e2e-bin'
@@ -49,24 +49,28 @@ test-e2e-npm:
         npm install --no-save --silent '{{ NPM_DIST }}'* && break; \
     done
 
-    @([[ "{{ VERS }}" == $(node --print 'require("poodio").version()') ]]) || \
+    @[[ "{{ VERS }}" == $(node --print 'require("poodio").version()') ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @([[ "{{ VERS }}" == "$(npx --no poodio -- --version)" ]]) || \
+    @[[ "{{ VERS }}" == "$(npx --no poodio -- --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @cd '../' && npm prune
     @echo '[PASS] test-e2e-npm'
 
 test-e2e-pip:
-    @uv pip install --reinstall --quiet './{{ PIP_DIST }}'*
+    @uv pip install --quiet './{{ PIP_DIST }}'*
 
-    @([[ "{{ VERS }}" == "$(uv run --no-sync python -c 'import poodio as p;print(p.version())')" ]]) || \
+    @[[ "{{ VERS }}" == "$(uv run python -c 'import poodio as p;print(p.version())')" ]] || \
         (echo '[FAIL] .version()' && exit 2)
     @# TODO: --version
+    @[[ "{{ VERS }}" == "$(uv run poodio --version)" ]] || \
+        (echo '[FAIL] --version' && exit 2)
 
     @uv pip uninstall poodio
     @echo '[PASS] test-e2e-pip'
 
+hi:
+    @echo $HI
 BIN_NAME := 'poodio' + if os() == 'windows' { '.exe' } else { '' }
 BIN_FILE := BIN_DIST + BIN_NAME
 BIN_DIST := 'dist/bin/'

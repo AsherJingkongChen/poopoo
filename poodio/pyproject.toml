@@ -6,3 +6,4 @@ requires = ["maturin>=1.8"]
 dynamic = ["version"]
 name = "poodio"
 requires-python = ">=3.8"
+scripts.poodio = "poodio:main"

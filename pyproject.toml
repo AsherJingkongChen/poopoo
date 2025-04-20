@@ -8,6 +8,7 @@ dev = ["maturin", "pip-audit", "ruff"]
 [project]
 dynamic = ["version"]
 name = "workspace"
+dependencies = []
 
 [tool.setuptools]
 packages = []

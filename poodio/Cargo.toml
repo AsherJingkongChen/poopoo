@@ -14,6 +14,7 @@ napi-derive = {workspace = true, features = ["type-def"], optional = true}
 pyo3 = {workspace = true, features = ["abi3-py38", "extension-module", "macros"], optional = true}
 # pyo3-stub-gen = {workspace = true, features = []}
 simple_logger = {workspace = true, features = ["colors", "stderr"]}
+thiserror = {workspace = true, features = ["std"]}
 
 [features]
 bind-napi = ["dep:napi", "dep:napi-derive"]
@@ -41,3 +42,7 @@ version = "0.0.16"
 [package.metadata.binstall]
 pkg-fmt = "tgz"
 pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }%40{ version }-{ target }{ archive-suffix }"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs", "--document-private-items"]

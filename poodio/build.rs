@@ -134,8 +134,8 @@ mod bind_napi {
             r#"module.exports=require(`"#,
             concat!("@", env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_NAME")),
             r#"-${r}-${o}-${i||"unknown"}`);"#,
-            r#"module.exports.init();"#,
-            r#"require.main===module&&module.exports.main(e.slice(1));"#,
+            // r#"module.exports.init();"#,
+            r#"require.main===module&&module.exports.main();"#,
         );
 
         let mut file = fs::File::create("dist/npm/common/index.js")?;

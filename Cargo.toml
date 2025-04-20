@@ -35,3 +35,4 @@ pyo3 = {version = "0.24", default-features = false}
 serde = {version = "1.0", default-features = false}
 serde_json = {version = "1.0", default-features = false}
 simple_logger = {version = "5.0", default-features = false}
+thiserror = {version = "2.0", default-features = false}

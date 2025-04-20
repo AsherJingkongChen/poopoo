@@ -1,6 +1,7 @@
 mod poodio
 
 export RUFF_NO_CACHE := 'true'
+export UV_NO_SYNC := 'true'
 
 audit:
     uv lock --check
@@ -9,20 +10,20 @@ audit:
     npm audit
     npm audit signatures
     cargo audit --deny warnings
-    uv run --no-sync pip-audit --progress-spinner off --skip-editable
+    uv run pip-audit --progress-spinner off --skip-editable
 
 audit-fix: update
 
 check:
-    uv run --no-sync ruff format --check
-    uv run --no-sync ruff check
+    uv run ruff format --check
+    uv run ruff check
     npx --no prettier -- --check .
     cargo fmt --all --check
     cargo clippy --all-features --locked -- --deny warnings
 
 check-fix:
-    uv run --no-sync ruff format
-    uv run --no-sync ruff check --fix
+    uv run ruff format
+    uv run ruff check --fix
     npx --no prettier -- --write .
     cargo fmt --all
     cargo clippy --all-features --allow-dirty --allow-staged --fix
@@ -69,7 +70,7 @@ tool-npm:
         'p=process;p.version+`-`+p.platform+`-`+p.arch+(p.libc||``)')"
 
 tool-pip:
-    @echo "[TOOL] pip:" $(uv run --no-sync --quiet python -c \
+    @echo "[TOOL] pip:" $(uv run --quiet python -c \
         'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
 
 update: update-pip update-npm update-cargo
