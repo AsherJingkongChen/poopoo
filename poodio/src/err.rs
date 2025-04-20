@@ -2,7 +2,7 @@
 
 pub use thiserror::Error;
 
-/// Error enum for [`poodio`].
+/// Error enums for [`poodio`](crate).
 #[derive(Debug, Error)]
 pub enum Error {
     /// The process exits with a specific code.

@@ -1,5 +1,6 @@
 [build-dependencies]
 color-eyre = {workspace = true, features = ["track-caller"]}
+pyo3-build-config = {workspace = true, features = [], optional = true}
 serde = {workspace = true, features = ["std"]}
 serde_json = {workspace = true, features = ["std"]}
 
@@ -18,7 +19,7 @@ thiserror = {workspace = true, features = ["std"]}
 
 [features]
 bind-napi = ["dep:napi", "dep:napi-derive"]
-bind-pyo3 = ["dep:pyo3"]
+bind-pyo3 = ["dep:pyo3", "dep:pyo3-build-config"]
 default = []
 
 [lib]
@@ -45,4 +46,3 @@ pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }%40{ versio
 
 [package.metadata.docs.rs]
 all-features = true
-rustdoc-args = ["--cfg", "docsrs", "--document-private-items"]

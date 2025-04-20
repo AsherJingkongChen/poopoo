@@ -760,6 +760,7 @@ dependencies = [
  "napi",
  "napi-derive",
  "pyo3",
+ "pyo3-build-config",
  "serde",
  "serde_json",
  "simple_logger",

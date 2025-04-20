@@ -1,5 +1,5 @@
 [build]
-rustdocflags = ["--cfg", "docsrs", "--document-private-items"]
+rustdocflags = ["--cfg", "docsrs"]
 
 [target.aarch64-unknown-linux-musl]
 linker = "aarch64-linux-gnu-gcc"

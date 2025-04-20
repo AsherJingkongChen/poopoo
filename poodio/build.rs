@@ -10,6 +10,11 @@ fn main() -> Result<()> {
         bind_napi::write_cfgs()?;
         bind_napi::write_common_entry()?;
     }
+
+    #[cfg(feature = "bind-pyo3")]
+    {
+        pyo3_build_config::add_extension_module_link_args();
+    }
     Ok(())
 }
 

@@ -1,3 +1,5 @@
+#![cfg_attr(any(clippy, doc, docsrs), deny(warnings))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
@@ -18,7 +20,7 @@ fn init_bind_pyo3(m: &pyo3::Bound<'_, pyo3::types::PyModule>) -> pyo3::PyResult<
     use pyo3::{types::PyModuleMethods, wrap_pyfunction as wrap_pyfn};
 
     cli::init();
-    m.add_function(wrap_pyfn!(cli::main_from_argv_1, m)?)?;
+    m.add_function(wrap_pyfn!(cli::main, m)?)?;
     m.add_function(wrap_pyfn!(cli::version, m)?)?;
 
     Ok(())

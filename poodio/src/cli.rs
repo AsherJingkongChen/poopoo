@@ -2,9 +2,7 @@
 //!
 //! ---
 //!
-//! [`init`]:   https://docs.rs/poodio/latest/poodio/cli/fn.init.html
-//! [`main`]:   https://docs.rs/poodio/latest/poodio/cli/fn.main.html
-//! [`poodio`]: https://docs.rs/poodio/latest/poodio/
+//! [`poodio`]: https://docs.rs/poodio
 
 use crate::*;
 use clap::{
@@ -14,7 +12,6 @@ use clap::{
 use color_eyre::{Report, owo_colors::OwoColorize};
 use err::Error::Exit;
 use std::{
-    env::args_os,
     ffi::OsString,
     io::{Write, stderr},
     process::exit,
@@ -25,6 +22,7 @@ use napi_derive::napi;
 #[cfg(feature = "bind-pyo3")]
 use pyo3::pyfunction as pyfn;
 
+/// CLI arguments parser.
 #[derive(Clone, Debug, Parser, PartialEq)]
 #[command(
     about = "Poodio farts poo poo audio",
@@ -43,14 +41,13 @@ use pyo3::pyfunction as pyfn;
     version,
     verbatim_doc_comment,
 )]
-/// CLI arguments parser.
 pub struct Arguments {}
 
 /// CLI initialization function.
 ///
 /// ## Details
 ///
-/// It initializes the error reporter and logger before the CLI [`main`] function.
+/// It initializes the reporters before the CLI [`main`] function.
 ///
 /// ---
 ///
@@ -74,64 +71,62 @@ pub fn init() {
         .env()
         .init()
         .ok();
-    log::info!(target: "poodio::init", "Hi");
+
+    log::info!(target: "poodio::cli::init", "Ok");
 }
 
 /// CLI main function.
 ///
 /// ## Details
 ///
-/// [`main`] should be called after [`init`].
-pub fn main<I, T>(argv: I)
-where
-    I: IntoIterator<Item = T>,
-    T: Into<OsString> + Clone,
-{
-    let exit_code = try_main(argv).unwrap_or_else(|e| {
+/// It should be called after [`init`].
+///
+/// ---
+///
+/// [`init`]: https://docs.rs/poodio/latest/poodio/cli/fn.init.html
+#[cfg_attr(feature = "bind-pyo3", pyfn)]
+#[cfg_attr(feature = "bind-napi", napi)]
+pub fn main() {
+    let args = std::env::args_os();
+    #[cfg(any(feature = "bind-napi", feature = "bind-pyo3"))]
+    let args = args.skip(1);
+
+    let exit_code = try_main(args).unwrap_or_else(|e| {
         anstream::AutoStream::auto(stderr().lock())
             .write_all(format!("Error: {e:?}\n").as_bytes())
-            .expect("Failed to report error to stderr");
-        1
+            .map_or(0xFF, |_| 0x01)
     });
     exit(exit_code);
 }
 
-/// It calls [`main`] with the default CLI arguments.
-pub fn main_from_argv_0() {
-    main(args_os());
-}
-
-/// It calls [`main`] with the default CLI arguments except for the first one.
+/// The version tag for [`poodio`].
 ///
 /// ---
 ///
-/// [`main`]: https://docs.rs/poodio/latest/poodio/cli/fn.main.html
-#[cfg_attr(feature = "bind-pyo3", pyfn(name = "main"))]
-#[cfg_attr(feature = "bind-napi", napi(js_name = "main"))]
-pub fn main_from_argv_1() {
-    main(args_os().skip(1));
-}
-
-/// The version tag for [`poodio`].
+/// [`poodio`]: https://docs.rs/poodio
 #[cfg_attr(feature = "bind-pyo3", pyfn)]
 #[cfg_attr(feature = "bind-napi", napi)]
-pub fn version() -> String {
-    let name = env!("CARGO_PKG_NAME");
-    let version = env!("CARGO_PKG_VERSION");
-    format!("{name}@{version}")
+pub const fn version() -> &'static str {
+    concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
 }
 
-/// CLI main function for [`poodio`].
+/// CLI main function.
 ///
 /// ## Details
 ///
+/// It should be called after [`init`].
+///
 /// It returns the process exit code if [`Ok`] or the error report if [`Err`].
-fn try_main<I, T>(argv: I) -> Result<i32, Report>
+///
+/// ---
+///
+/// [`init`]: https://docs.rs/poodio/latest/poodio/cli/fn.init.html
+pub fn try_main<I, T>(args: I) -> Result<i32, Report>
 where
     I: IntoIterator<Item = T>,
     T: Into<OsString> + Clone,
 {
-    let _args = match Arguments::try_parse_from(argv).map_err(|e| match e.kind() {
+    let _args = match Arguments::try_parse_from(args).map_err(|e| match e.kind() {
         clap::error::ErrorKind::DisplayVersion => {
             println!("{}", version());
             Exit(e.exit_code())

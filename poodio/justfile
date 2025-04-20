@@ -1,33 +1,42 @@
 set shell := ['/usr/bin/env', 'bash', '-cu']
 set windows-shell := ['C:/Program Files/Git/bin/bash.exe', '-cu']
 
+# Build all distributions for the given target triple.
 build TARGET:
     @just \
         build-bin '{{ TARGET }}' \
         build-npm '{{ TARGET }}' \
         build-pip '{{ TARGET }}'
 
+# Build native binary for the given target.
 build-bin TARGET:
     rm -rf '{{ BIN_DIST }}'
-    cargo build --bin poodio --locked \
+    cargo build --bin poodio --frozen \
         --features default --release --target '{{ TARGET }}'
     mkdir -p '{{ BIN_DIST }}'
     cp '../target/{{ TARGET }}/release/{{ BIN_NAME }}' '{{ BIN_FILE }}'
     @echo '[DIST] poodio/{{ BIN_DIST }}'
 
+# Build documentation.
+build-doc:
+    cargo +nightly doc --all-features --lib --locked --no-deps
+
+# Build npm package for the given target.
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}'
-    npx napi build --cargo-flags='--locked --lib' --no-dts-header --release \
+    npx napi build --cargo-flags='--frozen --lib' --no-dts-header --release \
         --features bind-napi --target '{{ TARGET }}' '{{ NPM_DIST }}native/'
     cp '{{ NPM_DIST }}native/index.d.ts' '{{ NPM_DIST }}common/'
     @echo '[DIST] poodio/{{ NPM_DIST }}'
 
+# Build pip package for the given target.
 build-pip TARGET:
     rm -rf '{{ PIP_DIST }}'
-    uv run maturin build --bindings pyo3 --locked --release \
+    uv run maturin build --bindings pyo3 --frozen --release \
         --features bind-pyo3 --target '{{ TARGET }}' --out '{{ PIP_DIST }}'
     @echo '[DIST] poodio/{{ PIP_DIST }}'
 
+# Run end-to-end tests for all distributions.
 test-e2e:
     @just \
         test-e2e-bin \
@@ -35,6 +44,7 @@ test-e2e:
         test-e2e-pip \
     && echo '[PASS] test-e2e'
 
+# Run end-to-end tests for built native binary.
 test-e2e-bin:
     @[[ -x '{{ BIN_FILE }}' && ! -d '{{ BIN_FILE }}' ]] || \
         (echo '[FAIL] permission' && exit 2)
@@ -43,6 +53,7 @@ test-e2e-bin:
 
     @echo '[PASS] test-e2e-bin'
 
+# Run end-to-end tests for built npm package.
 test-e2e-npm:
     @# NOTE: it works in npm with node v16+
     @for try in {1..2}; do \
@@ -57,20 +68,18 @@ test-e2e-npm:
     @cd '../' && npm prune
     @echo '[PASS] test-e2e-npm'
 
+# Run end-to-end tests for built pip package.
 test-e2e-pip:
     @uv pip install --quiet './{{ PIP_DIST }}'*
 
     @[[ "{{ VERS }}" == "$(uv run python -c 'import poodio as p;print(p.version())')" ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @# TODO: --version
     @[[ "{{ VERS }}" == "$(uv run poodio --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @uv pip uninstall poodio
     @echo '[PASS] test-e2e-pip'
 
-hi:
-    @echo $HI
 BIN_NAME := 'poodio' + if os() == 'windows' { '.exe' } else { '' }
 BIN_FILE := BIN_DIST + BIN_NAME
 BIN_DIST := 'dist/bin/'
