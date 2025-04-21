@@ -49,5 +49,5 @@ compatibility = "manylinux2014"
 features = ["bind-pyo3"]
 locked = true
 profile = "release"
-python-source = "dist/pip/tmp"
+python-source = "bind/pip/"
 strip = true
