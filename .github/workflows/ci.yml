@@ -135,7 +135,7 @@ jobs:
             # TODO: Various node versions for testing
             - name: Test
               run: |
-                  just prepare tool
+                  just tool
                   just poodio::test-e2e-bin poodio::test-e2e-npm
                   for p in ${{ matrix.python-versions }}; do
                       UV_PYTHON="$p" just prepare-pip poodio::test-e2e-pip || exit 3
