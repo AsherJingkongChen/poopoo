@@ -13,7 +13,6 @@ fn init_bind_napi() {
     cli::init();
 }
 
-/// The Python module for [`poodio`](https://docs.rs/poodio).
 #[cfg(feature = "bind-pyo3")]
 #[pyo3::pymodule(name = "poodio")]
 fn init_bind_pyo3(m: &pyo3::Bound<'_, pyo3::types::PyModule>) -> pyo3::PyResult<()> {

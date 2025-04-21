@@ -38,12 +38,12 @@ build-pip TARGET:
     rm -rf '{{ PIP_DIST }}/'
 
     @mkdir -p '{{ PIP_DIST }}/tmp/poodio/'
-    @printf 'from .{{ NAME }} import *' > '{{ PIP_DIST }}/tmp/poodio/__init__.py'
+    printf 'from .{{ NAME }} import *' > '{{ PIP_DIST }}/tmp/poodio/__init__.py'
     uv run maturin sdist --out '{{ PIP_DIST }}/sdist/'
-
     uv run maturin build --frozen --release \
         --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
 
+    @rm -rf '{{ PIP_DIST }}/tmp/'
     @echo '[DIST] {{ NAME }}/{{ PIP_DIST }}/'
 
 # Run end-to-end tests for all distributions.
