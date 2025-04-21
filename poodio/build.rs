@@ -22,7 +22,7 @@ fn main() -> Result<()> {
 mod bind_napi {
     use super::*;
     use serde::Serialize;
-    use serde_json::{Serializer, json, ser::PrettyFormatter};
+    use serde_json::{json, ser::PrettyFormatter, Serializer};
     use std::{collections::BTreeMap, fs, io::Write, path::Path, sync::LazyLock};
 
     static CARGO_TO_NPM_TARGET: LazyLock<BTreeMap<&str, [&str; 3]>> = LazyLock::new(|| {

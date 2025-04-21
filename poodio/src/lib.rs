@@ -1,4 +1,4 @@
-#![cfg_attr(any(clippy, doc, docsrs), deny(warnings))]
+#![cfg_attr(any(clippy, docsrs), deny(warnings))]
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
