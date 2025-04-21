@@ -43,8 +43,11 @@ issues = "https://github.com/AsherJingkongChen/poopoo/issues"
 repository = "https://github.com/AsherJingkongChen/poopoo"
 
 [tool.maturin]
+auditwheel = "repair"
 bindings = "pyo3"
+compatibility = "manylinux2014"
 features = ["bind-pyo3"]
 locked = true
 profile = "release"
+python-source = "dist/pip/tmp"
 strip = true

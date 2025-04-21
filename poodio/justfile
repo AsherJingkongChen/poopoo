@@ -4,19 +4,20 @@ export UV_NO_SYNC := 'true'
 
 # Build all distributions for the given target triple.
 build TARGET:
-    @just \
-        build-bin '{{ TARGET }}' \
-        build-npm '{{ TARGET }}' \
-        build-pip '{{ TARGET }}'
+    @for s in bin npm pip; do \
+        just "build-$s" '{{ TARGET }}' || exit 3; \
+    done
 
 # Build native binary for the given target.
 build-bin TARGET:
-    rm -rf '{{ BIN_DIST }}'
-    cargo build --bin poodio --frozen \
-        --features default --release --target '{{ TARGET }}'
-    mkdir -p '{{ BIN_DIST }}'
-    cp '../target/{{ TARGET }}/release/{{ BIN_NAME }}' '{{ BIN_FILE }}'
-    @echo '[DIST] poodio/{{ BIN_DIST }}'
+    rm -rf '{{ BIN_DIST }}/'
+
+    cargo build --bin '{{ NAME }}' --frozen --release --target '{{ TARGET }}'
+    @mkdir -p '{{ BIN_DIST }}/'
+    tar -vvczC '../target/{{ TARGET }}/release/' \
+        -f "{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz" '{{ BIN_NAME }}'
+
+    @echo '[DIST] {{ NAME }}/{{ BIN_DIST }}/'
 
 # Build documentation.
 build-doc:
@@ -24,46 +25,53 @@ build-doc:
 
 # Build npm package for the given target.
 build-npm TARGET:
-    rm -rf '{{ NPM_DIST }}'
-    npx napi build --cargo-flags='--frozen --lib' --no-dts-header --release --strip \
-        --features bind-napi --target '{{ TARGET }}' '{{ NPM_DIST }}native/'
-    cp '{{ NPM_DIST }}native/index.d.ts' '{{ NPM_DIST }}common/'
-    @echo '[DIST] poodio/{{ NPM_DIST }}'
+    rm -rf '{{ NPM_DIST }}/'
+
+    npx napi build --cargo-flags='--features bind-napi --frozen --lib' \
+        --no-dts-header --release --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
+    cp '{{ NPM_DIST }}/native/index.d.ts' '{{ NPM_DIST }}/common/'
+
+    @echo '[DIST] {{ NAME }}/{{ NPM_DIST }}/'
 
 # Build pip package for the given target.
 build-pip TARGET:
-    rm -rf '{{ PIP_DIST }}'
-    uv run maturin sdist --out '{{ PIP_DIST }}sdist/'
-    uv run maturin build --frozen --target '{{ TARGET }}' --out '{{ PIP_DIST }}wheel/'
-    @echo '[DIST] poodio/{{ PIP_DIST }}'
+    rm -rf '{{ PIP_DIST }}/'
+
+    @mkdir -p '{{ PIP_DIST }}/tmp/poodio/'
+    @printf 'from .{{ NAME }} import *' > '{{ PIP_DIST }}/tmp/poodio/__init__.py'
+    uv run maturin sdist --out '{{ PIP_DIST }}/sdist/'
+
+    uv run maturin build --frozen --release \
+        --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
+
+    @echo '[DIST] {{ NAME }}/{{ PIP_DIST }}/'
 
 # Run end-to-end tests for all distributions.
 test-e2e:
-    @just \
-        test-e2e-bin \
-        test-e2e-npm \
-        test-e2e-pip \
-    && echo '[PASS] test-e2e'
+    @for s in bin npm pip; do \
+        just "test-e2e-$s" || exit 3; \
+    done
+    @echo '[PASS] test-e2e'
 
 # Run end-to-end tests for built native binary.
 test-e2e-bin:
+    tar -xzf '{{ BIN_DIST }}/'*.tgz -C '{{ BIN_DIST }}/'
+
     @[[ -x '{{ BIN_FILE }}' && ! -d '{{ BIN_FILE }}' ]] || \
         (echo '[FAIL] permission' && exit 2)
     @[[ "{{ VERS }}" == "$('{{ BIN_FILE }}' --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
+    @rm '{{ BIN_FILE }}'
     @echo '[PASS] test-e2e-bin'
 
 # Run end-to-end tests for built npm package.
 test-e2e-npm:
-    @# NOTE: it works in npm with node v16+
-    @for try in {1..2}; do \
-        npm install --no-save --silent '{{ NPM_DIST }}'* && break; \
-    done
+    npm install --no-save --silent '{{ NPM_DIST }}/'*
 
-    @[[ "{{ VERS }}" == $(node --print 'require("poodio").version()') ]] || \
+    @[[ "{{ VERS }}" == $(node --print 'require("{{ NAME }}").version()') ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @[[ "{{ VERS }}" == "$(npx --no poodio -- --version)" ]] || \
+    @[[ "{{ VERS }}" == "$(npx --no {{ NAME }} -- --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @cd '../' && npm prune
@@ -71,19 +79,20 @@ test-e2e-npm:
 
 # Run end-to-end tests for built pip package.
 test-e2e-pip:
-    @uv pip install --quiet './{{ PIP_DIST }}/wheel/'*
+    uv pip install --quiet '{{ PIP_DIST }}/wheel/'*
 
-    @[[ "{{ VERS }}" == "$(uv run python -c 'import poodio as p;print(p.version())')" ]] || \
+    @[[ "{{ VERS }}" == "$(uv run python -c 'import {{ NAME }} as p;print(p.version())')" ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @[[ "{{ VERS }}" == "$(uv run poodio --version)" ]] || \
+    @[[ "{{ VERS }}" == "$(uv run {{ NAME }} --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
-    @uv pip uninstall poodio
+    @uv pip uninstall '{{ NAME }}'
     @echo '[PASS] test-e2e-pip'
 
-BIN_NAME := 'poodio' + if os() == 'windows' { '.exe' } else { '' }
-BIN_FILE := BIN_DIST + BIN_NAME
-BIN_DIST := 'dist/bin/'
-NPM_DIST := 'dist/npm/'
-PIP_DIST := 'dist/pip/'
-VERS := '$(cargo pkgid -p poodio | sed -E "s|.+/(.+)#|\1@|")'
+NAME := 'poodio'
+BIN_NAME := NAME + if os() == 'windows' { '.exe' } else { '' }
+BIN_FILE := join(BIN_DIST, BIN_NAME)
+BIN_DIST := 'dist/bin'
+NPM_DIST := 'dist/npm'
+PIP_DIST := 'dist/pip'
+VERS := '$(cargo pkgid -p ' + NAME + " | sed -E 's|.+/(.+)#|\\1@|')"

@@ -36,7 +36,7 @@ check-fix:
     cargo clippy --all-features --all-targets --frozen --workspace
 
 # Remove all artifacts.
-clean: clean-cargo clean-dist clean-npm clean-pip
+clean: clean-dist clean-npm clean-pip clean-cargo
 
 # Remove cargo build artifacts.
 clean-cargo:
@@ -58,17 +58,17 @@ clean-pip:
 prepare: prepare-pip prepare-npm prepare-cargo
 
 # Prepare cargo dependencies.
-prepare-cargo: clean-cargo
+prepare-cargo:
     cargo fetch --locked
     @just tool-cargo
 
 # Prepare npm dependencies.
-prepare-npm: clean-npm
+prepare-npm:
     npm ci
     @just tool-npm
 
 # Prepare pip dependencies.
-prepare-pip: clean-pip
+prepare-pip:
     uv sync --locked --quiet
     uv sync --check --color always
     @just tool-pip

@@ -176,25 +176,14 @@ jobs:
                   mv "$DIST_ORIG_0/pip/sdist/" dist/common/pip/
 
                   mkdir -p dist/native/
-                  for d in dist-orig/*; do
-                      TARGET="$(basename "$d")"
-                      DIST_DIR="../../../dist/native/$TARGET"
-                      BIN_NAME="${{ github.ref_name }}-$TARGET.tgz"
+                  for DIST_ORIG in dist-orig/*; do
+                      TARGET="$(basename "$DIST_ORIG")"
+                      DIST="dist/native/$TARGET"
 
-                      cd "$d/bin/"
-                      mkdir -p "$DIST_DIR/bin/"
-                      tar -czf "$DIST_DIR/bin/$BIN_NAME" * || exit 3
-                      cd - > /dev/null
-
-                      cd "$d/npm/"
-                      mkdir -p "$DIST_DIR/"
-                      mv native/ "$DIST_DIR/npm/"
-                      cd - > /dev/null
-
-                      cd "$d/pip/"
-                      mkdir -p "$DIST_DIR/"
-                      mv wheel/ "$DIST_DIR/pip/"
-                      cd - > /dev/null
+                      mkdir -p "$DIST/"
+                      mv "$DIST_ORIG/bin/" "$DIST/bin/"
+                      mv "$DIST_ORIG/npm/native/" "$DIST/npm/"
+                      mv "$DIST_ORIG/pip/wheel/" "$DIST/pip/"
                   done
 
                   ls -lR dist*/
@@ -256,7 +245,7 @@ jobs:
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.POODIO_CRATE_TOKEN }}
 
-            # TODO: Fix installation of dist (./dist/common/pip/)
+            # TODO: Fix installation issue for pip sdist (./dist/common/pip/)
             - name: Publish to pypi.org
               if: false
               run: |
