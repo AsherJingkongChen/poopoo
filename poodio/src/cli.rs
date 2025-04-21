@@ -6,14 +6,14 @@
 
 use crate::*;
 use clap::{
-    builder::styling::{AnsiColor, Styles},
     Parser,
+    builder::styling::{AnsiColor, Styles},
 };
-use color_eyre::{owo_colors::OwoColorize, Report};
+use color_eyre::{Report, owo_colors::OwoColorize};
 use err::Error::Exit;
 use std::{
     ffi::OsString,
-    io::{stderr, Write},
+    io::{Write, stderr},
     process::exit,
 };
 
