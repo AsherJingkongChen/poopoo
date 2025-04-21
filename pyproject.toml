@@ -1,9 +1,14 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = ["setuptools>=75.0"]
+requires = ["setuptools >= 75.0"]
 
 [dependency-groups]
-dev = ["maturin", "pip-audit", "ruff"]
+dev = [
+  'maturin[zig]; sys_platform == "linux"',
+  'maturin; sys_platform != "linux"',
+  "pip-audit",
+  "ruff",
+]
 
 [project]
 classifiers = ["Private :: Do Not Upload"]

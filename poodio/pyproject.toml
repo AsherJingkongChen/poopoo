@@ -12,7 +12,6 @@ classifiers = [
   "Operating System :: MacOS",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
-  "Operating System :: Unix",
   "Programming Language :: JavaScript",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.10",

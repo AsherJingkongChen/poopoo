@@ -27,8 +27,8 @@ build-doc:
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}/'
 
-    npx napi build --cargo-flags='--features bind-napi --frozen --lib' \
-        --no-dts-header --release --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
+    npx napi build --cargo-flags='--features bind-napi --frozen --lib' --no-dts-header \
+        --release --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
     cp '{{ NPM_DIST }}/native/index.d.ts' '{{ NPM_DIST }}/common/'
 
     @echo '[DIST] {{ NAME }}/{{ NPM_DIST }}/'
@@ -38,8 +38,8 @@ build-pip TARGET:
     rm -rf '{{ PIP_DIST }}/'
 
     uv run maturin sdist --out '{{ PIP_DIST }}/sdist/'
-    uv run maturin build --frozen --release \
-        --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
+    uv run maturin build --frozen {{ ZIG_ARGS }} \
+        --release --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
 
     @echo '[DIST] {{ NAME }}/{{ PIP_DIST }}/'
 
@@ -93,3 +93,4 @@ BIN_DIST := 'dist/bin'
 NPM_DIST := 'dist/npm'
 PIP_DIST := 'dist/pip'
 VERS := '$(cargo pkgid -p ' + NAME + " | sed -E 's|.+/(.+)#|\\1@|')"
+ZIG_ARGS := if os() == 'linux' { '--zig' } else { '' }
