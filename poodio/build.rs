@@ -43,7 +43,7 @@ mod bind_napi {
             addon agent ai api audio binding cli easy
             fast fun funny joke lightweight llm mcp minimal
             multimedia napi native node performance poodio
-            python rust server simple simulation sound speed test
+            python rust server simple simulation sound speed
         "#
         .split_ascii_whitespace()
         .collect::<Vec<_>>();

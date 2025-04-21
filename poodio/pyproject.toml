@@ -1,9 +1,50 @@
 [build-system]
 build-backend = "maturin"
-requires = ["maturin>=1.8"]
+requires = ["maturin >= 1.8"]
 
 [project]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Unix",
+  "Programming Language :: JavaScript",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Rust",
+  "Topic :: Artistic Software",
+  "Topic :: Games/Entertainment :: Simulation",
+  "Topic :: Multimedia :: Sound/Audio :: Sound Synthesis",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Utilities",
+  "Typing :: Typed",
+]
 dynamic = ["version"]
 name = "poodio"
-requires-python = ">=3.8"
+requires-python = ">= 3.8"
 scripts.poodio = "poodio:main"
+
+[project.urls]
+documentation = "https://docs.rs/poodio"
+homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#readme"
+issues = "https://github.com/AsherJingkongChen/poopoo/issues"
+repository = "https://github.com/AsherJingkongChen/poopoo"
+
+[tool.maturin]
+bindings = "pyo3"
+features = ["bind-pyo3"]
+locked = true
+profile = "release"
+strip = true

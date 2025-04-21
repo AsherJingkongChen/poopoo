@@ -6,9 +6,9 @@ requires = ["setuptools>=75.0"]
 dev = ["maturin", "pip-audit", "ruff"]
 
 [project]
+classifiers = ["Private :: Do Not Upload"]
 dynamic = ["version"]
 name = "workspace"
-dependencies = []
 
 [tool.setuptools]
 packages = []

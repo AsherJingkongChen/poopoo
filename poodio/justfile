@@ -1,5 +1,6 @@
 set shell := ['/usr/bin/env', 'bash', '-cu']
 set windows-shell := ['C:/Program Files/Git/bin/bash.exe', '-cu']
+export UV_NO_SYNC := 'true'
 
 # Build all distributions for the given target triple.
 build TARGET:
@@ -24,7 +25,7 @@ build-doc:
 # Build npm package for the given target.
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}'
-    npx napi build --cargo-flags='--frozen --lib' --no-dts-header --release \
+    npx napi build --cargo-flags='--frozen --lib' --no-dts-header --release --strip \
         --features bind-napi --target '{{ TARGET }}' '{{ NPM_DIST }}native/'
     cp '{{ NPM_DIST }}native/index.d.ts' '{{ NPM_DIST }}common/'
     @echo '[DIST] poodio/{{ NPM_DIST }}'
@@ -32,8 +33,8 @@ build-npm TARGET:
 # Build pip package for the given target.
 build-pip TARGET:
     rm -rf '{{ PIP_DIST }}'
-    uv run maturin build --bindings pyo3 --frozen --release \
-        --features bind-pyo3 --target '{{ TARGET }}' --out '{{ PIP_DIST }}'
+    uv run maturin sdist --out '{{ PIP_DIST }}sdist/'
+    uv run maturin build --frozen --target '{{ TARGET }}' --out '{{ PIP_DIST }}wheel/'
     @echo '[DIST] poodio/{{ PIP_DIST }}'
 
 # Run end-to-end tests for all distributions.
@@ -70,7 +71,7 @@ test-e2e-npm:
 
 # Run end-to-end tests for built pip package.
 test-e2e-pip:
-    @uv pip install --quiet './{{ PIP_DIST }}'*
+    @uv pip install --quiet './{{ PIP_DIST }}/wheel/'*
 
     @[[ "{{ VERS }}" == "$(uv run python -c 'import poodio as p;print(p.version())')" ]] || \
         (echo '[FAIL] .version()' && exit 2)

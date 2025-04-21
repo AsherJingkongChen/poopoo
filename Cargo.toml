@@ -13,7 +13,7 @@ strip = true
 
 [workspace]
 members = ["poodio"]
-resolver = "2"
+resolver = "3"
 
 [workspace.package]
 authors = ["AsherJingkongChen"]
