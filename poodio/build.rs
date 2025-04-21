@@ -40,10 +40,11 @@ mod bind_napi {
 
     static NPM_KEYWORDS: LazyLock<Vec<&str>> = LazyLock::new(|| {
         let mut v = r#"
-            addon agent ai api audio binding cli easy
-            fast fun funny joke lightweight llm mcp minimal
-            multimedia napi native node performance poodio
-            python rust server simple simulation sound speed
+            addon agent ai api audio binding cli command easy executable
+            fast fun funny joke library lightweight llm low-latency mcp
+            minimal module multimedia music napi native node performance
+            poodio processing pyo3 python real-time rust script server
+            simple simulation sound speed synthesis tool utility
         "#
         .split_ascii_whitespace()
         .collect::<Vec<_>>();
