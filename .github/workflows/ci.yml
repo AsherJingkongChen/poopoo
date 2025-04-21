@@ -251,4 +251,4 @@ jobs:
               run: |
                   uv publish --trusted-publishing always dist/**/pip/
               env:
-                  UV_PUBLISH_TOKEN: ${{ secrets.POODIO_PYPI_TOKEN }}
+                  UV_PUBLISH_TOKEN: ${{ secrets.POODIO_PYPIX_TOKEN }}

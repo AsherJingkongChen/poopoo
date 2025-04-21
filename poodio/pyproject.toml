@@ -87,7 +87,7 @@ repository = "https://github.com/AsherJingkongChen/poopoo"
 [tool.maturin]
 auditwheel = "repair"
 bindings = "pyo3"
-compatibility = "manylinux_2_12"
+compatibility = "manylinux_2_17"
 features = ["bind-pyo3"]
 locked = true
 profile = "release"
