@@ -65,27 +65,26 @@ jobs:
                 include:
                     - os: macos-15
                       rust-target: aarch64-apple-darwin
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      python-versions: 3.13 3.12 3.11 3.10 3.9 3.8
                     - os: macos-13
                       rust-target: x86_64-apple-darwin
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      python-versions: 3.13 3.12 3.11 3.10 3.9 3.8
                     - os: ubuntu-24.04-arm
                       rust-target: aarch64-unknown-linux-gnu
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      python-versions: 3.13 3.12 3.11 3.10 3.9 3.8
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   rust-target: aarch64-unknown-linux-musl
                     - os: ubuntu-24.04
                       rust-target: x86_64-unknown-linux-gnu
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      python-versions: 3.13 3.12 3.11 3.10 3.9 3.8
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   rust-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
                       rust-target: aarch64-pc-windows-msvc
-                      node-version: 20
-                      python-versions: 3.11
+                      python-versions: 3.13
                     - os: windows-2025
                       rust-target: x86_64-pc-windows-msvc
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      python-versions: 3.13 3.12 3.11 3.10 3.9 3.8
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
@@ -103,7 +102,6 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
-                  node-version: ${{ matrix.node-version }}
                   node-version-file: .node-version
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
@@ -258,9 +256,10 @@ jobs:
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.POODIO_CRATE_TOKEN }}
 
+            # TODO: Fix installation of dist (./dist/common/pip/)
             - name: Publish to pypi.org
               if: false
               run: |
-                  uv publish --trusted-publishing always dist/*/pip/ dist/*/*/pip/
+                  uv publish --trusted-publishing always dist/*/*/pip/
               env:
                   UV_PUBLISH_TOKEN: ${{ secrets.POODIO_PYPI_TOKEN }}
