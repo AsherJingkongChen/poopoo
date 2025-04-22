@@ -171,10 +171,11 @@ jobs:
             - name: Organize distributions
               run: |
                   DIST_ORIG_0="$(set -- dist-orig/*; echo "$1")"
+                  DIST="dist/common/universal"
 
-                  mkdir -p dist/common/
-                  mv "$DIST_ORIG_0/npm/common/" dist/common/npm/
-                  mv "$DIST_ORIG_0/pip/sdist/" dist/common/pip/
+                  mkdir -p "$DIST/"
+                  mv "$DIST_ORIG_0/npm/common/" "$DIST/npm/"
+                  mv "$DIST_ORIG_0/pip/sdist/" "$DIST/pip/"
 
                   mkdir -p dist/native/
                   for DIST_ORIG in dist-orig/*; do
@@ -220,7 +221,7 @@ jobs:
               id: github-attest
               uses: actions/attest-build-provenance@v2
               with:
-                  subject-path: dist/**/bin/*
+                  subject-path: dist/*/*/bin/*
             - name: Publish to github.com
               if: false
               uses: softprops/action-gh-release@v2
@@ -231,11 +232,11 @@ jobs:
                       - [**Installation**](${{ steps.github-prepare.outputs.installation }})
                       - **Contributors**
                       ${{ steps.github-prepare.outputs.contributors }}
-                  files: dist/**/bin/*
+                  files: dist/*/*/bin/*
 
             - name: Publish to npmjs.com
               run: |
-                  for p in dist/**/npm/; do
+                  for p in dist/*/*/npm/; do
                       npm publish --dry-run "./$p" || exit 3
                   done
               env:
@@ -249,6 +250,6 @@ jobs:
             - name: Publish to pypi.org
               if: false
               run: |
-                  uv publish --trusted-publishing always dist/**/pip/
+                  uv publish --trusted-publishing always dist/*/*/pip/
               env:
                   UV_PUBLISH_TOKEN: ${{ secrets.POODIO_PYPIX_TOKEN }}
