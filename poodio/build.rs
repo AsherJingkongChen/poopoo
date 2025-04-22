@@ -56,6 +56,10 @@ mod bind_napi {
     pub fn write_cfgs() -> Result<()> {
         use color_eyre::eyre::ContextCompat;
 
+        if std::env::var("DOCS_RS").is_ok() {
+            return Ok(());
+        }
+
         let name = env!("CARGO_PKG_NAME");
         let target = std::env::var("TARGET")?;
         let version = env!("CARGO_PKG_VERSION");
@@ -133,15 +137,16 @@ mod bind_napi {
     }
 
     pub fn write_common_entry() -> Result<()> {
+        if std::env::var("DOCS_RS").is_ok() {
+            return Ok(());
+        }
+
         const DATA: &str = concat!(
             "#!/usr/bin/env node\n",
-            r#"require("tell-libc");"#,
-            r#"let{argv:e,arch:r,platform:o,libc:i}=process;"#,
+            r#"require("tell-libc");let{argv:e,arch:r,platform:o,libc:i}=process;"#,
             r#"module.exports=require(`"#,
             concat!("@", env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_NAME")),
-            r#"-${r}-${o}-${i||"unknown"}`);"#,
-            // r#"module.exports.init();"#,
-            r#"require.main===module&&module.exports.main();"#,
+            r#"-${r}-${o}-${i||"unknown"}`);require.main===module&&module.exports.main();"#,
         );
 
         let mut file = fs::File::create("dist/npm/common/index.js")?;

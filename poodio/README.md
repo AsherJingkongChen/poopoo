@@ -1,4 +1,4 @@
-# What does _**`poodio`**_ do?
+# What does _**poodio**_ do?
 
 💩 💨 Farts poo poo audio 💨 💩
 
