@@ -93,7 +93,7 @@ tool-pip:
         'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
 
 # Update all dependencies.
-update: update-pip update-npm update-cargo
+update: update-cargo update-pip update-npm
 
 # Update cargo dependencies.
 update-cargo:
