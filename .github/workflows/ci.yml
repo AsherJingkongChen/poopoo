@@ -169,7 +169,6 @@ jobs:
             attestations: write
             contents: write
             id-token: write
-            pull-requests: write
         steps:
             - uses: actions/checkout@v4
               with:
@@ -259,6 +258,6 @@ jobs:
 
             - name: Publish to pypi.org
               run: |
-                  uv publish --trusted-publishing always dist/*/*/pip/*
+                  uv publish dist/*/*/pip/*
               env:
                   UV_PUBLISH_TOKEN: ${{ secrets.POODIO_PYPIX_TOKEN }}
