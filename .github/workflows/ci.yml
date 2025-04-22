@@ -142,7 +142,7 @@ jobs:
                   just tool-cargo poodio::test-e2e-bin
 
                   for v in ${{ matrix.node-versions }}; do
-                      volta install --quiet "node@$v"
+                      volta install "node@$v"
                       just tool-npm poodio::test-e2e-npm
                   done
 
