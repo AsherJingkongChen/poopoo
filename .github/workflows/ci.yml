@@ -13,8 +13,6 @@ on:
 
 env:
     CARGO_TERM_COLOR: always
-    CI_BASE_NODE_VERSION: "18"
-    CI_BASE_PYTHON_VERSION: "3.8"
     CI_BASE_RUST_VERSION: "1.80"
     FORCE_COLOR: true
     UV_CACHE_DIR: ~/.cache/uv
@@ -35,9 +33,10 @@ jobs:
               with:
                   tool: cargo-audit, just
 
-            - uses: volta-cli/action@v4
+            - uses: actions/setup-node@v4
               with:
-                  node-version: ${{ env.CI_BASE_NODE_VERSION }}
+                  cache: npm
+                  node-version-file: .node-version
 
             - uses: astral-sh/setup-uv@v4
             - name: Restore cache for uv
@@ -105,8 +104,6 @@ jobs:
                   tool: just
 
             - uses: volta-cli/action@v4
-              # with:
-              #     node-version: ${{ env.CI_BASE_NODE_VERSION }}
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
             - if: matrix.os != 'windows-11-arm'
@@ -136,7 +133,7 @@ jobs:
 
             - name: Build
               run: |
-                  volta install "node@${{ env.CI_BASE_NODE_VERSION }}"
+                  volta install "node@$(cat .node-version)"
                   just prepare poodio::build '${{ matrix.rust-target }}'
 
             - name: Test
@@ -145,7 +142,7 @@ jobs:
                   just tool-cargo poodio::test-e2e-bin
 
                   for v in ${{ matrix.node-versions }}; do
-                      volta install "node@$v" && \
+                      volta install "node@$v"
                       just tool-npm poodio::test-e2e-npm
                   done
 
