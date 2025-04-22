@@ -92,4 +92,3 @@ features = ["bind-pyo3"]
 locked = true
 profile = "release"
 python-source = "bind/pip/"
-strip = true

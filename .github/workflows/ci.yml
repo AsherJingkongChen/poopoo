@@ -13,35 +13,31 @@ on:
 
 env:
     CARGO_TERM_COLOR: always
+    CI_BASE_NODE_VERSION: "18"
+    CI_BASE_PYTHON_VERSION: "3.8"
+    CI_BASE_RUST_VERSION: "1.80"
     FORCE_COLOR: true
     UV_CACHE_DIR: ~/.cache/uv
 
 jobs:
     check:
-        runs-on: ${{ matrix.os }}
+        runs-on: macos-latest
         defaults:
             run:
                 shell: bash
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - os: macos-latest
-                      items: check audit
         steps:
             - uses: actions/checkout@v4
             - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
                   components: clippy, rustfmt
-                  toolchain: 1.80
+                  toolchain: ${{ env.CI_BASE_RUST_VERSION }}
             - uses: taiki-e/install-action@v2
               with:
                   tool: cargo-audit, just
 
-            - uses: actions/setup-node@v4
+            - uses: volta-cli/action@v4
               with:
-                  cache: npm
-                  node-version-file: .node-version
+                  node-version: ${{ env.CI_BASE_NODE_VERSION }}
 
             - uses: astral-sh/setup-uv@v4
             - name: Restore cache for uv
@@ -52,7 +48,7 @@ jobs:
                   restore-keys: uv-${{ runner.os }}-${{ runner.arch }}-
 
             - name: Check
-              run: just prepare ${{ matrix.items }}
+              run: just prepare check audit
 
     build-poodio:
         if: startsWith(github.ref, 'refs/tags/poodio@')
@@ -66,26 +62,32 @@ jobs:
                 include:
                     - os: macos-15
                       rust-target: aarch64-apple-darwin
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      node-versions: "18 20 22"
+                      python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     - os: macos-13
                       rust-target: x86_64-apple-darwin
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      node-versions: "18 20 22"
+                      python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     - os: ubuntu-24.04-arm
                       rust-target: aarch64-unknown-linux-gnu
+                      node-versions: "18 20 22"
                       python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
                     # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
                     #   rust-target: aarch64-unknown-linux-musl
                     - os: ubuntu-24.04
                       rust-target: x86_64-unknown-linux-gnu
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      node-versions: "18 20 22"
+                      python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
                     #   rust-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
                       rust-target: aarch64-pc-windows-msvc
-                      python-versions: 3.11
+                      node-versions: "20 22"
+                      python-versions: "3.11"
                     - os: windows-2025
                       rust-target: x86_64-pc-windows-msvc
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
+                      node-versions: "18 20 22"
+                      python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
         steps:
             - uses: actions/checkout@v4
             # See https://github.com/actions/partner-runner-images/issues/77
@@ -97,24 +99,23 @@ jobs:
                   echo "$USERPROFILE/.cargo/bin" >> "$GITHUB_PATH"
             - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
-                  toolchain: 1.80
+                  toolchain: ${{ env.CI_BASE_RUST_VERSION }}
             - uses: taiki-e/install-action@v2
               with:
                   tool: just
 
-            - uses: actions/setup-node@v4
+            - uses: volta-cli/action@v4
               with:
-                  cache: npm
-                  node-version-file: .node-version
+                  node-version: ${{ env.CI_BASE_NODE_VERSION }}
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
+            - if: matrix.os != 'windows-11-arm'
+              uses: astral-sh/setup-uv@v4
             - if: matrix.os == 'windows-11-arm'
               uses: actions/setup-python@v5
               id: python
               with:
                   python-version: ${{ matrix.python-versions }}
-            - if: matrix.os != 'windows-11-arm'
-              uses: astral-sh/setup-uv@v4
             - if: matrix.os == 'windows-11-arm'
               uses: astral-sh/setup-uv@v4
               with:
@@ -135,13 +136,19 @@ jobs:
             - name: Build
               run: just prepare poodio::build '${{ matrix.rust-target }}'
 
-            # TODO: Various node versions for testing
             - name: Test
               run: |
-                  just tool
-                  just poodio::test-e2e-bin poodio::test-e2e-npm
-                  for p in ${{ matrix.python-versions }}; do
-                      UV_PYTHON="$p" just prepare-pip poodio::test-e2e-pip || exit 3
+                  set -e
+                  just tool-cargo poodio::test-e2e-bin
+
+                  for v in ${{ matrix.node-versions }}; do
+                      volta install --quiet "node@$v"
+                      just tool-npm poodio::test-e2e-npm
+                  done
+
+                  for v in ${{ matrix.python-versions }}; do
+                      UV_PYTHON="$v" \
+                      just prepare-pip poodio::test-e2e-pip
                   done
 
             - uses: actions/upload-artifact@v4
@@ -173,6 +180,7 @@ jobs:
                   path: dist-orig/
             - name: Organize distributions
               run: |
+                  set -e
                   DIST_ORIG_0="$(set -- dist-orig/*; echo "$1")"
                   DIST="dist/common/universal"
 
@@ -190,7 +198,6 @@ jobs:
                       mv "$DIST_ORIG/npm/native/" "$DIST/npm/"
                       mv "$DIST_ORIG/pip/wheel/" "$DIST/pip/"
                   done
-
                   rm -rf dist-orig/
                   ls -Rp --color=always dist
 
@@ -239,8 +246,9 @@ jobs:
 
             - name: Publish to npmjs.com
               run: |
+                  set -e
                   for p in dist/*/*/npm/; do
-                      npm publish --dry-run "./$p" || exit 3
+                      npm publish --dry-run "./$p"
                   done
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.POODIO_NPMJS_TOKEN }}

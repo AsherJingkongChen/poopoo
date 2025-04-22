@@ -55,7 +55,7 @@ clean-pip:
     rm -rf '.ruff_cache/' '.venv/' 'workspace.egg-info/'
 
 # Prepare all dependencies.
-prepare: prepare-pip prepare-npm prepare-cargo
+prepare: prepare-cargo prepare-npm prepare-pip
 
 # Prepare cargo dependencies.
 prepare-cargo:
@@ -93,7 +93,7 @@ tool-pip:
         'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
 
 # Update all dependencies.
-update: update-cargo update-pip update-npm
+update: update-cargo update-npm update-pip
 
 # Update cargo dependencies.
 update-cargo:

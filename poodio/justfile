@@ -4,8 +4,8 @@ export UV_NO_SYNC := 'true'
 
 # Build all distributions for the given target triple.
 build TARGET:
-    @for s in bin npm pip; do \
-        just "build-$s" '{{ TARGET }}' || exit 3; \
+    @set -e && for s in bin npm pip; do \
+        just "build-$s" '{{ TARGET }}'; \
     done
 
 # Build native binary for the given target.
@@ -27,8 +27,9 @@ build-doc:
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}/'
 
-    npx napi build --cargo-flags='--features bind-napi --frozen --lib' --no-dts-header \
-        --release --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
+    npx napi build --cargo-flags='--features bind-napi --frozen --lib' \
+        --no-dts-header --release \
+        --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
     cp '{{ NPM_DIST }}/native/index.d.ts' '{{ NPM_DIST }}/common/'
 
     @echo '[DIST] {{ NAME }}/{{ NPM_DIST }}/'
@@ -39,14 +40,14 @@ build-pip TARGET:
 
     uv run maturin sdist --out '{{ PIP_DIST }}/sdist/'
     uv run maturin build --frozen {{ ZIG_ARGS }} \
-        --release --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
+        --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
 
     @echo '[DIST] {{ NAME }}/{{ PIP_DIST }}/'
 
 # Run end-to-end tests for all distributions.
 test-e2e:
-    @for s in bin npm pip; do \
-        just "test-e2e-$s" || exit 3; \
+    @set -e && for s in bin npm pip; do \
+        just "test-e2e-$s"; \
     done
     @echo '[PASS] test-e2e'
 
