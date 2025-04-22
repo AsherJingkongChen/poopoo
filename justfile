@@ -85,7 +85,7 @@ tool-cargo:
 # Show active npm toolchain.
 tool-npm:
     @echo "[TOOL] npm: node-$(node -r tell-libc -p \
-        'p=process;p.version+`-`+p.platform+`-`+p.arch+(p.libc||``)')"
+        'p=process;p.version+"-"+p.platform+"-"+p.arch+"-"+p.libc')"
 
 # Show active pip toolchain.
 tool-pip:
