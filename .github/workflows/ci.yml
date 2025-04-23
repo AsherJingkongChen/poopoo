@@ -18,6 +18,7 @@ env:
     FORCE_COLOR: true
     UV_CACHE_DIR: ~/.cache/uv
     RUSTUP_MAX_RETRIES: "10"
+    VOLTA_HOME:
 
 jobs:
     check:
@@ -106,12 +107,11 @@ jobs:
                   tool: just
 
             - uses: volta-cli/action@v4
-            - run: volta setup --verbose
             - name: Restore cache for volta
               uses: actions/cache@v4
               with:
                   key: volta-${{ runner.os }}-${{ runner.arch }}
-                  path: ~/.volta/cache/
+                  path: ${{ env.VOLTA_HOME }}/cache
             - uses: actions/setup-node@v4
               with:
                   cache: npm
