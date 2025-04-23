@@ -114,7 +114,6 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   cache: npm
-                  node-version-file: .node-version
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
             - if: matrix.os != 'windows-11-arm'
@@ -144,6 +143,7 @@ jobs:
 
             - name: Build
               run: |
+                  volta install "node@$(cat .node-version)"
                   just prepare poodio::build '${{ matrix.rust-target }}'
 
             - name: Test
