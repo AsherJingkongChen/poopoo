@@ -33,13 +33,13 @@ documentation = "https://docs.rs/poodio"
 edition.workspace = true
 homepage = "https://github.com/AsherJingkongChen/poopoo/tree/main/poodio#readme"
 include = ["/LICENSE.txt", "/build.rs", "/src/"]
-keywords = ["api", "audio", "cli", "llm", "server"]
+keywords = ["api", "audio", "cli", "mcp", "synthesizer"]
 license.workspace = true
 name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version.workspace = true
-version = "0.0.19"
+version = "0.0.20"
 
 [package.metadata.binstall]
 pkg-fmt = "tgz"

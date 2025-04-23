@@ -15,6 +15,7 @@ fn main() -> Result<()> {
     {
         pyo3_build_config::add_extension_module_link_args();
     }
+
     Ok(())
 }
 
@@ -44,7 +45,7 @@ mod bind_napi {
             fast fun funny joke library lightweight llm low-latency mcp
             minimal module multimedia music napi native node performance
             poodio processing pyo3 python real-time rust script server
-            simple simulation sound speed synthesis tool utility
+            simple simulation sound speed synthesis synthesizer tool utility
         "#
         .split_ascii_whitespace()
         .collect::<Vec<_>>();
