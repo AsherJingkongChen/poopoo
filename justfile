@@ -80,17 +80,20 @@ tool:
 
 # Show active cargo toolchain.
 tool-cargo:
-    @echo "[TOOL] cargo: rust-$(rustup show active-toolchain | cut -f1 -d' ')\n"
+    @echo "[TOOL] cargo: rust-$(rustup show active-toolchain | cut -f1 -d' ')"
+    @echo ''
 
 # Show active npm toolchain.
 tool-npm:
     @echo "[TOOL] npm: node-$(node -r tell-libc -p \
-        'p=process;p.version+"-"+p.platform+"-"+p.arch+"-"+p.libc')\n"
+        'p=process;p.version+"-"+p.platform+"-"+p.arch+"-"+p.libc')"
+    @echo ''
 
 # Show active pip toolchain.
 tool-pip:
     @echo "[TOOL] pip: "$(uv run --quiet python -c \
-        'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')"\n"
+        'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
+    @echo ''
 
 # Update all dependencies.
 update: update-cargo update-npm update-pip
