@@ -52,7 +52,7 @@ jobs:
               run: just prepare check audit
 
     build-poodio:
-        if: startsWith(github.ref, 'refs/tags/poodio@')
+        # if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -87,7 +87,7 @@ jobs:
                       python-versions: "3.11"
                     - os: windows-2025
                       rust-target: x86_64-pc-windows-msvc
-                      node-versions: "18 20 22"
+                      node-versions: "18 22"
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
         steps:
             - uses: actions/checkout@v4
@@ -106,6 +106,15 @@ jobs:
                   tool: just
 
             - uses: volta-cli/action@v4
+            - uses: actions/cache@v4
+              with:
+                  key: volta-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('~/.volta/volta.lock') }}
+                  path: ~/.volta/cache/
+                  restore-keys: volta-${{ runner.os }}-${{ runner.arch }}-
+            - uses: actions/setup-node@v4
+              with:
+                  cache: npm
+                  node-version-file: .node-version
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
             - if: matrix.os != 'windows-11-arm'
@@ -135,7 +144,6 @@ jobs:
 
             - name: Build
               run: |
-                  volta install "node@$(cat .node-version)"
                   just prepare poodio::build '${{ matrix.rust-target }}'
 
             - name: Test
