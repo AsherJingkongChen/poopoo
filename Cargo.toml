@@ -29,10 +29,11 @@ color-eyre = {version = "0.6", default-features = false}
 cpal = {version = "0.15", default-features = false}
 log = {version = "0.4", default-features = false}
 napi = {version = "2.16", default-features = false}
+napi-build = {version = "2.1", default-features = false}
 napi-derive = {version = "2.16", default-features = false}
 pyo3 = {version = "0.24", default-features = false}
 pyo3-build-config = {version = "0.24", default-features = false}
-# pyo3-stub-gen = {version = "0.7.0", default-features = false}
+pyo3-stub-gen = {version = "0.7", default-features = false}
 serde = {version = "1.0", default-features = false}
 serde_json = {version = "1.0", default-features = false}
 simple_logger = {version = "5.0", default-features = false}

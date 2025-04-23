@@ -12,23 +12,28 @@ build TARGET:
 build-bin TARGET:
     rm -rf '{{ BIN_DIST }}/'
 
-    cargo build --bin '{{ NAME }}' --frozen --release --target '{{ TARGET }}'
+    cargo build --bin '{{ NAME }}' --frozen \
+        --features default --release \
+        --target '{{ TARGET }}'
     @mkdir -p '{{ BIN_DIST }}/'
-    tar -vvczC '../target/{{ TARGET }}/release/' \
-        -f "{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz" '{{ BIN_NAME }}'
+    tar -C '../target/{{ TARGET }}/release/' \
+        -vvczf "{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz" '{{ BIN_NAME }}'
 
     @echo '[DIST] {{ NAME }}/{{ BIN_DIST }}/'
 
 # Build documentation.
 build-doc:
-    cargo +nightly doc --all-features --lib --locked --no-deps
+    cargo +nightly doc --lib --locked --no-deps
 
 # Build npm package for the given target.
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}/'
 
-    npx napi build --cargo-flags='--features bind-napi --frozen --lib' \
-        --no-dts-header --release \
+    cargo run --bin '{{ NAME }}-bindgen' --frozen \
+        --features bind-napi --release \
+        --target '{{ TARGET }}'
+    npx napi build --cargo-flags='--frozen --lib' \
+        --features bind-napi --release \
         --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
     cp '{{ NPM_DIST }}/native/index.d.ts' '{{ NPM_DIST }}/common/'
 
@@ -38,8 +43,13 @@ build-npm TARGET:
 build-pip TARGET:
     rm -rf '{{ PIP_DIST }}/'
 
+    cargo run --bin '{{ NAME }}-bindgen' --frozen \
+        --features bind-pyo3 --release \
+        --target '{{ TARGET }}'
+    uv run ruff format 'bind/pip/'
+
     uv run maturin sdist --out '{{ PIP_DIST }}/sdist/'
-    uv run maturin build --frozen {{ ZIG_ARGS }} \
+    uv run maturin build {{ ZIG_ARGS }} --frozen --release \
         --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
 
     @echo '[DIST] {{ NAME }}/{{ PIP_DIST }}/'

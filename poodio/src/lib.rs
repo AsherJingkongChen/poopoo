@@ -6,16 +6,15 @@
 pub mod cli;
 pub mod err;
 
-// TODO: Add docs
 #[cfg(feature = "bind-napi")]
 #[napi::module_init]
-fn init_bind_napi() {
+fn bind_napi_init() {
     cli::init();
 }
 
 #[cfg(feature = "bind-pyo3")]
 #[pyo3::pymodule(name = "poodio")]
-fn init_bind_pyo3(m: &pyo3::Bound<'_, pyo3::types::PyModule>) -> pyo3::PyResult<()> {
+fn bind_pyo3_init(m: &pyo3::Bound<'_, pyo3::types::PyModule>) -> pyo3::PyResult<()> {
     use pyo3::{types::PyModuleMethods, wrap_pyfunction as wrap_pyfn};
 
     cli::init();
@@ -24,3 +23,6 @@ fn init_bind_pyo3(m: &pyo3::Bound<'_, pyo3::types::PyModule>) -> pyo3::PyResult<
 
     Ok(())
 }
+
+#[cfg(feature = "bind-pyo3")]
+pyo3_stub_gen::define_stub_info_gatherer!(bind_pyo3_stub);

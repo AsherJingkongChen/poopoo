@@ -27,7 +27,8 @@ classifiers = [
   "Topic :: Games/Entertainment :: Simulation",
   "Topic :: Multimedia :: Sound/Audio :: Sound Synthesis",
   "Topic :: Software Development :: Libraries",
-  "Topic :: Utilities", # "Typing :: Typed",
+  "Topic :: Utilities",
+  "Typing :: Typed",
 ]
 dynamic = ["version"]
 keywords = [
@@ -93,3 +94,4 @@ include = ["LICENSE.txt"]
 locked = true
 profile = "release"
 python-source = "bind/pip/"
+strip = true

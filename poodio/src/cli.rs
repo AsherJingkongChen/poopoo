@@ -20,7 +20,7 @@ use std::{
 #[cfg(feature = "bind-napi")]
 use napi_derive::napi;
 #[cfg(feature = "bind-pyo3")]
-use pyo3::pyfunction as pyfn;
+use {pyo3::pyfunction as pyfn, pyo3_stub_gen::derive::gen_stub_pyfunction as pyfn_stub};
 
 /// CLI arguments parser.
 #[derive(Clone, Debug, Parser, PartialEq)]
@@ -52,8 +52,6 @@ pub struct Arguments {}
 /// ---
 ///
 /// [`main`]: https://docs.rs/poodio/latest/poodio/cli/fn.main.html
-#[cfg_attr(feature = "bind-pyo3", pyfn)]
-#[cfg_attr(feature = "bind-napi", napi)]
 pub fn init() {
     use log::LevelFilter::*;
 
@@ -84,7 +82,7 @@ pub fn init() {
 /// ---
 ///
 /// [`init`]: https://docs.rs/poodio/latest/poodio/cli/fn.init.html
-#[cfg_attr(feature = "bind-pyo3", pyfn)]
+#[cfg_attr(feature = "bind-pyo3", pyfn, pyfn_stub)]
 #[cfg_attr(feature = "bind-napi", napi)]
 pub fn main() {
     let args = std::env::args_os();
@@ -104,24 +102,13 @@ pub fn main() {
 /// ---
 ///
 /// [`poodio`]: https://docs.rs/poodio
-#[cfg_attr(feature = "bind-pyo3", pyfn)]
+#[cfg_attr(feature = "bind-pyo3", pyfn, pyfn_stub)]
 #[cfg_attr(feature = "bind-napi", napi)]
 pub const fn version() -> &'static str {
     concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
 }
 
-/// CLI main function.
-///
-/// ## Details
-///
-/// It should be called after [`init`].
-///
-/// It returns the process exit code if [`Ok`] or the error report if [`Err`].
-///
-/// ---
-///
-/// [`init`]: https://docs.rs/poodio/latest/poodio/cli/fn.init.html
-pub fn try_main<I, T>(args: I) -> Result<i32, Report>
+fn try_main<I, T>(args: I) -> Result<i32, Report>
 where
     I: IntoIterator<Item = T>,
     T: Into<OsString> + Clone,

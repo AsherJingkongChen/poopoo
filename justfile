@@ -24,7 +24,7 @@ check:
     uv run ruff check
     npx --no prettier -- --check .
     cargo fmt --all --check
-    cargo clippy --all-features --all-targets --frozen --workspace
+    cargo clippy --all-features --all-targets --frozen --workspace -- --deny warnings
 
 # Automatically fix formatting and linting issues.
 check-fix:
@@ -33,7 +33,7 @@ check-fix:
     npx --no prettier -- --write .
     cargo fmt --all
     cargo clippy --all-features --all-targets --allow-dirty --allow-staged --fix --workspace
-    cargo clippy --all-features --all-targets --frozen --workspace
+    cargo clippy --all-features --all-targets --frozen --workspace -- --deny warnings
 
 # Remove all artifacts.
 clean: clean-dist clean-npm clean-pip clean-cargo

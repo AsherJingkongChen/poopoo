@@ -1,29 +1,43 @@
 [build-dependencies]
-color-eyre = {workspace = true, features = ["track-caller"]}
+napi-build = {workspace = true, features = [], optional = true}
 pyo3-build-config = {workspace = true, features = [], optional = true}
-serde = {workspace = true, features = ["std"]}
-serde_json = {workspace = true, features = ["std"]}
 
 [dependencies]
 anstream = {workspace = true, features = ["auto"]}
 clap = {workspace = true, features = ["default", "derive"]}
-color-eyre = {workspace = true, features = ["track-caller"]}
+color-eyre = {workspace = true, features = ["track-caller"], default-features = true}
 cpal = {workspace = true, features = []}
 log = {workspace = true, features = ["std"]}
 napi = {workspace = true, features = ["dyn-symbols", "napi1"], optional = true}
 napi-derive = {workspace = true, features = ["type-def"], optional = true}
 pyo3 = {workspace = true, features = ["abi3-py38", "extension-module", "macros"], optional = true}
-# pyo3-stub-gen = {workspace = true, features = []}
+pyo3-stub-gen = {workspace = true, features = [], optional = true}
+serde = {workspace = true, features = ["std"], optional = true}
+serde_json = {workspace = true, features = ["std"], optional = true}
 simple_logger = {workspace = true, features = ["colors", "stderr"]}
 thiserror = {workspace = true, features = ["std"]}
 
 [features]
-bind-napi = ["dep:napi", "dep:napi-derive"]
-bind-pyo3 = ["dep:pyo3", "dep:pyo3-build-config"]
+bind-napi = [
+  "dep:napi",
+  "dep:napi-build",
+  "dep:napi-derive",
+  "dep:serde",
+  "dep:serde_json",
+]
+bind-pyo3 = [
+  "dep:pyo3",
+  "dep:pyo3-build-config",
+  "dep:pyo3-stub-gen",
+]
 default = []
 
 [lib]
 crate-type = ["cdylib", "lib"]
+
+[[bin]]
+name = "poodio-bindgen"
+path = "bindgen.rs"
 
 [package]
 authors.workspace = true
@@ -46,4 +60,4 @@ pkg-fmt = "tgz"
 pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }%40{ version }-{ target }{ archive-suffix }"
 
 [package.metadata.docs.rs]
-all-features = true
+features = []
