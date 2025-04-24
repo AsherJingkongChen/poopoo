@@ -19,6 +19,15 @@
 | 3. [`pipx`](https://pypi.org/project/pipx/)         | <ul><li>`pipx run poodio`</li><li>`pipx run poodio==0.1.0`</li></ul>                    |
 | 4. [`uvx`](https://docs.astral.sh/uv/#installation) | <ul><li>`uvx poodio`</li><li>`uvx poodio==0.1.0`</li></ul>                              |
 
+## Run
+
+💩 After [installing](#install), run **`poodio`** with the following commands. 💩
+
+| 💩 Action 💩              | 💩 Command 💩                                            |
+| ------------------------- | -------------------------------------------------------- |
+| 💩 Prints help info 💩    | <ul><li>`poodio -h`</li><li>`poodio --help`</li></ul>    |
+| 💩 Prints version info 💩 | <ul><li>`poodio -V`</li><li>`poodio --version`</li></ul> |
+
 ## Install
 
 💩 We provide several ways to install **`poodio`** so you can [run](#run) it later. 💩
@@ -30,15 +39,6 @@
 | 3. [`pip`](https://pip.pypa.io/en/stable/installation/)                                                                  | <ul><li>`pip install poodio`</li><li>`pip install poodio==0.1.0`</li></ul>                                                                                                                                                                                            |
 | 4. [`uv`](https://docs.astral.sh/uv/#installation)                                                                       | <ul><li>`uv tool install poodio`</li><li>`uv tool install poodio==0.1.0`</li></ul>                                                                                                                                                                                    |
 | 5. [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) | <ul><li>`git clone https://github.com/AsherJingkongChen/poopoo -b main --depth 1`<br>`cargo install --path poopoo/poodio`</li><li>`git clone https://github.com/AsherJingkongChen/poopoo -b poodio@0.1.0 --depth 1`<br>`cargo install --path poopoo/poodio`</li></ul> |
-
-## Run
-
-💩 After [installing](#install), run **`poodio`** with the following commands. 💩
-
-| 💩 Action 💩              | 💩 Command 💩                                            |
-| ------------------------- | -------------------------------------------------------- |
-| 💩 Prints help info 💩    | <ul><li>`poodio -h`</li><li>`poodio --help`</li></ul>    |
-| 💩 Prints version info 💩 | <ul><li>`poodio -V`</li><li>`poodio --version`</li></ul> |
 
 ## Integrate
 

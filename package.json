@@ -8,10 +8,10 @@
     "name": "workspace",
     "private": true,
     "prettier": {
-        "tabWidth": 4,
-        "useTabs": false,
+        "endOfLine": "lf",
         "printWidth": 90,
-        "endOfLine": "lf"
+        "tabWidth": 4,
+        "useTabs": false
     },
     "workspaces": [
         "poodio"

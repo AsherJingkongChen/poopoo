@@ -13,12 +13,11 @@ on:
 
 env:
     CARGO_NET_RETRY: "10"
-    CARGO_TERM_COLOR: always
+    CARGO_TERM_COLOR: "always"
     CI_BASE_RUST_VERSION: "1.80"
-    FORCE_COLOR: true
-    UV_CACHE_DIR: ~/.cache/uv
+    UV_CACHE_DIR: "~/.cache/uv"
     RUSTUP_MAX_RETRIES: "10"
-    VOLTA_HOME:
+    VOLTA_HOME: "~/.volta"
 
 jobs:
     check:
@@ -73,15 +72,11 @@ jobs:
                     - os: ubuntu-24.04-arm
                       rust-target: aarch64-unknown-linux-gnu
                       node-versions: "18 20 22"
-                      python-versions: 3.8 3.9 3.10 3.11 3.12 3.13
-                    # - os: ubuntu-24.04-arm ## Needed Linux-Musl ARM runner
-                    #   rust-target: aarch64-unknown-linux-musl
+                      python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     - os: ubuntu-24.04
                       rust-target: x86_64-unknown-linux-gnu
                       node-versions: "18 20 22"
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
-                    # - os: ubuntu-24.04 ## Needed Linux-Musl AMD runner
-                    #   rust-target: x86_64-unknown-linux-musl
                     - os: windows-11-arm
                       rust-target: aarch64-pc-windows-msvc
                       node-versions: "20 22"
@@ -92,13 +87,6 @@ jobs:
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
         steps:
             - uses: actions/checkout@v4
-            # See https://github.com/actions/partner-runner-images/issues/77
-            - if: matrix.os == 'windows-11-arm'
-              name: Install rustup on Windows ARM
-              run: |
-                  curl -LOs https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe
-                  ./rustup-init.exe -y --default-toolchain none --no-modify-path
-                  echo "$USERPROFILE/.cargo/bin" >> "$GITHUB_PATH"
             - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
                   toolchain: ${{ env.CI_BASE_RUST_VERSION }}
@@ -111,7 +99,7 @@ jobs:
               uses: actions/cache@v4
               with:
                   key: volta-${{ runner.os }}-${{ runner.arch }}
-                  path: ${{ env.VOLTA_HOME }}/cache
+                  path: ${{ env.VOLTA_HOME }}/cache/
             - uses: actions/setup-node@v4
               with:
                   cache: npm
