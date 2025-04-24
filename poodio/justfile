@@ -20,6 +20,7 @@ build-bin TARGET:
         -vvczf "{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz" '{{ BIN_NAME }}'
 
     @echo '[DIST] {{ NAME }}/{{ BIN_DIST }}/'
+    @echo ' '
 
 # Build documentation.
 build-doc:
@@ -38,6 +39,7 @@ build-npm TARGET:
     cp '{{ NPM_DIST }}/native/index.d.ts' '{{ NPM_DIST }}/common/'
 
     @echo '[DIST] {{ NAME }}/{{ NPM_DIST }}/'
+    @echo ' '
 
 # Build pip package for the given target.
 build-pip TARGET:
@@ -53,6 +55,7 @@ build-pip TARGET:
         --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
 
     @echo '[DIST] {{ NAME }}/{{ PIP_DIST }}/'
+    @echo ' '
 
 # Run end-to-end tests for all distributions.
 test-e2e:
@@ -70,8 +73,9 @@ test-e2e-bin:
     @[[ "{{ VERS }}" == "$('{{ BIN_FILE }}' --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
-    @rm '{{ BIN_FILE }}'
+    @echo "Removed $(rm -v {{ BIN_FILE }})"
     @echo '[PASS] test-e2e-bin'
+    @echo ' '
 
 # Run end-to-end tests for built npm package.
 test-e2e-npm:
@@ -84,6 +88,7 @@ test-e2e-npm:
 
     @cd '../' && npm prune
     @echo '[PASS] test-e2e-npm'
+    @echo ' '
 
 # Run end-to-end tests for built pip package.
 test-e2e-pip:
@@ -96,6 +101,7 @@ test-e2e-pip:
 
     @uv pip uninstall '{{ NAME }}'
     @echo '[PASS] test-e2e-pip'
+    @echo ' '
 
 NAME := 'poodio'
 BIN_NAME := NAME + if os() == 'windows' { '.exe' } else { '' }

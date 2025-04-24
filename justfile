@@ -75,25 +75,25 @@ prepare-pip:
 
 # Show all active toolchains.
 tool:
-    @echo ''
+    @echo ' '
     @just tool-cargo tool-npm tool-pip
 
 # Show active cargo toolchain.
 tool-cargo:
     @echo "[TOOL] cargo: rust-$(rustup show active-toolchain | cut -f1 -d' ')"
-    @echo ''
+    @echo ' '
 
 # Show active npm toolchain.
 tool-npm:
     @echo "[TOOL] npm: node-$(node -r tell-libc -p \
         'p=process;p.version+"-"+p.platform+"-"+p.arch+"-"+p.libc')"
-    @echo ''
+    @echo ' '
 
 # Show active pip toolchain.
 tool-pip:
     @echo "[TOOL] pip: "$(uv run --quiet python -c \
         'import sys as s,sysconfig as c;print(f"{s.implementation.cache_tag}-{c.get_platform()}")')
-    @echo ''
+    @echo ' '
 
 # Update all dependencies.
 update: update-cargo update-npm update-pip

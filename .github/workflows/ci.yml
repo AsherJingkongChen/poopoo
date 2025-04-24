@@ -154,12 +154,12 @@ jobs:
 
                   for v in ${{ matrix.node-versions }}; do
                       volta install "node@$v"
-                      just prepare-npm poodio::test-e2e-npm
+                      just tool-npm poodio::test-e2e-npm
                   done
 
                   for v in ${{ matrix.python-versions }}; do
                       UV_PYTHON="$v" \
-                      just prepare-pip poodio::test-e2e-pip
+                      just tool-pip poodio::test-e2e-pip
                   done
 
             - uses: actions/upload-artifact@v4
@@ -188,6 +188,7 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   path: dist-orig/
+            - uses: astral-sh/setup-uv@v4
             - name: Organize distributions
               run: |
                   set -e
