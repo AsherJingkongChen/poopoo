@@ -105,7 +105,7 @@ test-e2e-pip:
 
 NAME := 'poodio'
 BIN_NAME := NAME + if os() == 'windows' { '.exe' } else { '' }
-BIN_FILE := join(BIN_DIST, BIN_NAME)
+BIN_FILE := BIN_DIST + '/' + BIN_NAME
 BIN_DIST := 'dist/bin'
 NPM_DIST := 'dist/npm'
 PIP_DIST := 'dist/pip'
