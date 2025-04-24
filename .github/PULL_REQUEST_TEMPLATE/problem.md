@@ -1,6 +1,6 @@
 ---
 name: Problem
-description: Fix a bug, performance issue, security vulnerability, or testing problem.
+about: Fix a bug, performance issue, security vulnerability, or testing problem.
 labels: [bug, performance, security, testing, critical, high, medium, low]
 title: "[Problem]: Title?"
 ---

@@ -1,6 +1,6 @@
 ---
 name: Enhancement
-description: Propose a new feature or improvement.
+about: Propose a new feature or improvement.
 labels: [feature, improvement, critical, high, medium, low]
 title: "[Enhancement]: Title?"
 ---

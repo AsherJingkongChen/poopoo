@@ -1,7 +1,7 @@
 ---
 name: Problem
-description: Report a bug, performance issue, security vulnerability, or testing issue.
-labels: [bug, performance, security, testing, critical, high, medium, low]
+about: Report a bug, performance issue, security vulnerability, or testing issue.
+labels: [bug, performance, security, testing, medium]
 title: "[Problem]: Title?"
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: Question
-description: Ask a question or start a discussion about the project.
+about: Ask a question or start a discussion about the project.
 labels: [question, discussion]
 title: "[Question]: Title?"
 ---

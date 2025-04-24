@@ -1,6 +1,6 @@
 ---
 name: Maintenance
-description: Update docs or refactor code.
+about: Update docs or refactor code.
 labels: [documentation, refactor, critical, high, medium, low]
 title: "[Maintenance]: Title?"
 ---

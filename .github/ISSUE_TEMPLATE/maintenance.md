@@ -1,7 +1,7 @@
 ---
 name: Maintenance
-description: Suggest a code refactoring or report a documentation issue.
-labels: [documentation, refactor, testing, critical, high, medium, low]
+about: Suggest a code refactoring or report a documentation issue.
+labels: [documentation, refactor, testing, low]
 title: "[Maintenance]: Title?"
 ---
 

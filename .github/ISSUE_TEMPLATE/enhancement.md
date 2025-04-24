@@ -1,7 +1,7 @@
 ---
 name: Enhancement
-description: Suggest a new feature or an improvement to existing functionality.
-labels: [feature, improvement, critical, high, medium, low]
+about: Suggest a new feature or an improvement to existing functionality.
+labels: [feature, improvement, low]
 title: "[Enhancement]: Title?"
 ---
 
