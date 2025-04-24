@@ -55,14 +55,17 @@ pub struct Arguments {}
 pub fn init() {
     use log::LevelFilter::*;
 
+    const CRASH_REPORT_URL: &str = concat!(
+        env!("CARGO_PKG_REPOSITORY"),
+        "/issues/new?template=problem.md"
+    );
+
     color_eyre::config::HookBuilder::default()
         .display_env_section(cfg!(debug_assertions))
-        .panic_section(format!(
-            "Report the Crash: {}",
-            concat!(env!("CARGO_PKG_REPOSITORY"), "/issues/new").green()
-        ))
+        .panic_section(format!("Report the crash: {}", CRASH_REPORT_URL.green()))
         .install()
         .ok();
+
     simple_logger::SimpleLogger::new()
         .with_colors(true)
         .with_level(if cfg!(debug_assertions) { Info } else { Warn })
