@@ -209,7 +209,7 @@ jobs:
                       mv "$DIST_ORIG/pip/wheel/" "$DIST/pip/"
                   done
                   rm -rf dist-orig/
-                  ls -Rp --color=always dist
+                  ls -Rlp --color=always dist
 
             - name: Publish to pypi.org
               run: uv publish --trusted-publishing always dist/*/*/pip/*

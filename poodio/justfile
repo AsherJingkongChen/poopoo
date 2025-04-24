@@ -29,7 +29,7 @@ build-doc:
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}/'
 
-    cargo run --bin '{{ NAME }}-bindgen' --frozen \
+    cargo run --bin bindgen --frozen \
         --features bind-napi --release \
         --target '{{ TARGET }}'
     npx napi build --cargo-flags='--frozen --lib' \
@@ -43,7 +43,7 @@ build-npm TARGET:
 build-pip TARGET:
     rm -rf '{{ PIP_DIST }}/'
 
-    cargo run --bin '{{ NAME }}-bindgen' --frozen \
+    cargo run --bin bindgen --frozen \
         --features bind-pyo3 --release \
         --target '{{ TARGET }}'
     uv run ruff format 'bind/pip/'

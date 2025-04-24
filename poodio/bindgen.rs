@@ -193,7 +193,7 @@ mod bind_pyo3 {
 #[cfg(not(feature = "bind-napi"))]
 mod bind_napi {
     use super::*;
-    pub fn main() -> Result<()> {
+    pub fn generate() -> Result<()> {
         Ok(())
     }
 }
@@ -201,7 +201,7 @@ mod bind_napi {
 #[cfg(not(feature = "bind-pyo3"))]
 mod bind_pyo3 {
     use super::*;
-    pub fn main() -> Result<()> {
+    pub fn generate() -> Result<()> {
         Ok(())
     }
 }
