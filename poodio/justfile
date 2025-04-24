@@ -16,8 +16,8 @@ build-bin TARGET:
         --features default --release \
         --target '{{ TARGET }}'
     @mkdir -p '{{ BIN_DIST }}/'
-    tar -C '../target/{{ TARGET }}/release/' \
-        -vvczf "{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz" '{{ BIN_NAME }}'
+    tar -vvczf "{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz" \
+        -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'
 
     @echo '[DIST] {{ NAME }}/{{ BIN_DIST }}/'
     @echo ' '
@@ -70,7 +70,7 @@ test-e2e-bin:
 
     @[[ -x '{{ BIN_FILE }}' && ! -d '{{ BIN_FILE }}' ]] || \
         (echo '[FAIL] permission' && exit 2)
-    @[[ "{{ VERS }}" == "$('{{ BIN_FILE }}' --version)" ]] || \
+    @[[ '{{ VERS }}' == "$('{{ BIN_FILE }}' --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @echo "Removed $(rm -v {{ BIN_FILE }})"
@@ -81,9 +81,9 @@ test-e2e-bin:
 test-e2e-npm:
     npm install --no-save --silent '{{ NPM_DIST }}/'*
 
-    @[[ "{{ VERS }}" == $(node --print 'require("{{ NAME }}").version()') ]] || \
+    @[[ '{{ VERS }}' == "$(node --print 'require("{{ NAME }}").version()')" ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @[[ "{{ VERS }}" == "$(npx --no {{ NAME }} -- --version)" ]] || \
+    @[[ '{{ VERS }}' == "$(npx --no {{ NAME }} -- --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @cd '../' && npm prune
@@ -94,9 +94,9 @@ test-e2e-npm:
 test-e2e-pip:
     uv pip install --quiet '{{ PIP_DIST }}/wheel/'*
 
-    @[[ "{{ VERS }}" == "$(uv run python -c 'import {{ NAME }} as p;print(p.version())')" ]] || \
+    @[[ '{{ VERS }}' == "$(uv run python -c 'import {{ NAME }} as p;print(p.version())')" ]] || \
         (echo '[FAIL] .version()' && exit 2)
-    @[[ "{{ VERS }}" == "$(uv run {{ NAME }} --version)" ]] || \
+    @[[ '{{ VERS }}' == "$(uv run {{ NAME }} --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
     @uv pip uninstall '{{ NAME }}'
@@ -105,9 +105,9 @@ test-e2e-pip:
 
 NAME := 'poodio'
 BIN_NAME := NAME + if os() == 'windows' { '.exe' } else { '' }
-BIN_FILE := BIN_DIST + '/' + BIN_NAME
+BIN_FILE := BIN_DIST / BIN_NAME
 BIN_DIST := 'dist/bin'
 NPM_DIST := 'dist/npm'
 PIP_DIST := 'dist/pip'
-VERS := '$(cargo pkgid -p ' + NAME + " | sed -E 's|.+/(.+)#|\\1@|')"
+VERS := `cargo pkgid | sed -E 's|.+/(.+)#|\1@|'`
 ZIG_ARGS := if os() == 'linux' { '--zig' } else { '' }
