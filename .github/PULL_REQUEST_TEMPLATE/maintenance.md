@@ -1,20 +1,13 @@
----
+<!---
 name: Maintenance
-about: Update docs or refactor code.
-labels: [documentation, refactor, critical, high, medium, low]
+about: Update documentations or refactor code.
+labels: [documentation, refactor, low]
 title: "[Maintenance]: Title?"
----
+--->
 
 ## Summary
 
 Describe the task?
-
-## Priority
-
-- [ ] **Critical**
-- [ ] **High**
-- [ ] **Medium**
-- [ ] **Low**
 
 ## Changes
 

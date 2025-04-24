@@ -1,20 +1,13 @@
----
+<!---
 name: Problem
 about: Fix a bug, performance issue, security vulnerability, or testing problem.
-labels: [bug, performance, security, testing, critical, high, medium, low]
+labels: [bug, performance, security, testing, medium]
 title: "[Problem]: Title?"
----
+--->
 
 ## Summary
 
 Briefly describe the issue?
-
-## Priority
-
-- [ ] **Critical**
-- [ ] **High**
-- [ ] **Medium**
-- [ ] **Low**
 
 ## Root Cause
 
@@ -26,4 +19,4 @@ List code or config updates?
 
 ## Verification
 
-How was it confirmed?
+How was it tested?

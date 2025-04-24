@@ -9,13 +9,6 @@ title: "[Maintenance]: Title?"
 
 Describe the task?
 
-## Priority
-
-- [ ] **Critical**
-- [ ] **High**
-- [ ] **Medium**
-- [ ] **Low**
-
 ## Details
 
 What is being updated or refactored?

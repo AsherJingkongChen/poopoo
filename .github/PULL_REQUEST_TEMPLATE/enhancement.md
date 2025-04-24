@@ -1,20 +1,13 @@
----
+<!---
 name: Enhancement
 about: Propose a new feature or improvement.
-labels: [feature, improvement, critical, high, medium, low]
+labels: [feature, improvement, low]
 title: "[Enhancement]: Title?"
----
+--->
 
 ## Summary
 
 What is the feature or improvement?
-
-## Priority
-
-- [ ] **Critical**
-- [ ] **High**
-- [ ] **Medium**
-- [ ] **Low**
 
 ## Use Case
 

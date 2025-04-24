@@ -9,13 +9,6 @@ title: "[Enhancement]: Title?"
 
 A clear and concise description of the feature or improvement?
 
-## Priority
-
-- [ ] **Critical**
-- [ ] **High**
-- [ ] **Medium**
-- [ ] **Low**
-
 ## Use Case
 
 Why is it needed?

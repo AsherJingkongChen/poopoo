@@ -9,13 +9,6 @@ title: "[Problem]: Title?"
 
 Briefly describe the issue?
 
-## Priority
-
-- [ ] **Critical**
-- [ ] **High**
-- [ ] **Medium**
-- [ ] **Low**
-
 ## Details
 
 Add background, steps, and any reproduction info?
