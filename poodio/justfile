@@ -5,7 +5,7 @@ export UV_NO_SYNC := 'true'
 
 # Build all distributions for the given target triple.
 build TARGET:
-    @for s in bin npm pip; do \
+    @for s in 'bin' 'npm' 'pip'; do \
         just "build-$s" '{{ TARGET }}'; \
     done
 
@@ -13,8 +13,7 @@ build TARGET:
 build-bin TARGET:
     rm -rf '{{ BIN_DIST }}/'
 
-    cargo build --bin '{{ NAME }}' --frozen \
-        --features default --release \
+    cargo build --bin '{{ NAME }}' --frozen --release \
         --target '{{ TARGET }}'
     @mkdir -p '{{ BIN_DIST }}/'
     tar -vvczf '{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz' \
@@ -31,11 +30,9 @@ build-doc:
 build-npm TARGET:
     rm -rf '{{ NPM_DIST }}/'
 
-    cargo run --bin bindgen --frozen \
-        --features bind-napi --release \
+    cargo run --bin bindgen --frozen --features bind-napi --release \
         --target '{{ TARGET }}'
-    npx napi build --cargo-flags='--frozen --lib' \
-        --features bind-napi --release \
+    npx napi build --cargo-flags='--frozen --lib' --features bind-napi --release \
         --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
     cp '{{ NPM_DIST }}/native/index.d.ts' '{{ NPM_DIST }}/common/'
 
@@ -46,8 +43,7 @@ build-npm TARGET:
 build-pip TARGET:
     rm -rf '{{ PIP_DIST }}/'
 
-    cargo run --bin bindgen --frozen \
-        --features bind-pyo3 --release \
+    cargo run --bin bindgen --frozen --features bind-pyo3 --release \
         --target '{{ TARGET }}'
     uv run ruff format 'bind/pip/'
 
@@ -60,21 +56,21 @@ build-pip TARGET:
 
 # Run end-to-end tests for all distributions.
 test-e2e:
-    @for s in bin npm pip; do \
+    @for s in 'bin' 'npm' 'pip'; do \
         just "test-e2e-$s"; \
     done
     @echo '[PASS] test-e2e'
 
 # Run end-to-end tests for built native binary.
 test-e2e-bin:
-    tar -xzf '{{ BIN_DIST }}/'*.tgz -C '{{ BIN_DIST }}/'
+    tar -vvxzf '{{ BIN_DIST }}/'*.tgz -C '{{ BIN_DIST }}/'
 
     @[[ -x '{{ BIN_FILE }}' && ! -d '{{ BIN_FILE }}' ]] || \
         (echo '[FAIL] permission' && exit 2)
     @[[ '{{ VERS }}' == "$('{{ BIN_FILE }}' --version)" ]] || \
         (echo '[FAIL] --version' && exit 2)
 
-    @echo "Removed $(rm -v {{ BIN_FILE }})"
+    rm {{ BIN_FILE }}
     @echo '[PASS] test-e2e-bin'
     @echo ' '
 

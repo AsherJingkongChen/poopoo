@@ -2,13 +2,13 @@
 
 💩 💨 Farts poo poo audio 💨 💩
 
-[![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=NPMJS&logo=npm&logoColor=%23c33&labelColor=%23333&color=%23c33)](https://www.npmjs.com/package/poodio)
-[![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=CRATES&logo=docs.rs&logoColor=%23fc3&labelColor=%23333&color=%23fc3)](https://docs.rs/poodio)
-[![License](https://img.shields.io/crates/l/poodio?style=for-the-badge&label=LICENSE&logo=opensourceinitiative&logoColor=%23fff&labelColor=%23333&color=%234a3)](https://docs.rs/crate/poodio/latest/source/LICENSE.txt)
-[![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=PYPI&logo=pypi&logoColor=%23fc4&labelColor=%23333&color=%2337a)](https://pypi.org/project/poodio/)
-[![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=ISSUES&logo=github&logoColor=%23fff&labelColor=%23333&color=%23eee)](https://github.com/AsherJingkongChen/poopoo/issues)
+[![License](https://img.shields.io/crates/l/poodio?style=for-the-badge&label=license&logo=opensourceinitiative&logoColor=fff&labelColor=333&color=4a3)](https://docs.rs/crate/poodio/latest/source/LICENSE.txt)
+[![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=issues&logo=github&logoColor=fff&labelColor=333&color=ddd)](https://github.com/AsherJingkongChen/poopoo/issues)
 
 ## Install & Run
+
+[![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
+[![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fc4&labelColor=333&color=37a)](https://pypi.org/project/poodio/)
 
 💩 We provide several ways to install and run **`poodio`** on your system with a single command. 💩
 
@@ -44,26 +44,11 @@
     uvx poodio==0.1.0
     ```
 
-## Run
-
-💩 After [installing](#install), run **`poodio`** with the following commands. 💩
-
-1. **💩 Prints help info 💩**
-    ```shell
-    poodio -h
-    ```
-    ```shell
-    poodio --help
-    ```
-2. **💩 Prints version info 💩**
-    ```shell
-    poodio -V
-    ```
-    ```shell
-    poodio --version
-    ```
-
 ## Install
+
+[![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
+[![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=crates&logo=docs.rs&logoColor=fc3&labelColor=333&color=fc3)](https://docs.rs/poodio)
+[![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fc4&labelColor=333&color=37a)](https://pypi.org/project/poodio/)
 
 💩 We provide several ways to install **`poodio`** so you can [run](#run) it later. 💩
 
@@ -105,7 +90,30 @@
     cargo install --path poopoo/poodio
     ```
 
+## Run
+
+💩 After [installing](#install), run **`poodio`** with the following commands. 💩
+
+1. **💩 Prints help info 💩**
+    ```shell
+    poodio -h
+    ```
+    ```shell
+    poodio --help
+    ```
+2. **💩 Prints version info 💩**
+    ```shell
+    poodio -V
+    ```
+    ```shell
+    poodio --version
+    ```
+
 ## Integrate
+
+[![Rust](https://img.shields.io/badge/%e2%89%a5_1.80-_?style=for-the-badge&label=rust&logo=rust&logoColor=fff&labelColor=333&color=d41)](https://www.rust-lang.org)
+[![Node.js](https://img.shields.io/badge/%e2%89%a5_16-_?style=for-the-badge&label=node.js&logo=node.js&logoColor=6c3&labelColor=333&color=393)](https://nodejs.org/en)
+[![Python](https://img.shields.io/badge/%e2%89%a5_3.8-_?style=for-the-badge&label=python&logo=python&logoColor=fc4&labelColor=333&color=37a)](https://www.python.org)
 
 💩 You can integrate **`poodio`** into your own project with the following commands. 💩
 
