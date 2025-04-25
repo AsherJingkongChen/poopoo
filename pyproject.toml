@@ -18,6 +18,7 @@ name = "workspace"
 [tool.setuptools]
 packages = []
 
-[tool.uv.workspace]
-members = ["poodio"]
-
+[tool.uv]
+required-version = ">= 0.6"
+trusted-publishing = "always"
+workspace.members = ["poodio"]

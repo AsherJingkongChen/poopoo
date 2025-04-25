@@ -17,7 +17,7 @@ build-bin TARGET:
         --features default --release \
         --target '{{ TARGET }}'
     @mkdir -p '{{ BIN_DIST }}/'
-    tar -vvczf "{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz" \
+    tar -vvczf '{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz' \
         -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'
 
     @echo '[DIST] {{ NAME }}/{{ BIN_DIST }}/'
@@ -80,7 +80,9 @@ test-e2e-bin:
 
 # Run end-to-end tests for built npm package.
 test-e2e-npm:
-    npm install --no-save --silent '{{ NPM_DIST }}/'*
+    @for _ in {1..2}; do \
+        npm install --no-save --silent '{{ NPM_DIST }}/'* && break; \
+    done
 
     @[[ '{{ VERS }}' == "$(node --print 'require("{{ NAME }}").version()')" ]] || \
         (echo '[FAIL] .version()' && exit 2)

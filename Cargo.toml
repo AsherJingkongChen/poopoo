@@ -20,7 +20,7 @@ authors = ["AsherJingkongChen"]
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/AsherJingkongChen/poopoo"
-rust-version = "1.80.0"
+rust-version = "1.80"
 
 [workspace.dependencies]
 anstream = {version = "0.6", default-features = false}

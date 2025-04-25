@@ -14,9 +14,9 @@ on:
 env:
     CARGO_NET_RETRY: "10"
     CARGO_TERM_COLOR: "always"
-    CI_BASE_RUST_VERSION: "1.80"
-    UV_CACHE_DIR: "~/.cache/uv"
+    RUST_VERSION: "1.80"
     RUSTUP_MAX_RETRIES: "10"
+    UV_CACHE_DIR: "~/.cache/uv"
     VOLTA_HOME: "~/.volta"
 
 jobs:
@@ -30,17 +30,17 @@ jobs:
             - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
                   components: clippy, rustfmt
-                  toolchain: ${{ env.CI_BASE_RUST_VERSION }}
+                  toolchain: ${{ env.RUST_VERSION }}
             - uses: taiki-e/install-action@v2
               with:
-                  tool: cargo-audit, just
+                  tool: cargo-audit, just@1.40
 
             - uses: actions/setup-node@v4
               with:
                   cache: npm
                   node-version-file: .node-version
 
-            - uses: astral-sh/setup-uv@v4
+            - uses: astral-sh/setup-uv@v6
             - name: Restore cache for uv
               uses: actions/cache@v4
               with:
@@ -63,19 +63,19 @@ jobs:
                 include:
                     - os: macos-15
                       rust-target: aarch64-apple-darwin
-                      node-versions: "18 20 22"
+                      node-versions: "16 18 20 22"
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     - os: macos-13
                       rust-target: x86_64-apple-darwin
-                      node-versions: "18 20 22"
+                      node-versions: "16 18 20 22"
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     - os: ubuntu-24.04-arm
                       rust-target: aarch64-unknown-linux-gnu
-                      node-versions: "18 20 22"
+                      node-versions: "16 18 20 22"
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     - os: ubuntu-24.04
                       rust-target: x86_64-unknown-linux-gnu
-                      node-versions: "18 20 22"
+                      node-versions: "16 18 20 22"
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
                     - os: windows-11-arm
                       rust-target: aarch64-pc-windows-msvc
@@ -83,16 +83,17 @@ jobs:
                       python-versions: "3.11"
                     - os: windows-2025
                       rust-target: x86_64-pc-windows-msvc
-                      node-versions: "18 20 22"
+                      node-versions: "16 18 20 22"
                       python-versions: "3.8 3.9 3.10 3.11 3.12 3.13"
         steps:
             - uses: actions/checkout@v4
+
             - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
-                  toolchain: ${{ env.CI_BASE_RUST_VERSION }}
+                  toolchain: ${{ env.RUST_VERSION }}
             - uses: taiki-e/install-action@v2
               with:
-                  tool: just
+                  tool: just@1.40
 
             - uses: volta-cli/action@v4
             - name: Restore cache for volta
@@ -100,13 +101,14 @@ jobs:
               with:
                   key: volta-${{ runner.os }}-${{ runner.arch }}
                   path: ${{ env.VOLTA_HOME }}/cache/
+            - run: volta install "node@$(cat .node-version)"
             - uses: actions/setup-node@v4
               with:
                   cache: npm
 
             # See https://github.com/astral-sh/python-build-standalone/pull/387
             - if: matrix.os != 'windows-11-arm'
-              uses: astral-sh/setup-uv@v4
+              uses: astral-sh/setup-uv@v6
             - if: matrix.os == 'windows-11-arm'
               uses: actions/setup-python@v5
               id: python
@@ -114,7 +116,7 @@ jobs:
                   architecture: arm64
                   python-version: ${{ matrix.python-versions }}
             - if: matrix.os == 'windows-11-arm'
-              uses: astral-sh/setup-uv@v4
+              uses: astral-sh/setup-uv@v6
               with:
                   python-version: ${{ steps.python.outputs.python-version }}
             - name: Restore cache for uv
@@ -131,22 +133,19 @@ jobs:
                   version: ${{ matrix.os }}
 
             - name: Build
-              run: |
-                  volta install "node@$(cat .node-version)"
-                  just prepare poodio::build '${{ matrix.rust-target }}'
+              run: just prepare poodio::build '${{ matrix.rust-target }}'
 
             - name: Test
               run: |
-                  set -euo pipefail
                   just tool-cargo poodio::test-e2e-bin
 
                   for v in ${{ matrix.node-versions }}; do
-                      volta install "node@$v"
+                      volta install "node@${v}"
                       just tool-npm poodio::test-e2e-npm
                   done
 
                   for v in ${{ matrix.python-versions }}; do
-                      UV_PYTHON="$v" \
+                      UV_PYTHON="${v}" \
                       just tool-pip poodio::test-e2e-pip
                   done
 
@@ -173,13 +172,12 @@ jobs:
               with:
                   fetch-depth: 0
                   fetch-tags: true
+
             - uses: actions/download-artifact@v4
               with:
                   path: dist-orig/
-            - uses: astral-sh/setup-uv@v4
             - name: Organize distributions
               run: |
-                  set -euo pipefail
                   DIST_ORIG_0="$(set -- dist-orig/*; echo "$1")"
                   DIST="dist/common/universal"
 
@@ -201,12 +199,16 @@ jobs:
                   rm -rf dist-orig/
                   ls -Rlp --color=always dist
 
+            - uses: astral-sh/setup-uv@v6
             - name: Publish to pypi.org
-              run: uv publish --trusted-publishing always dist/*/*/pip/*
+              run: uv publish dist/*/*/pip/*
 
+            - uses: actions/setup-node@v4
+              with:
+                  cache: npm
+                  node-version-file: .node-version
             - name: Publish to npmjs.com
               run: |
-                  set -euo pipefail
                   npm set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
                   for p in dist/*/*/npm/; do
                       npm publish "./$p"
