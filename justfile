@@ -1,5 +1,8 @@
 mod poodio
 
+set shell := ['/usr/bin/env', 'bash', '-cueo', 'pipefail']
+set windows-shell := ['C:/Program Files/Git/bin/bash.exe', '-cueo', 'pipefail']
+
 export RUFF_NO_CACHE := 'true'
 export UV_NO_SYNC := 'true'
 

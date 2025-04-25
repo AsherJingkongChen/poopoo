@@ -1,10 +1,11 @@
-set shell := ['/usr/bin/env', 'bash', '-cu']
-set windows-shell := ['C:/Program Files/Git/bin/bash.exe', '-cu']
+set shell := ['/usr/bin/env', 'bash', '-cueo', 'pipefail']
+set windows-shell := ['C:/Program Files/Git/bin/bash.exe', '-cueo', 'pipefail']
+
 export UV_NO_SYNC := 'true'
 
 # Build all distributions for the given target triple.
 build TARGET:
-    @set -e && for s in bin npm pip; do \
+    @for s in bin npm pip; do \
         just "build-$s" '{{ TARGET }}'; \
     done
 
@@ -59,7 +60,7 @@ build-pip TARGET:
 
 # Run end-to-end tests for all distributions.
 test-e2e:
-    @set -e && for s in bin npm pip; do \
+    @for s in bin npm pip; do \
         just "test-e2e-$s"; \
     done
     @echo '[PASS] test-e2e'

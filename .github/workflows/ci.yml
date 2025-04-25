@@ -137,7 +137,7 @@ jobs:
 
             - name: Test
               run: |
-                  set -e
+                  set -euo pipefail
                   just tool-cargo poodio::test-e2e-bin
 
                   for v in ${{ matrix.node-versions }}; do
@@ -179,7 +179,7 @@ jobs:
             - uses: astral-sh/setup-uv@v4
             - name: Organize distributions
               run: |
-                  set -e
+                  set -euo pipefail
                   DIST_ORIG_0="$(set -- dist-orig/*; echo "$1")"
                   DIST="dist/common/universal"
 
@@ -197,6 +197,7 @@ jobs:
                       mv "$DIST_ORIG/npm/native/" "$DIST/npm/"
                       mv "$DIST_ORIG/pip/wheel/" "$DIST/pip/"
                   done
+
                   rm -rf dist-orig/
                   ls -Rlp --color=always dist
 
@@ -205,7 +206,7 @@ jobs:
 
             - name: Publish to npmjs.com
               run: |
-                  set -e
+                  set -euo pipefail
                   npm set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
                   for p in dist/*/*/npm/; do
                       npm publish "./$p"
@@ -236,7 +237,7 @@ jobs:
               id: github-attest
               uses: actions/attest-build-provenance@v2
               with:
-                  subject-path: dist/*/*/bin/*
+                  subject-path: dist/*/*/bin/*.tgz
             - name: Publish to github.com
               uses: softprops/action-gh-release@v2
               with:
@@ -246,4 +247,4 @@ jobs:
                       - [**Installation**](${{ steps.github-prepare.outputs.installation }})
                       - **Contributors**
                       ${{ steps.github-prepare.outputs.contributors }}
-                  files: dist/*/*/bin/*
+                  files: dist/*/*/bin/*.tgz
