@@ -1,13 +1,15 @@
-# What does _**poodio**_ do?
+# _**poodio**_
+
+[![Stars](https://img.shields.io/github/stars/AsherJingkongChen/poopoo?style=for-the-badge&label=stars&logo=refinedgithub&logoColor=fff&labelColor=333&color=eb4)](https://github.com/AsherJingkongChen/poopoo/stargazers)
+[![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=issues&logo=github&logoColor=fff&labelColor=333&color=373)](https://github.com/AsherJingkongChen/poopoo/issues)
+[![Release](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?filter=poodio%40*&style=for-the-badge&logo=githubactions&logoColor=7bf&labelColor=333&color=28f)](https://github.com/AsherJingkongChen/poopoo/releases?q=poodio&expanded=true)
+[![License](https://img.shields.io/github/license/AsherJingkongChen/poopoo?style=for-the-badge&label=license&logo=spdx&logoColor=09f&labelColor=333&color=037)](https://github.com/AsherJingkongChen/poopoo/blob/main/LICENSE.txt)
 
 💩 💨 Farts poo poo audio 💨 💩
 
-[![License](https://img.shields.io/crates/l/poodio?style=for-the-badge&label=license&logo=opensourceinitiative&logoColor=fff&labelColor=333&color=4a3)](https://docs.rs/crate/poodio/latest/source/LICENSE.txt)
-[![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=issues&logo=github&logoColor=fff&labelColor=333&color=ddd)](https://github.com/AsherJingkongChen/poopoo/issues)
-
 ## Install & Run
 
-[![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
+[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
 [![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fc4&labelColor=333&color=37a)](https://pypi.org/project/poodio/)
 
 💩 We provide several ways to install and run **`poodio`** on your system with a single command. 💩
@@ -46,7 +48,7 @@
 
 ## Install
 
-[![Npmjs.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
+[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
 [![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=crates&logo=docs.rs&logoColor=fc3&labelColor=333&color=fc3)](https://docs.rs/poodio)
 [![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fc4&labelColor=333&color=37a)](https://pypi.org/project/poodio/)
 
@@ -111,9 +113,9 @@
 
 ## Integrate
 
-[![Rust](https://img.shields.io/badge/%e2%89%a5_1.80-_?style=for-the-badge&label=rust&logo=rust&logoColor=fff&labelColor=333&color=d41)](https://www.rust-lang.org)
-[![Node.js](https://img.shields.io/badge/%e2%89%a5_16-_?style=for-the-badge&label=node.js&logo=node.js&logoColor=6c3&labelColor=333&color=393)](https://nodejs.org/en)
-[![Python](https://img.shields.io/badge/%e2%89%a5_3.8-_?style=for-the-badge&label=python&logo=python&logoColor=fc4&labelColor=333&color=37a)](https://www.python.org)
+[![Rust](https://img.shields.io/badge/rust-%e2%89%a5_1.80-d41?style=for-the-badge&logo=rust&logoColor=fff&labelColor=333)](https://www.rust-lang.org)
+[![Node.js](https://img.shields.io/badge/node.js-%e2%89%a5_16-393?style=for-the-badge&logo=node.js&logoColor=6c3&labelColor=333)](https://nodejs.org/en)
+[![Python](https://img.shields.io/badge/python-%e2%89%a5_3.8-37a?style=for-the-badge&logo=python&logoColor=fc4&labelColor=333)](https://www.python.org)
 
 💩 You can integrate **`poodio`** into your own project with the following commands. 💩
 

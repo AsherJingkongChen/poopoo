@@ -2,6 +2,6 @@
 
 💩 A moonoorepoo pooject foo fun 💩
 
-## [**`poodio`**](./poodio/README.md)
+## [_**poodio**_](./poodio/README.md)
 
 💩 💨 Farts poo poo audio 💨 💩
