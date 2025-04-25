@@ -52,7 +52,7 @@ jobs:
               run: just prepare check audit
 
     build-poodio:
-        if: startsWith(github.ref, 'refs/tags/poodio@')
+        # if: startsWith(github.ref, 'refs/tags/poodio@')
         runs-on: ${{ matrix.os }}
         defaults:
             run:
@@ -178,25 +178,25 @@ jobs:
                   path: dist-orig/
             - name: Organize distributions
               run: |
-                  DIST_ORIG_0="$(set -- dist-orig/*; echo "$1")"
+                  DIST_ORIG_0="$(set -- dist-orig/*; echo "${1}")"
                   DIST="dist/common/universal"
 
-                  mkdir -p "$DIST/"
-                  mv "$DIST_ORIG_0/npm/common/" "$DIST/npm/"
-                  mv "$DIST_ORIG_0/pip/sdist/" "$DIST/pip/"
+                  mkdir -p "${DIST}/"
+                  mv "${DIST_ORIG_0}/npm/common/" "${DIST}/npm/"
+                  mv "${DIST_ORIG_0}/pip/sdist/" "${DIST}/pip/"
 
                   mkdir -p dist/native/
                   for DIST_ORIG in dist-orig/*; do
-                      TARGET="$(basename "$DIST_ORIG")"
+                      TARGET="$(basename "${DIST_ORIG}")"
                       DIST="dist/native/$TARGET"
 
-                      mkdir -p "$DIST/"
-                      mv "$DIST_ORIG/bin/" "$DIST/bin/"
-                      mv "$DIST_ORIG/npm/native/" "$DIST/npm/"
-                      mv "$DIST_ORIG/pip/wheel/" "$DIST/pip/"
+                      mkdir -p "${DIST}/"
+                      mv "${DIST_ORIG}/bin/" "${DIST}/bin/"
+                      mv "${DIST_ORIG}/npm/native/" "${DIST}/npm/"
+                      mv "${DIST_ORIG}/pip/wheel/" "${DIST}/pip/"
                   done
 
-                  rm -rf dist-orig/
+                  rm -r dist-orig/
                   ls -Rlp --color=always dist
 
             - uses: astral-sh/setup-uv@v6
@@ -209,9 +209,9 @@ jobs:
                   node-version-file: .node-version
             - name: Publish to npmjs.com
               run: |
-                  npm set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
+                  npm set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
                   for p in dist/*/*/npm/; do
-                      npm publish "./$p"
+                      npm publish "./${p}"
                   done
                   npm set //registry.npmjs.org/:_authToken
               env:
@@ -228,13 +228,13 @@ jobs:
                   LAST_TAG="$(git describe --tags --abbrev=0 HEAD~)"
                   HEAD_TAG="${{ github.ref_name }}"
                   GITHUB_REPO_URL="${{ github.server_url }}/${{ github.repository }}"
-                  CHANGELOG="$GITHUB_REPO_URL/compare/$LAST_TAG...$HEAD_TAG"
-                  CONTRIBUTORS="$(git log --pretty=format:'  + @%an' "$LAST_TAG".."$HEAD_TAG" | sort -u)"
-                  INSTALLATION="$GITHUB_REPO_URL/blob/$HEAD_TAG/poodio/README.md#install"
+                  CHANGELOG="${GITHUB_REPO_URL}/compare/${LAST_TAG}...${HEAD_TAG}"
+                  CONTRIBUTORS="$(git log --pretty=format:'  + @%an' "${LAST_TAG}".."${HEAD_TAG}" | sort -u)"
+                  INSTALLATION="$GITHUB_REPO_URL/blob/${HEAD_TAG}/poodio/README.md#install"
 
-                  echo "changelog=$CHANGELOG" >> "$GITHUB_OUTPUT"
-                  echo "contributors=$CONTRIBUTORS" >> "$GITHUB_OUTPUT"
-                  echo "installation=$INSTALLATION" >> "$GITHUB_OUTPUT"
+                  echo "changelog=${CHANGELOG}" >> "${GITHUB_OUTPUT}"
+                  echo "contributors=${CONTRIBUTORS}" >> "${GITHUB_OUTPUT}"
+                  echo "installation=${INSTALLATION}" >> "${GITHUB_OUTPUT}"
             - name: Publish to github.com (Attestation)
               id: github-attest
               uses: actions/attest-build-provenance@v2
