@@ -36,7 +36,7 @@ default = []
 crate-type = ["cdylib", "lib"]
 
 [[bin]]
-name = "bindgen"
+name = "poodio-bindgen"
 path = "bindgen.rs"
 
 [package]

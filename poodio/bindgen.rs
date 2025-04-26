@@ -1,7 +1,10 @@
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{ContextCompat, Result};
+use std::{fs, io::Write};
 
 fn main() -> Result<()> {
     color_eyre::install()?;
+    std::env::set_current_dir(env!("CARGO_MANIFEST_DIR"))?;
+
     bind_napi::generate()?;
     bind_pyo3::generate()?;
     Ok(())
@@ -12,7 +15,7 @@ mod bind_napi {
     use super::*;
     use serde::Serialize;
     use serde_json::{json, ser, Serializer};
-    use std::{collections::BTreeMap, fs, io::Write, path::Path, sync::LazyLock};
+    use std::{collections::BTreeMap, path::Path, sync::LazyLock};
 
     pub fn generate() -> Result<()> {
         write_common_entry()?;
@@ -49,8 +52,6 @@ mod bind_napi {
     });
 
     fn write_configs() -> Result<()> {
-        use color_eyre::eyre::ContextCompat;
-
         let name = env!("CARGO_PKG_NAME");
         let target = env!("TARGET");
         let version = env!("CARGO_PKG_VERSION");
@@ -167,8 +168,7 @@ mod bind_napi {
 #[cfg(feature = "bind-pyo3")]
 mod bind_pyo3 {
     use super::*;
-    use color_eyre::eyre::{eyre, ContextCompat};
-    use std::{fs, io::Write};
+    use color_eyre::eyre::eyre;
 
     pub fn generate() -> Result<()> {
         let stub = poodio::bind_pyo3_stub().map_err(|e| eyre!(e))?;
