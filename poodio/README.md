@@ -9,7 +9,7 @@
 
 ## Install & Run
 
-[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
+[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
 [![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fd4&labelColor=333&color=59d)](https://pypi.org/project/poodio/)
 
 💩 We provide several ways to install and run **`poodio`** on your system with a single command. 💩
@@ -48,8 +48,8 @@
 
 ## Install
 
-[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=c33&labelColor=333&color=c33)](https://www.npmjs.com/package/poodio)
-[![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=crates&logo=docs.rs&logoColor=da3&labelColor=333&color=463)](https://crates.io/crates/poodio)
+[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
+[![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=crates&logo=docs.rs&logoColor=da3&labelColor=333&color=473)](https://crates.io/crates/poodio)
 [![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fd4&labelColor=333&color=59d)](https://pypi.org/project/poodio/)
 
 💩 We provide several ways to install **`poodio`** so you can [run](#run) it later. 💩
@@ -94,9 +94,9 @@
 
 ## Run
 
-[![CLI](https://img.shields.io/badge/cli-6b3?style=for-the-badge&logo=gnometerminal&logoColor=6b3&labelColor=333)](https://en.wikipedia.org/wiki/Command-line_interface)
+[![CLI](https://img.shields.io/badge/cli-6a3?style=for-the-badge&logo=gnometerminal&logoColor=6a3&labelColor=333)](https://en.wikipedia.org/wiki/Command-line_interface)
 [![Linux](https://img.shields.io/badge/linux-fc2?style=for-the-badge&logo=linux&logoColor=fc2&labelColor=333)](https://kernel.org/)
-[![macOS](https://img.shields.io/badge/macos-fff?style=for-the-badge&logo=apple&logoColor=fff&labelColor=333)](https://www.apple.com/macos/)
+[![macOS](https://img.shields.io/badge/macos-eee?style=for-the-badge&logo=apple&logoColor=fff&labelColor=333)](https://www.apple.com/macos/)
 [![Windows](https://img.shields.io/badge/windows-07d?style=for-the-badge&logo=gitforwindows&logoColor=07d&labelColor=333)](https://www.microsoft.com/en-us/windows/)
 [![ARM64](https://img.shields.io/badge/arm64-09b?style=for-the-badge&logo=arm&logoColor=09b&labelColor=333)](https://www.kernel.org/doc/html/v6.14/arch/arm64/index.html)
 [![x86-64](https://img.shields.io/badge/x86%e2%80%9364-e22?style=for-the-badge&logo=amd&logoColor=e22&labelColor=333)](https://www.kernel.org/doc/html/v6.14/arch/x86/x86_64/index.html)
