@@ -1,8 +1,8 @@
 # _**poodio**_
 
-[![Stars](https://img.shields.io/github/stars/AsherJingkongChen/poopoo?style=for-the-badge&label=stars&logo=refinedgithub&logoColor=fff&labelColor=333&color=d93)](https://github.com/AsherJingkongChen/poopoo/stargazers)
+[![Stars](https://img.shields.io/github/stars/AsherJingkongChen/poopoo?style=for-the-badge&label=stars&logo=refinedgithub&logoColor=fff&labelColor=333&color=c83)](https://github.com/AsherJingkongChen/poopoo/stargazers)
 [![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=issues&logo=github&logoColor=fff&labelColor=333&color=485)](https://github.com/AsherJingkongChen/poopoo/issues)
-[![Release](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?filter=poodio%40*&style=for-the-badge&logo=githubactions&logoColor=7bf&labelColor=333&color=28f)](https://github.com/AsherJingkongChen/poopoo/releases?q=poodio&expanded=true)
+[![Version](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?filter=poodio%40*&style=for-the-badge&label=version&logo=semver&logoColor=fff&labelColor=333&color=38c)](https://github.com/AsherJingkongChen/poopoo/releases?q=poodio&expanded=true)
 [![License](https://img.shields.io/github/license/AsherJingkongChen/poopoo?style=for-the-badge&label=license&logo=spdx&logoColor=09f&labelColor=333&color=048)](https://github.com/AsherJingkongChen/poopoo/blob/main/LICENSE.txt)
 
 💩 💨 Farts poo poo audio 💨 💩
@@ -120,9 +120,9 @@
 
 ## Integrate
 
-[![Rust](https://img.shields.io/badge/rust-%e2%89%a5_1.80-d41?style=for-the-badge&logo=rust&logoColor=fff&labelColor=333)](https://crates.io/crates/poodio)
-[![Node.js](https://img.shields.io/badge/node.js-%e2%89%a5_16-393?style=for-the-badge&logo=node.js&logoColor=6c3&labelColor=333)](https://www.npmjs.com/package/poodio)
-[![Python](https://img.shields.io/badge/python-%e2%89%a5_3.8-369?style=for-the-badge&logo=python&logoColor=fd4&labelColor=333)](https://pypi.org/project/poodio/)
+[![Rust](https://img.shields.io/crates/msrv/poodio?style=for-the-badge&label=rust&logo=rust&logoColor=fff&labelColor=333&color=d41)](https://crates.io/crates/poodio)
+[![Node.js](https://img.shields.io/node/v/poodio?style=for-the-badge&label=node&logo=node.js&logoColor=6c3&labelColor=333&color=393)](https://www.npmjs.com/package/poodio)
+[![Python](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FAsherjingkongChen%2Fpoopoo%2Fmain%2Fpoodio%2Fpyproject.toml&style=for-the-badge&label=python&logo=python&logoColor=fd4&labelColor=333&color=36a)](https://pypi.org/project/poodio/)
 
 💩 You can integrate **`poodio`** into your own project with the following commands. 💩
 

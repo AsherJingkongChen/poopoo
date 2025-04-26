@@ -70,6 +70,7 @@ mod bind_napi {
         let config = json!({
             "author": env!("CARGO_PKG_AUTHORS"),
             "description": env!("CARGO_PKG_DESCRIPTION"),
+            "engines": { "node": ">= 16" },
             "homepage": env!("CARGO_PKG_HOMEPAGE"),
             "keywords": *NPM_KEYWORDS,
             "license": env!("CARGO_PKG_LICENSE"),
