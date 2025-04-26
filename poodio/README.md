@@ -2,7 +2,7 @@
 
 [![Stars](https://img.shields.io/github/stars/AsherJingkongChen/poopoo?style=for-the-badge&label=stars&logo=refinedgithub&logoColor=fff&labelColor=333&color=c83)](https://github.com/AsherJingkongChen/poopoo/stargazers)
 [![Issues](https://img.shields.io/github/issues/AsherJingkongChen/poopoo?style=for-the-badge&label=issues&logo=github&logoColor=fff&labelColor=333&color=485)](https://github.com/AsherJingkongChen/poopoo/issues)
-[![Version](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?filter=poodio%40*&style=for-the-badge&label=version&logo=semver&logoColor=fff&labelColor=333&color=38c)](https://github.com/AsherJingkongChen/poopoo/releases?q=poodio&expanded=true)
+[![Version](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?filter=poodio%40*&style=for-the-badge&label=version&logo=semver&logoColor=fff&labelColor=333&color=38c)](https://github.com/AsherJingkongChen/poopoo/releases?q=poodio%40&expanded=true)
 [![License](https://img.shields.io/github/license/AsherJingkongChen/poopoo?style=for-the-badge&label=license&logo=spdx&logoColor=09f&labelColor=333&color=048)](https://github.com/AsherJingkongChen/poopoo/blob/main/LICENSE.txt)
 
 💩 💨 Farts poo poo audio 💨 💩
@@ -85,11 +85,11 @@
 5. **💩 [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) 💩**
     ```shell
     git clone https://github.com/AsherJingkongChen/poopoo -b main --depth 1
-    cargo install --path poopoo/poodio
+    cargo install --bin poodio --path poopoo/poodio
     ```
     ```shell
     git clone https://github.com/AsherJingkongChen/poopoo -b poodio@0.1.0 --depth 1
-    cargo install --path poopoo/poodio
+    cargo install --bin poodio --path poopoo/poodio
     ```
 
 ## Run

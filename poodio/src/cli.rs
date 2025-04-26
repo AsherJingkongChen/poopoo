@@ -107,8 +107,8 @@ pub fn main() {
 /// [`poodio`]: https://docs.rs/poodio
 #[cfg_attr(feature = "bind-pyo3", pyfn, pyfn_stub)]
 #[cfg_attr(feature = "bind-napi", napi)]
-pub const fn version() -> &'static str {
-    concat!(env!("CARGO_PKG_NAME"), "@", env!("CARGO_PKG_VERSION"))
+pub fn version() -> &'static str {
+    env!("CARGO_PKG_VERSION")
 }
 
 fn try_main<I, T>(args: I) -> Result<i32, Report>

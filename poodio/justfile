@@ -16,7 +16,7 @@ build-bin TARGET:
     cargo build --bin '{{ NAME }}' --frozen --release \
         --target '{{ TARGET }}'
     @mkdir -p '{{ BIN_DIST }}/'
-    tar -vvczf '{{ BIN_DIST }}/{{ VERS }}-{{ TARGET }}.tgz' \
+    tar -vvczf '{{ BIN_DIST }}/{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
         -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'
 
     @echo '[DIST] {{ NAME }}/{{ BIN_DIST }}/'
@@ -108,5 +108,5 @@ BIN_FILE := BIN_DIST / BIN_NAME
 BIN_DIST := 'dist/bin'
 NPM_DIST := 'dist/npm'
 PIP_DIST := 'dist/pip'
-VERS := `cargo pkgid | sed -E 's|.+/(.+)#|\1@|'`
+VERS := `cargo pkgid | sed -E 's|.+#(.+)|\1|'`
 ZIG_ARGS := if os() == 'linux' { '--zig' } else { '' }
