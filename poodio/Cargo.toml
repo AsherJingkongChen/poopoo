@@ -1,3 +1,7 @@
+[[bin]]
+name = "poodio-bindgen"
+path = "bindgen.rs"
+
 [build-dependencies]
 napi-build = {workspace = true, features = [], optional = true}
 pyo3-build-config = {workspace = true, features = [], optional = true}
@@ -34,10 +38,6 @@ default = []
 
 [lib]
 crate-type = ["cdylib", "lib"]
-
-[[bin]]
-name = "poodio-bindgen"
-path = "bindgen.rs"
 
 [package]
 authors.workspace = true
