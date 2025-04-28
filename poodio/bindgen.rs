@@ -129,19 +129,21 @@ mod bind_napi {
     }
 
     fn write_common_entry() -> Result<()> {
-        const DATA: &str = concat!(
-            "#!/usr/bin/env node\n",
-            r#"require("tell-libc");let{argv:e,arch:r,platform:o,libc:i}=process;"#,
-            r#"module.exports=require(`"#,
-            concat!("@", env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_NAME")),
-            r#"-${r}-${o}-${i||"unknown"}`);require.main===module&&module.exports.main();"#,
-        );
+        let name = env!("CARGO_PKG_NAME");
+        let bang = "#!/usr/bin/env node";
+        let deps = "require('tell-libc');";
+        let args = "let{arch:r,platform:o,libc:i}=process;";
+        let outs =
+            format!("module.exports=require(`@{name}/{name}-${{r}}-${{o}}-${{i||'unknown'}}`);");
+        let main = "require.main===module&&module.exports.main();";
+        let data = format!("{bang}\n{deps}{args}{outs}{main}");
 
         let dir = Path::new("dist/npm/common");
         fs::create_dir_all(dir)?;
 
         let mut file = fs::File::create(dir.join("index.js"))?;
-        file.write_all(DATA.as_ref())?;
+        file.write_all(data.as_ref())?;
+
         #[cfg(unix)]
         {
             let mut perm = file.metadata()?.permissions();
@@ -194,7 +196,7 @@ mod bind_pyo3 {
 #[cfg(not(feature = "bind-napi"))]
 mod bind_napi {
     use super::*;
-    pub fn generate() -> Result<()> {
+    pub fn generate() -> eyre::Result<()> {
         Ok(())
     }
 }
@@ -202,7 +204,7 @@ mod bind_napi {
 #[cfg(not(feature = "bind-pyo3"))]
 mod bind_pyo3 {
     use super::*;
-    pub fn generate() -> Result<()> {
+    pub fn generate() -> eyre::Result<()> {
         Ok(())
     }
 }
