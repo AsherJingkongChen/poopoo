@@ -108,5 +108,5 @@ BIN_FILE := BIN_DIST / BIN_NAME
 BIN_DIST := 'dist/bin'
 NPM_DIST := 'dist/npm'
 PIP_DIST := 'dist/pip'
-VERS := `cargo pkgid | sed -E 's|.+#(.+)|\1|'`
+VERS := `cargo pkgid | sed 's|.*#||'`
 ZIG_ARGS := if os() == 'linux' { '--zig' } else { '' }

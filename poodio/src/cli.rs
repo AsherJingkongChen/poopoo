@@ -13,8 +13,7 @@ use color_eyre::{owo_colors::OwoColorize, Report};
 use err::Error::Exit;
 use std::{
     ffi::OsString,
-    io::{stderr, Write},
-    process::exit,
+    io::{self, Write},
 };
 
 #[cfg(feature = "bind-napi")]
@@ -68,12 +67,11 @@ pub fn init() {
 
     simple_logger::SimpleLogger::new()
         .with_colors(true)
-        .with_level(if cfg!(debug_assertions) { Info } else { Warn })
+        .with_level(if cfg!(debug_assertions) { Debug } else { Warn })
         .env()
         .init()
         .ok();
-
-    log::info!(target: "poodio::cli::init", "Ok");
+    log::debug!(target: "poodio::cli::init", "Ok");
 }
 
 /// CLI main function.
@@ -93,11 +91,11 @@ pub fn main() {
     let args = args.skip(1);
 
     let exit_code = try_main(args).unwrap_or_else(|e| {
-        anstream::AutoStream::auto(stderr().lock())
+        anstream::AutoStream::auto(io::stderr().lock())
             .write_all(format!("Error: {e:?}\n").as_bytes())
             .map_or(0xFF, |_| 0x01)
     });
-    exit(exit_code);
+    std::process::exit(exit_code);
 }
 
 /// The version tag for [`poodio`].

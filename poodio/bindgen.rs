@@ -1,10 +1,9 @@
 use color_eyre::eyre::{ContextCompat, Result};
-use std::{fs, io::Write};
+use std::{fs, io::Write, path};
 
 fn main() -> Result<()> {
     color_eyre::install()?;
     std::env::set_current_dir(env!("CARGO_MANIFEST_DIR"))?;
-
     bind_napi::generate()?;
     bind_pyo3::generate()?;
     Ok(())
@@ -13,9 +12,10 @@ fn main() -> Result<()> {
 #[cfg(feature = "bind-napi")]
 mod bind_napi {
     use super::*;
+    use path::Path;
     use serde::Serialize;
     use serde_json::{json, ser, Serializer};
-    use std::{collections::BTreeMap, path::Path, sync::LazyLock};
+    use std::{collections::BTreeMap, sync::LazyLock};
 
     pub fn generate() -> Result<()> {
         write_common_entry()?;
@@ -178,14 +178,14 @@ mod bind_pyo3 {
             .python_source()
             .unwrap_or_else(|| env!("CARGO_MANIFEST_DIR").into());
         for (name, module) in stub.modules {
-            let path = python_source.join(name.replace(".", std::path::MAIN_SEPARATOR_STR));
+            let path = python_source.join(name.replace(".", path::MAIN_SEPARATOR_STR));
             let path = if module.submodules.is_empty() {
                 path.join("__init__.pyi")
             } else {
                 path.with_extension("pyi")
             };
             fs::create_dir_all(path.parent().wrap_err("Failed to get parent directory")?)?;
-            fs::File::create(&path)?.write_all(module.to_string().as_bytes())?;
+            fs::write(&path, module.to_string())?;
         }
         Ok(())
     }

@@ -42,6 +42,7 @@ path = "bindgen.rs"
 [package]
 authors.workspace = true
 categories = ["api-bindings", "command-line-utilities", "multimedia::audio", "simulation"]
+default-run = "poodio"
 description = "💩 💨 Farts poo poo audio 💨 💩"
 documentation = "https://docs.rs/poodio"
 edition.workspace = true
