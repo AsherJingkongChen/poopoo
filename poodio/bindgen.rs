@@ -58,9 +58,8 @@ mod bind_napi {
             .get(target)
             .wrap_err("Unsupported target")?;
 
-        let dist = Path::new("dist/npm/");
-        let common_dist = dist.join("common/");
-        let native_dist = dist.join("native/");
+        let common_dir = Path::new("dist/common/npm/");
+        let native_dir = Path::new("dist/native/npm/");
         let config_name = "package.json";
         let entry_name = Path::new("index.js");
         let license_name = "LICENSE.txt";
@@ -110,18 +109,18 @@ mod bind_napi {
                 .collect(),
         );
 
-        fs::create_dir_all(&common_dist)?;
-        fs::create_dir_all(&native_dist)?;
-        fs::copy(license_name, common_dist.join(license_name))?;
-        fs::copy(license_name, native_dist.join(license_name))?;
-        fs::copy(readme_name, common_dist.join(readme_name))?;
-        fs::copy(readme_name, native_dist.join(readme_name))?;
+        fs::create_dir_all(common_dir)?;
+        fs::create_dir_all(native_dir)?;
+        fs::copy(license_name, common_dir.join(license_name))?;
+        fs::copy(license_name, native_dir.join(license_name))?;
+        fs::copy(readme_name, common_dir.join(readme_name))?;
+        fs::copy(readme_name, native_dir.join(readme_name))?;
         write_json_pretty(
-            fs::File::create(common_dist.join(config_name))?,
+            fs::File::create(common_dir.join(config_name))?,
             &common_config,
         )?;
         write_json_pretty(
-            fs::File::create(native_dist.join(config_name))?,
+            fs::File::create(native_dir.join(config_name))?,
             &native_config,
         )?;
 
@@ -138,7 +137,7 @@ mod bind_napi {
         let main = "require.main===module&&module.exports.main();";
         let data = format!("{bang}\n{deps}{args}{outs}{main}");
 
-        let dir = Path::new("dist/npm/common");
+        let dir = Path::new("dist/common/npm/");
         fs::create_dir_all(dir)?;
 
         let mut file = fs::File::create(dir.join("index.js"))?;

@@ -3,110 +3,114 @@ set windows-shell := ['C:/Program Files/Git/bin/bash.exe', '-cueo', 'pipefail']
 
 export UV_NO_SYNC := 'true'
 
+NAME := 'poodio'
+BIN_DIR := 'dist/native/bin/'
+BIN_NAME := NAME + if os() == 'windows' { '.exe' } else { '' }
+BIN_PATH := BIN_DIR + BIN_NAME
+VERS := `cargo pkgid | sed 's|.*#||'`
+ZIG_ARGS := if os() == 'linux' { '--zig' } else { '' }
+
 # Build all distributions for the given target triple.
 build TARGET:
-    @for s in 'bin' 'npm' 'pip'; do \
-        just "build-$s" '{{ TARGET }}'; \
-    done
+  @for s in 'bin' 'npm' 'pip'; do \
+    just "build-$s" '{{ TARGET }}'; \
+  done
 
 # Build native binary for the given target.
 build-bin TARGET:
-    rm -rf '{{ BIN_DIST }}/'
+  rm -rf '{{ BIN_DIR }}'
 
-    cargo build --bin '{{ NAME }}' --frozen --release \
-        --target '{{ TARGET }}'
-    @mkdir -p '{{ BIN_DIST }}/'
-    tar -vvczf '{{ BIN_DIST }}/{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
-        -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'
+  cargo build --bin '{{ NAME }}' --frozen --release --target '{{ TARGET }}'
+  @mkdir -p '{{ BIN_DIR }}'
+  tar -vvczf '{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
+    -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'
 
-    @echo '[DIST] {{ NAME }}/{{ BIN_DIST }}/'
-    @echo ' '
+  shasum --algorithm '256' --binary \
+    '{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
+  | jq --compact-output --raw-input '{ "sha256-{{ TARGET }}": .[:64] }' \
+  > "{{ BIN_DIR }}meta.json"
+
+  @echo '[DIST] build-bin'
+  @echo ' '
 
 # Build documentation.
 build-doc:
-    cargo +nightly doc --lib --locked --no-deps
+  cargo +nightly doc --lib --locked --no-deps
 
 # Build npm package for the given target.
 build-npm TARGET:
-    rm -rf '{{ NPM_DIST }}/'
+  rm -rf 'dist/common/npm/' 'dist/native/npm/'
 
-    cargo run --bin '{{ NAME }}-bindgen' --frozen --features bind-napi --release \
-        --target '{{ TARGET }}'
-    npx napi build --cargo-flags='--frozen --lib' --features bind-napi --release \
-        --target '{{ TARGET }}' '{{ NPM_DIST }}/native/'
-    cp '{{ NPM_DIST }}/native/index.d.ts' '{{ NPM_DIST }}/common/'
+  cargo run --bin '{{ NAME }}-bindgen' --frozen --features bind-napi --release \
+    --target '{{ TARGET }}'
+  npx napi build --cargo-flags='--frozen --lib' --features bind-napi --release \
+    --target '{{ TARGET }}' 'dist/native/npm/'
+  cp 'dist/native/npm/index.d.ts' 'dist/common/npm/'
 
-    @echo '[DIST] {{ NAME }}/{{ NPM_DIST }}/'
-    @echo ' '
+  @echo '[DIST] build-npm'
+  @echo ' '
 
 # Build pip package for the given target.
 build-pip TARGET:
-    rm -rf '{{ PIP_DIST }}/'
+  rm -rf 'dist/common/pip/' 'dist/native/pip/'
 
-    cargo run --bin '{{ NAME }}-bindgen' --frozen --features bind-pyo3 --release \
-        --target '{{ TARGET }}'
-    uv run ruff format 'bind/pip/'
+  cargo run --bin '{{ NAME }}-bindgen' --frozen --features bind-pyo3 --release \
+    --target '{{ TARGET }}'
+  uv run ruff format 'bind/pip/'
 
-    uv run maturin sdist --out '{{ PIP_DIST }}/sdist/'
-    uv run maturin build {{ ZIG_ARGS }} --frozen --release \
-        --target '{{ TARGET }}' --out '{{ PIP_DIST }}/wheel/'
+  uv run maturin sdist --out 'dist/common/pip/' 
+  uv run maturin build {{ ZIG_ARGS }} --frozen --release \
+    --target '{{ TARGET }}' --out 'dist/native/pip/'
 
-    @echo '[DIST] {{ NAME }}/{{ PIP_DIST }}/'
-    @echo ' '
+  @echo '[DIST] build-pip'
+  @echo ' '
 
 # Run end-to-end tests for all distributions.
 test-e2e:
-    @for s in 'bin' 'npm' 'pip'; do \
-        just "test-e2e-$s"; \
-    done
-    @echo '[PASS] test-e2e'
+  @for s in 'bin' 'npm' 'pip'; do \
+    just "test-e2e-$s"; \
+  done
+  @echo '[PASS] test-e2e'
 
 # Run end-to-end tests for built native binary.
 test-e2e-bin:
-    tar -vvxzf '{{ BIN_DIST }}/'*.tgz -C '{{ BIN_DIST }}/'
+  @# Be verbose on installation, and be quiet on uninstallation.
+  tar -vvxzf '{{ BIN_DIR }}'*.tgz -C '{{ BIN_DIR }}'
 
-    @[[ -x '{{ BIN_FILE }}' && ! -d '{{ BIN_FILE }}' ]] || \
-        (echo '[FAIL] permission' && exit 2)
-    @[[ '{{ VERS }}' == "$('{{ BIN_FILE }}' --version)" ]] || \
-        (echo '[FAIL] --version' && exit 2)
+  @[[ -x '{{ BIN_PATH }}' && ! -d '{{ BIN_PATH }}' ]] \
+  || (echo '[FAIL] permission' && exit 2)
+  @[[ '{{ VERS }}' == "$('{{ BIN_PATH }}' --version)" ]] \
+  || (echo '[FAIL] --version' && exit 2)
 
-    rm {{ BIN_FILE }}
-    @echo '[PASS] test-e2e-bin'
-    @echo ' '
+  rm {{ BIN_PATH }}
+  @echo '[PASS] test-e2e-bin'
+  @echo ' '
 
 # Run end-to-end tests for built npm package.
 test-e2e-npm:
-    @for _ in {1..2}; do \
-        npm install --no-save --silent '{{ NPM_DIST }}/'* && break; \
-    done
+  @for _ in {1..2}; do \
+    npm install --no-save --silent 'dist/native/npm/' 'dist/common/npm/' \
+    && break; \
+  done
 
-    @[[ '{{ VERS }}' == "$(node --print 'require("{{ NAME }}").version()')" ]] || \
-        (echo '[FAIL] .version()' && exit 2)
-    @[[ '{{ VERS }}' == "$(npx --no {{ NAME }} -- --version)" ]] || \
-        (echo '[FAIL] --version' && exit 2)
+  @[[ '{{ VERS }}' == "$(node --print 'require("{{ NAME }}").version()')" ]] \
+  || (echo '[FAIL] .version()' && exit 2)
+  @[[ '{{ VERS }}' == "$(npx --no {{ NAME }} -- --version)" ]] \
+  || (echo '[FAIL] --version' && exit 2)
 
-    @cd '../' && npm prune
-    @echo '[PASS] test-e2e-npm'
-    @echo ' '
+  @cd '../' && npm prune
+  @echo '[PASS] test-e2e-npm'
+  @echo ' '
 
 # Run end-to-end tests for built pip package.
 test-e2e-pip:
-    uv pip install --quiet '{{ PIP_DIST }}/wheel/'*
+  uv pip install --quiet 'dist/native/pip/'*.whl
 
-    @[[ '{{ VERS }}' == "$(uv run python -c 'import {{ NAME }} as p;print(p.version())')" ]] || \
-        (echo '[FAIL] .version()' && exit 2)
-    @[[ '{{ VERS }}' == "$(uv run {{ NAME }} --version)" ]] || \
-        (echo '[FAIL] --version' && exit 2)
+  @[[ '{{ VERS }}' == "$(uv run python -c 'import {{ NAME }} as p;print(p.version())')" ]] \
+  || (echo '[FAIL] .version()' && exit 2)
+  @[[ '{{ VERS }}' == "$(uv run {{ NAME }} --version)" ]] \
+  || (echo '[FAIL] --version' && exit 2)
 
-    @uv pip uninstall '{{ NAME }}'
-    @echo '[PASS] test-e2e-pip'
-    @echo ' '
-
-NAME := 'poodio'
-BIN_NAME := NAME + if os() == 'windows' { '.exe' } else { '' }
-BIN_FILE := BIN_DIST / BIN_NAME
-BIN_DIST := 'dist/bin'
-NPM_DIST := 'dist/npm'
-PIP_DIST := 'dist/pip'
-VERS := `cargo pkgid | sed 's|.*#||'`
-ZIG_ARGS := if os() == 'linux' { '--zig' } else { '' }
+  @uv pip uninstall '{{ NAME }}'
+  @echo '[PASS] test-e2e-pip'
+  @echo ' '
