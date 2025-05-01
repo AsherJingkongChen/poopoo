@@ -55,7 +55,6 @@ build-pip TARGET:
   cargo run --bin '{{ NAME }}-bindgen' --frozen --features bind-pyo3 --release \
     --target '{{ TARGET }}'
   uv run ruff format 'bind/pip/'
-
   uv run maturin sdist --out 'dist/common/pip/' 
   uv run maturin build {{ ZIG_ARGS }} --frozen --release \
     --target '{{ TARGET }}' --out 'dist/native/pip/'
