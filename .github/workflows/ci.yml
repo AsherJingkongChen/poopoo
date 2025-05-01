@@ -199,6 +199,7 @@ jobs:
                   HEAD_TAG="${{ github.ref_name }}"
                   REPO="${{ github.server_url }}/${{ github.repository }}"
 
+                  gh release delete --yes "${HEAD_TAG}" || true
                   echo "\
                   - [**Changelog**](${GITHUB_REPO_URL}/compare/${LAST_TAG}...${HEAD_TAG})
                   - [**Attestation**](${{ steps.github-attest.outputs.attestation-url }})
