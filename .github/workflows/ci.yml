@@ -234,10 +234,6 @@ jobs:
                   workflow-logs: ignore
                   workflow: publish.yml
 
-            # - uses: astral-sh/setup-uv@v6
-            # - name: Publish to pypi.org
-            #   run: uv publish dist/*/pip/*.{tar.gz,whl}
-
             - uses: actions/setup-node@v4
               with:
                   cache: npm
@@ -251,6 +247,10 @@ jobs:
                       npm publish --dry-run "./${p}"
                   done
                   npm set //registry.npmjs.org/:_authToken
+
+            # - uses: astral-sh/setup-uv@v6
+            # - name: Publish to pypi.org
+            #   run: uv publish dist/*/pip/*.{tar.gz,whl}
 
             - name: Publish to crates.io
               env:
