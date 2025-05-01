@@ -21,6 +21,7 @@ build-bin TARGET:
   rm -rf '{{ BIN_DIR }}'
 
   cargo build --bin '{{ NAME }}' --frozen --release --target '{{ TARGET }}'
+
   @mkdir -p '{{ BIN_DIR }}'
   DIST_PATH='{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
   && tar -vvczf "${DIST_PATH}" -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}' \

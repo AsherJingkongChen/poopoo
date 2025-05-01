@@ -49,47 +49,52 @@
 ## Install
 
 [![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
+[![Homebrew](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2FAsherJingkongChen%2Fhomebrew--%2Frefs%2Fheads%2Fmain%2FFormula%2Fpoodio.rb&search=version%20%22%28%5B0-9%5D%2B.%5B0-9%5D%2B.%5B0-9%5D%2B%29%22&replace=v%241&style=for-the-badge&label=homebrew&logo=homebrew&logoColor=fc9&labelColor=333&color=b73)](https://github.com/AsherJingkongChen/homebrew--/blob/main/Formula/poodio.rb)
 [![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=crates&logo=docs.rs&logoColor=da3&labelColor=333&color=473)](https://crates.io/crates/poodio)
 [![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fd4&labelColor=333&color=59d)](https://pypi.org/project/poodio/)
 
 💩 We provide several ways to install **`poodio`** so you can [run](#run) it later. 💩
 
-1. **💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation) 💩**
+1. **💩 [`brew`](https://brew.sh/) 💩**
+    ```shell
+    brew install asherjingkongchen/-/poodio
+    ```
+2. **💩 [`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file#installation) 💩**
     ```shell
     cargo-binstall -y poodio
     ```
     ```shell
     cargo-binstall -y poodio@0.1.0
     ```
-2. **💩 [`npm`](https://nodejs.org/en/download/) 💩**
+3. **💩 [`npm`](https://nodejs.org/en/download/) 💩**
     ```shell
     npm i -g poodio
     ```
     ```shell
     npm i -g poodio@0.1.0
     ```
-3. **💩 [`pip`](https://pip.pypa.io/en/stable/installation/) 💩**
+4. **💩 [`pip`](https://pip.pypa.io/en/stable/installation/) 💩**
     ```shell
     pip install poodio
     ```
     ```shell
     pip install poodio==0.1.0
     ```
-4. **💩 [`uv`](https://docs.astral.sh/uv/#installation) 💩**
+5. **💩 [`uv`](https://docs.astral.sh/uv/#installation) 💩**
     ```shell
     uv tool install poodio
     ```
     ```shell
     uv tool install poodio==0.1.0
     ```
-5. **💩 [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) 💩**
+6. **💩 [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) 💩**
     ```shell
     git clone https://github.com/AsherJingkongChen/poopoo -b main --depth 1
-    cargo install --bin poodio --path poopoo/poodio
+    cargo install --locked --path poopoo/poodio
     ```
     ```shell
     git clone https://github.com/AsherJingkongChen/poopoo -b poodio@0.1.0 --depth 1
-    cargo install --bin poodio --path poopoo/poodio
+    cargo install --locked --path poopoo/poodio
     ```
 
 ## Run

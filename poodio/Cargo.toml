@@ -57,6 +57,7 @@ rust-version.workspace = true
 version = "0.0.22"
 
 [package.metadata.binstall]
+disabled-strategies = ["quick-install"]
 pkg-fmt = "tgz"
 pkg-url = "{ repo }/releases/download/{ name }%40{ version }/{ name }%40{ version }-{ target }{ archive-suffix }"
 
