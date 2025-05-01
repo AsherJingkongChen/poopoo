@@ -183,8 +183,7 @@ jobs:
                   path: dist/
             - run: ls -Rlp --color=always dist
 
-            - if: false
-              name: Publish to github.com (Attestation)
+            - name: Publish to github.com (Attestation)
               id: github-attest
               uses: actions/attest-build-provenance@v2
               with:
@@ -244,15 +243,15 @@ jobs:
               run: |
                   npm set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
                   for p in dist/*/npm/; do
-                      npm publish --dry-run "./${p}"
+                      npm publish "./${p}"
                   done
                   npm set //registry.npmjs.org/:_authToken
 
-            # - uses: astral-sh/setup-uv@v6
-            # - name: Publish to pypi.org
-            #   run: uv publish dist/*/pip/*.{tar.gz,whl}
+            - uses: astral-sh/setup-uv@v6
+            - name: Publish to pypi.org
+              run: uv publish dist/*/pip/*.{tar.gz,whl}
 
             - name: Publish to crates.io
               env:
                   CARGO_REGISTRY_TOKEN: "${{ secrets.POODIO_CRATE_TOKEN }}"
-              run: cargo publish --dry-run --locked --no-verify --package poodio --verbose
+              run: cargo publish --locked --no-verify --package poodio --verbose
