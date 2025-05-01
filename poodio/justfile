@@ -22,12 +22,11 @@ build-bin TARGET:
 
   cargo build --bin '{{ NAME }}' --frozen --release --target '{{ TARGET }}'
   @mkdir -p '{{ BIN_DIR }}'
-  tar -vvczf '{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
-    -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'
-
-  openssl 'sha256' '{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
+  DIST_PATH='{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
+  && tar -vvczf "${DIST_PATH}" -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}' \
+  && openssl 'sha256' "${DIST_PATH}" \
   | jq --compact-output --raw-input '{ "sha256-{{ TARGET }}": .[-64:] }' \
-  > "{{ BIN_DIR }}meta.json"
+  > "${DIST_PATH}.meta.json"
 
   @echo '[DIST] build-bin'
   @echo ' '
