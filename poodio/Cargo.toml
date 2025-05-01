@@ -1,6 +1,17 @@
 [[bin]]
-name = "poodio-bindgen"
-path = "bindgen.rs"
+name = "poodio"
+path = "src/bin.rs"
+required-features = ["default"]
+
+[[bin]]
+name = "poodio-bind-napi"
+path = "bin/bind_napi.rs"
+required-features = ["bind-napi"]
+
+[[bin]]
+name = "poodio-bind-pyo3"
+path = "bin/bind_pyo3.rs"
+required-features = ["bind-pyo3"]
 
 [build-dependencies]
 napi-build = {workspace = true, features = [], optional = true}

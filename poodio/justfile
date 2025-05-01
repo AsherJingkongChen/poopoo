@@ -40,7 +40,7 @@ build-doc:
 build-npm TARGET:
   rm -rf 'dist/common/npm/' 'dist/native/npm/'
 
-  cargo run --bin '{{ NAME }}-bindgen' --frozen --features bind-napi --release \
+  cargo run --bin '{{ NAME }}-bind-napi' --frozen --features bind-napi --release \
     --target '{{ TARGET }}'
   npx napi build --cargo-flags='--frozen --lib' --features bind-napi --release \
     --target '{{ TARGET }}' 'dist/native/npm/'
@@ -53,7 +53,7 @@ build-npm TARGET:
 build-pip TARGET:
   rm -rf 'dist/common/pip/' 'dist/native/pip/'
 
-  cargo run --bin '{{ NAME }}-bindgen' --frozen --features bind-pyo3 --release \
+  cargo run --bin '{{ NAME }}-bind-pyo3' --frozen --features bind-pyo3 --release \
     --target '{{ TARGET }}'
   uv run ruff format 'bind/pip/'
   uv run maturin sdist --out 'dist/common/pip/' 
