@@ -205,16 +205,17 @@ jobs:
                   - **Contributors**
                   $(git log --pretty='format:  + @%an' "${LAST_TAG}".."${HEAD_TAG}" | sort -u)" \
                   | gh release create --notes-file - "${HEAD_TAG}" dist/*/bin/*.tgz*
-
             - id: homebrew-prepare
               name: Publish to Homebrew (Prepare)
               run: |
                   ( printf 'inputs=' && \
-                    cargo metadata --format-version 1 --locked --no-deps \
+                    cargo metadata --format-version 1 --locked \
+                      --manifest-path poodio/Cargo.toml --no-deps \
                     | jq -cs '
                       [ ( .[0].packages.[0]
-                          | del(.categories, .dependencies, .id, .metadata, .targets) ),
-                        (.[1:] | add) ]
+                          | { description, homepage, license, name, repository,
+                              tag: "\(.name)@\(.version)", version } ),
+                        ( .[1:] | add ) ]
                       | add
                       | with_entries(select(.value != null))
                       | { dict: . | debug | @json, name }' \
