@@ -25,9 +25,8 @@ build-bin TARGET:
   tar -vvczf '{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
     -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'
 
-  shasum --algorithm '256' --binary \
-    '{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
-  | jq --compact-output --raw-input '{ "sha256-{{ TARGET }}": .[:64] }' \
+  openssl 'sha256' '{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
+  | jq --compact-output --raw-input '{ "sha256-{{ TARGET }}": .[-64:] }' \
   > "{{ BIN_DIR }}meta.json"
 
   @echo '[DIST] build-bin'
