@@ -7,7 +7,7 @@ NAME := 'poodio'
 BIN_DIR := 'dist/native/bin/'
 BIN_NAME := NAME + if os() == 'windows' { '.exe' } else { '' }
 BIN_PATH := BIN_DIR + BIN_NAME
-VERS := `cargo pkgid | sed 's|.*#||'`
+VERS := `cargo pkgid | sed -n 's|.*#||p'`
 ZIG_ARGS := if os() == 'linux' { '--zig' } else { '' }
 
 # Build all distributions for the given target triple.
@@ -25,7 +25,7 @@ build-bin TARGET:
   @mkdir -p '{{ BIN_DIR }}'
   DIST_PATH='{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
   && tar -vvczf "${DIST_PATH}" -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}' \
-  && openssl 'sha256' "${DIST_PATH}" \
+  && openssl dgst -sha256 "${DIST_PATH}" \
   | jq --compact-output --raw-input '{ "sha256-{{ TARGET }}": .[-64:] }' \
   > "${DIST_PATH}.meta.json"
 
@@ -76,9 +76,9 @@ test-e2e-bin:
   tar -vvxzf '{{ BIN_DIR }}'*.tgz -C '{{ BIN_DIR }}'
 
   @[[ -x '{{ BIN_PATH }}' && ! -d '{{ BIN_PATH }}' ]] \
-  || (echo '[FAIL] permission' && exit 2)
+  || { echo '[FAIL] permission'; exit 2; }
   @[[ '{{ VERS }}' == "$('{{ BIN_PATH }}' --version)" ]] \
-  || (echo '[FAIL] --version' && exit 2)
+  || { echo '[FAIL] --version'; exit 2; }
 
   rm {{ BIN_PATH }}
   @echo '[PASS] test-e2e-bin'
@@ -92,9 +92,9 @@ test-e2e-npm:
   done
 
   @[[ '{{ VERS }}' == "$(node --print 'require("{{ NAME }}").version()')" ]] \
-  || (echo '[FAIL] .version()' && exit 2)
+  || { echo '[FAIL] .version()'; exit 2; }
   @[[ '{{ VERS }}' == "$(npx --no {{ NAME }} -- --version)" ]] \
-  || (echo '[FAIL] --version' && exit 2)
+  || { echo '[FAIL] --version'; exit 2; }
 
   @cd '../' && npm prune
   @echo '[PASS] test-e2e-npm'
@@ -105,9 +105,9 @@ test-e2e-pip:
   uv pip install --quiet 'dist/native/pip/'*.whl
 
   @[[ '{{ VERS }}' == "$(uv run python -c 'import {{ NAME }} as p;print(p.version())')" ]] \
-  || (echo '[FAIL] .version()' && exit 2)
+  || { echo '[FAIL] .version()'; exit 2; }
   @[[ '{{ VERS }}' == "$(uv run {{ NAME }} --version)" ]] \
-  || (echo '[FAIL] --version' && exit 2)
+  || { echo '[FAIL] --version'; exit 2; }
 
   @uv pip uninstall '{{ NAME }}'
   @echo '[PASS] test-e2e-pip'

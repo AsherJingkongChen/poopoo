@@ -192,7 +192,7 @@ jobs:
               env:
                   GH_TOKEN: "${{ github.token }}"
               run: |
-                  LAST_TAG="$(git describe --tags --abbrev=0 HEAD~)"
+                  LAST_TAG="$(git describe --abbrev=0 --match 'poodio@*' --tags HEAD~)"
                   HEAD_TAG="${{ github.ref_name }}"
                   REPO="${{ github.server_url }}/${{ github.repository }}"
 
@@ -210,7 +210,7 @@ jobs:
                   ( printf 'inputs=' && \
                     cargo metadata --format-version 1 --locked \
                       --manifest-path poodio/Cargo.toml --no-deps \
-                    | jq -cs '
+                    | jq --compact-output --slurp \
                       [ ( .[0].packages.[0]
                           | { description, homepage, license, name, repository,
                               tag: "\(.name)@\(.version)", version } ),
