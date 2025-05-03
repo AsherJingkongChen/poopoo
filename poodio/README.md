@@ -65,28 +65,35 @@
     ```shell
     cargo-binstall -y poodio@0.1.0
     ```
-3. **💩 [`npm`](https://nodejs.org/en/download/) 💩**
+3. **💩[`curl`](https://curl.se/download.html) 💩**
+    ```shell
+    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio/install.sh | sh
+    ```
+    ```shell
+    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio/install.sh | sh -s -- 0.1.0
+    ```
+4. **💩 [`npm`](https://nodejs.org/en/download/) 💩**
     ```shell
     npm i -g poodio
     ```
     ```shell
     npm i -g poodio@0.1.0
     ```
-4. **💩 [`pip`](https://pip.pypa.io/en/stable/installation/) 💩**
+5. **💩 [`pip`](https://pip.pypa.io/en/stable/installation/) 💩**
     ```shell
     pip install poodio
     ```
     ```shell
     pip install poodio==0.1.0
     ```
-5. **💩 [`uv`](https://docs.astral.sh/uv/#installation) 💩**
+6. **💩 [`uv`](https://docs.astral.sh/uv/#installation) 💩**
     ```shell
     uv tool install poodio
     ```
     ```shell
     uv tool install poodio==0.1.0
     ```
-6. **💩 [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) 💩**
+7. **💩 [`git`](https://git-scm.com/downloads) & [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) 💩**
     ```shell
     git clone https://github.com/AsherJingkongChen/poopoo -b main --depth 1
     cargo install --locked --path poopoo/poodio

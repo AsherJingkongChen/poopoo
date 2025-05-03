@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -eu
+set -euo pipefail
 
 log() {
   _TAG="$1"; shift; _MSG="$@"
@@ -27,14 +27,14 @@ log 'REPO:' "${REPO}"
 
 # Fetching the release tag
 log 'TAG:' 'Fetching ...'
-TAG=${1:-"$(
+TAG="${NAME}@${1:-"$(
   curl -LSsf \
     -H 'Accept: application/vnd.github+json' \
     -H 'X-GitHub-Api-Version: 2022-11-28' \
     "https://api.github.com/repos/${REPO}/git/matching-refs/tags/${NAME}@" \
-  | sed -n 's|.*"ref": "refs/tags/\(.*\)".*|\1|p' \
+  | sed -n 's|.*"ref": "refs/tags/'"${NAME}"'@\(.*\)".*|\1|p' \
   | sort -nt. -r -k1,1 -k2,2 -k3,3 \
-  | head -n 1 )"}
+  | head -n 1 )"}"
 log 'TAG:' "${TAG}"
 
 # Detecting the target platform
@@ -58,9 +58,9 @@ DIST="https://github.com/${REPO}/releases/download/${TAG}/${TAG}-${TARGET}.tgz"
 log 'DIST:' "${DIST}"
 log 'DIST:' 'Fetching ...'
 log 'HASH:' 'Fetching ...'
-curl -LSsfo "${TMP}/dist.tgz" "${DIST}" &
-curl -LSsfo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" &
-wait
+curl -Lsfo "${TMP}/dist.tgz" "${DIST}" &PID="$!"
+curl -LSsfo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" &PID="$! ${PID}"
+wait ${PID}
 
 # Verifying the hash
 HASH_DIST="$(openssl dgst -r -sha256 "${TMP}/dist.tgz" | cut -d' ' -f1)"
@@ -76,5 +76,5 @@ TAR='tar'; [ -w "${DST_DIR}" ] \
 || { TAR='sudo tar'; }
 log 'EXTRACT:' "${DST_DIR}/${NAME}"
 ${TAR} -xzf "${TMP}/dist.tgz" -C "${DST_DIR}" --no-same-owner \
-|| { log 'ERROR:' "Failed to install '${NAME}'"; exit 6; }
+|| { log 'ERROR:' "Extraction failure"; exit 6; }
 log 'EXTRACT:' 'Done'
