@@ -8,7 +8,7 @@
 
 ## Install & Run
 
-[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
+[![NPMJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
 [![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fd4&labelColor=333&color=59d)](https://pypi.org/project/poodio/)
 
 💩 We provide several ways to install and run **`poodio`** on your system with a single command. 💩
@@ -47,7 +47,8 @@
 
 ## Install
 
-[![NpmJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
+[![GitHub.com](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?style=for-the-badge&label=github&logo=refinedgithub&logoColor=fff&labelColor=333&color=eee)](https://github.com/AsherJingkongChen/poopoo/tags)
+[![NPMJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
 [![Homebrew](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2FAsherJingkongChen%2Fhomebrew--%2Frefs%2Fheads%2Fmain%2FFormula%2Fpoodio.rb&search=version%20%27%28%5B0-9%5D%2B.%5B0-9%5D%2B.%5B0-9%5D%2B%29%27&replace=v%241&style=for-the-badge&label=homebrew&logo=homebrew&logoColor=fc9&labelColor=333&color=b73)](https://github.com/AsherJingkongChen/homebrew--/blob/main/Formula/poodio.rb)
 [![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=crates&logo=docs.rs&logoColor=da3&labelColor=333&color=473)](https://crates.io/crates/poodio)
 [![PyPI.org](https://img.shields.io/pypi/v/poodio?style=for-the-badge&label=pypi&logo=pypi&logoColor=fd4&labelColor=333&color=59d)](https://pypi.org/project/poodio/)
