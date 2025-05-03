@@ -59,8 +59,11 @@ log 'DIST:' "${DIST}"
 log 'DIST:' 'Fetching ...'
 log 'HASH:' 'Fetching ...'
 curl -Lsfo "${TMP}/dist.tgz" "${DIST}" &PID="$!"
-curl -LSsfo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" &PID="$! ${PID}"
-wait ${PID}
+curl -Lsfo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" &PID="$! ${PID}"
+for p in ${PID}; do
+  wait "${p}" || \
+  { log 'ERROR:' "Fetching failure"; exit 4; }
+done
 
 # Verifying the hash
 HASH_DIST="$(openssl dgst -r -sha256 "${TMP}/dist.tgz" | cut -d' ' -f1)"
