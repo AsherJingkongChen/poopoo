@@ -1,0 +1,23 @@
+name: Pages
+
+on:
+    push:
+        branches: [main]
+        paths: [.github/workflows/**, _site/**]
+
+concurrency:
+    cancel-in-progress: false
+    group: pages
+
+permissions:
+    id-token: write
+    pages: write
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/configure-pages@v5
+            - uses: actions/upload-pages-artifact@v3
+            - uses: actions/deploy-pages@v4
