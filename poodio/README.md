@@ -68,10 +68,10 @@
     ```
 3. **💩[`curl`](https://curl.se/download.html) 💩**
     ```shell
-    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio/install.sh | sh
+    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio.sh | sh
     ```
     ```shell
-    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio/install.sh | sh -s -- 0.1.0
+    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio.sh | sh -s -- 0.1.0
     ```
 4. **💩 [`npm`](https://nodejs.org/en/download/) 💩**
     ```shell

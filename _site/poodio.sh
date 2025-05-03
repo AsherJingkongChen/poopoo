@@ -80,4 +80,4 @@ TAR='tar'; [ -w "${DST_DIR}" ] \
 log 'EXTRACT:' "${DST_DIR}/${NAME}"
 ${TAR} -xzf "${TMP}/dist.tgz" -C "${DST_DIR}" --no-same-owner \
 || { log 'ERROR:' "Extraction failure"; exit 6; }
-log 'EXTRACT:' 'Done'
+log 'EXTRACT:' 'Finished!'
