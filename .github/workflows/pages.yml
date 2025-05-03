@@ -2,8 +2,8 @@ name: Pages
 
 on:
     push:
-        branches: [main]
-        paths: [.github/workflows/**, _site/**]
+        branches: ["main"]
+        paths: [".github/workflows/pages.yml", "_site/**"]
 
 concurrency:
     cancel-in-progress: false

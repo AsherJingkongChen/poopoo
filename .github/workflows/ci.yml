@@ -3,6 +3,7 @@ name: CI
 on:
     push:
         branches: ["main"]
+        paths: ["**", "!_site/**"]
         tags: ["[a-z0-9]+@[0-9]+.[0-9]+.[0-9]+-?*"]
     pull_request:
         branches: ["main"]
