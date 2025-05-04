@@ -182,7 +182,10 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   path: dist/
-            - run: ls -Rlp --color=always dist
+            - name: Donwload artifacts
+              run: |
+                  gh run download --dir dist/ '${{ github.run_id }}'
+                  ls -Ralp --color=auto dist
 
             - name: Publish to github.com (Attestation)
               id: github-attest
@@ -199,8 +202,8 @@ jobs:
 
                   gh release delete --yes "${HEAD_TAG}" || true
                   echo "\
-                  - [**Changelog**](${GITHUB_REPO_URL}/compare/${LAST_TAG}...${HEAD_TAG})
-                  - [**Attestation**](${{ steps.github-attest.outputs.attestation-url }})
+                  - [**Changelog**](${REPO}/compare/${LAST_TAG}...${HEAD_TAG})
+                  - [**Attestation**]({{ steps.github-attest.outputs.attestation-url }})
                   - [**Installation**](${REPO}/blob/${HEAD_TAG}/poodio/README.md#install)
                   - **Contributors**
                   $(git log --pretty='format:  + @%an' "${LAST_TAG}".."${HEAD_TAG}" | sort -u)" \
