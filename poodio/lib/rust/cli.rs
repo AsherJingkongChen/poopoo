@@ -21,11 +21,10 @@ use napi_derive::napi;
 #[cfg(feature = "bind-pyo3")]
 use {pyo3::pyfunction as pyfn, pyo3_stub_gen::derive::gen_stub_pyfunction as pyfn_stub};
 
-/// CLI arguments parser.
 #[derive(Clone, Debug, Parser, PartialEq)]
 #[command(
     about = "Poodio farts poo poo audio",
-    after_help = format!("See '{}' for more information.", "https://docs.rs/poodio".cyan()),
+    after_help = format!("See '{}' for more information.", env!("CARGO_PKG_HOMEPAGE").cyan()),
     arg_required_else_help = true,
     help_template = "{about}\n\n{usage-heading} {usage}\n\n{all-args}{after-help}",
     propagate_version = true,
@@ -40,7 +39,7 @@ use {pyo3::pyfunction as pyfn, pyo3_stub_gen::derive::gen_stub_pyfunction as pyf
     version,
     verbatim_doc_comment,
 )]
-pub struct Arguments {}
+struct Arguments {}
 
 /// CLI initialization function.
 ///
@@ -54,14 +53,18 @@ pub struct Arguments {}
 pub fn init() {
     use log::LevelFilter::*;
 
-    const CRASH_REPORT_URL: &str = concat!(
-        env!("CARGO_PKG_REPOSITORY"),
-        "/issues/new?template=problem.md"
+    let panic_message = format!(
+        "Report the crash: {}",
+        concat!(
+            env!("CARGO_PKG_REPOSITORY"),
+            "/issues/new?template=problem.md"
+        )
+        .green()
     );
 
     color_eyre::config::HookBuilder::default()
         .display_env_section(cfg!(debug_assertions))
-        .panic_section(format!("Report the crash: {}", CRASH_REPORT_URL.green()))
+        .panic_section(panic_message)
         .install()
         .ok();
 

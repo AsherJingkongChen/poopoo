@@ -23,11 +23,11 @@ build-bin TARGET:
   cargo build --bin '{{ NAME }}' --frozen --release --target '{{ TARGET }}'
 
   @mkdir -p '{{ BIN_DIR }}'
-  DIST_PATH='{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz' \
-  && tar -vvczf "${DIST_PATH}" -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}' \
-  && openssl dgst -sha256 "${DIST_PATH}" \
-  | jq --compact-output --raw-input '{ "sha256-{{ TARGET }}": .[-64:] }' \
-  > "${DIST_PATH}.meta.json"
+  { DIST_PATH='{{ BIN_DIR }}{{ NAME }}@{{ VERS }}-{{ TARGET }}.tgz'; \
+    tar -vvczf "${DIST_PATH}" -C '../target/{{ TARGET }}/release/' '{{ BIN_NAME }}'; \
+    openssl dgst -sha256 "${DIST_PATH}" \
+    | jq --compact-output --raw-input '{ "sha256-{{ TARGET }}": .[-64:] }' \
+    > "${DIST_PATH}.meta.json"; }
 
   @echo '[DIST] build-bin'
   @echo ' '
@@ -55,7 +55,7 @@ build-pip TARGET:
 
   cargo run --bin '{{ NAME }}-bind-pyo3' --frozen --features bind-pyo3 --release \
     --target '{{ TARGET }}'
-  uv run ruff format 'bind/pip/'
+  uv run ruff format 'lib/python/'
   uv run maturin sdist --out 'dist/common/pip/' 
   uv run maturin build {{ ZIG_ARGS }} --frozen --release \
     --target '{{ TARGET }}' --out 'dist/native/pip/'

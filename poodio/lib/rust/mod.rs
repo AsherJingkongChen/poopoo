@@ -1,7 +1,7 @@
 #![cfg_attr(any(clippy, docsrs), deny(warnings))]
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![warn(missing_docs)]
-#![doc = include_str!("../README.md")]
+#![doc = include_str!("../../README.md")]
 
 pub mod cli;
 pub mod err;

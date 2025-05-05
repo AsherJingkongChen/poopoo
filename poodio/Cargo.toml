@@ -1,6 +1,6 @@
 [[bin]]
 name = "poodio"
-path = "src/bin.rs"
+path = "bin/default.rs"
 required-features = ["default"]
 
 [[bin]]
@@ -49,6 +49,7 @@ default = []
 
 [lib]
 crate-type = ["cdylib", "lib"]
+path = "lib/rust/mod.rs"
 
 [package]
 authors.workspace = true

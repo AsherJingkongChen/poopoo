@@ -93,5 +93,5 @@ features = ["bind-pyo3"]
 include = ["LICENSE.txt"]
 locked = true
 profile = "release"
-python-source = "bind/pip/"
+python-source = "lib/python/"
 strip = true
