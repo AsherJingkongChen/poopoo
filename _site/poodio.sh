@@ -28,7 +28,7 @@ log 'REPO:' "${REPO}"
 # Fetching the release tag
 TAG="${NAME}@${1:-"$(
   log 'TAG:' 'Fetching ...'
-  curl -LSsf \
+  curl -fsSL \
     -H 'Accept: application/vnd.github+json' \
     -H 'X-GitHub-Api-Version: 2022-11-28' \
     "https://api.github.com/repos/${REPO}/git/matching-refs/tags/${NAME}@" \
@@ -58,8 +58,8 @@ DIST="https://github.com/${REPO}/releases/download/${TAG}/${TAG}-${TARGET}.tgz"
 log 'DIST:' "${DIST}"
 log 'DIST:' 'Fetching ...'
 log 'HASH:' 'Fetching ...'
-curl -Lsfo "${TMP}/dist.tgz" "${DIST}" &PID="$!"
-curl -Lsfo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" &PID="$! ${PID}"
+curl -fsLo "${TMP}/dist.tgz" "${DIST}" &PID="$!"
+curl -fsLo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" &PID="$! ${PID}"
 for p in ${PID}; do
   wait "${p}" || \
   { log 'ERROR:' "Fetching failure"; exit 4; }

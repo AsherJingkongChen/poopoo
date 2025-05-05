@@ -47,7 +47,7 @@
 
 ## Install
 
-[![GitHub.com](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?style=for-the-badge&label=github&logo=refinedgithub&logoColor=fff&labelColor=333&color=eee)](https://github.com/AsherJingkongChen/poopoo/tags)
+[![GitHub.com](https://img.shields.io/github/v/release/AsherJingkongChen/poopoo?style=for-the-badge&label=github&logo=refinedgithub&logoColor=fff&labelColor=333&color=666)](https://github.com/AsherJingkongChen/poopoo/tags)
 [![NPMJS.com](https://img.shields.io/npm/v/poodio?style=for-the-badge&label=npmjs&logo=npm&logoColor=d33&labelColor=333&color=c22)](https://www.npmjs.com/package/poodio)
 [![Homebrew](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2FAsherJingkongChen%2Fhomebrew--%2Frefs%2Fheads%2Fmain%2FFormula%2Fpoodio.rb&search=version%20%27%28%5B0-9%5D%2B.%5B0-9%5D%2B.%5B0-9%5D%2B%29%27&replace=v%241&style=for-the-badge&label=homebrew&logo=homebrew&logoColor=fc9&labelColor=333&color=b73)](https://github.com/AsherJingkongChen/homebrew--/blob/main/Formula/poodio.rb)
 [![Crates.io](https://img.shields.io/crates/v/poodio?style=for-the-badge&label=crates&logo=docs.rs&logoColor=da3&labelColor=333&color=473)](https://crates.io/crates/poodio)
@@ -68,10 +68,10 @@
     ```
 3. **💩[`curl`](https://curl.se/download.html) 💩**
     ```shell
-    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio.sh | sh
+    curl -fsS https://asherjingkongchen.github.io/poopoo/poodio.sh | sh
     ```
     ```shell
-    curl -LSsf https://asherjingkongchen.github.io/poopoo/poodio.sh | sh -s -- 0.1.0
+    curl -fsS https://asherjingkongchen.github.io/poopoo/poodio.sh | sh -s -- 0.1.0
     ```
 4. **💩 [`npm`](https://nodejs.org/en/download/) 💩**
     ```shell
