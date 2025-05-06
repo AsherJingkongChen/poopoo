@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -euo pipefail
+set -o errexit -o pipefail -o nounset
 
 log() {
   _TAG="$1"; shift; _MSG="$@"
@@ -58,9 +58,10 @@ DIST="https://github.com/${REPO}/releases/download/${TAG}/${TAG}-${TARGET}.tgz"
 log 'DIST:' "${DIST}"
 log 'DIST:' 'Fetching ...'
 log 'HASH:' 'Fetching ...'
-curl -fsLo "${TMP}/dist.tgz" "${DIST}" &PID="$!"
-curl -fsLo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" &PID="$! ${PID}"
-for p in ${PID}; do
+PID=()
+curl -fsLo "${TMP}/dist.tgz.meta.json" "${DIST}.meta.json" & PID+=("$!")
+curl -fsLo "${TMP}/dist.tgz" "${DIST}" & PID+=("$!")
+for p in "${PID[@]}"; do
   wait "${p}" || \
   { log 'ERROR:' "Fetching failure"; exit 4; }
 done

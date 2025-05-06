@@ -68,10 +68,10 @@
     ```
 3. **💩[`curl`](https://curl.se/download.html) 💩**
     ```shell
-    curl -fsS https://asherjingkongchen.github.io/poopoo/poodio.sh | sh
+    curl -fsS https://asherjingkongchen.github.io/poopoo/poodio.sh | bash
     ```
     ```shell
-    curl -fsS https://asherjingkongchen.github.io/poopoo/poodio.sh | sh -s -- 0.1.0
+    curl -fsS https://asherjingkongchen.github.io/poopoo/poodio.sh | bash -s -- 0.1.0
     ```
 4. **💩 [`npm`](https://nodejs.org/en/download/) 💩**
     ```shell
