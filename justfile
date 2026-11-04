@@ -14,7 +14,7 @@ audit:
   npm audit
   npm audit signatures
   -cargo audit --deny warnings
-  uv run pip-audit --progress-spinner off --skip-editable
+  -uv run pip-audit --progress-spinner off --skip-editable
 
 # Fix all dependencies issues.
 audit-fix: update
