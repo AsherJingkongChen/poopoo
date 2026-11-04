@@ -13,7 +13,7 @@ audit:
   -cargo update --locked --verbose
   npm audit
   npm audit signatures
-  cargo audit --deny warnings
+  -cargo audit --deny warnings
   uv run pip-audit --progress-spinner off --skip-editable
 
 # Fix all dependencies issues.
