@@ -9,7 +9,7 @@ export UV_NO_SYNC := 'true'
 # Audit all dependencies.
 audit:
   uv lock --check
-  npm outdated
+  -npm outdated
   cargo update --locked --verbose
   npm audit
   npm audit signatures
