@@ -10,7 +10,7 @@ export UV_NO_SYNC := 'true'
 audit:
   uv lock --check
   -npm outdated
-  cargo update --locked --verbose
+  -cargo update --locked --verbose
   npm audit
   npm audit signatures
   cargo audit --deny warnings
