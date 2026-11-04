@@ -66,7 +66,7 @@ name = "poodio"
 readme = "README.md"
 repository.workspace = true
 rust-version.workspace = true
-version = "0.0.23"
+version = "0.0.24"
 
 [package.metadata.binstall]
 disabled-strategies = ["quick-install"]

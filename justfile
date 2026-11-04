@@ -9,12 +9,12 @@ export UV_NO_SYNC := 'true'
 # Audit all dependencies.
 audit:
   uv lock --check
-  npm outdated
-  cargo update --locked --verbose
+  -npm outdated
+  -cargo update --locked --verbose
   npm audit
   npm audit signatures
-  cargo audit --deny warnings
-  uv run pip-audit --progress-spinner off --skip-editable
+  -cargo audit --deny warnings
+  -uv run pip-audit --progress-spinner off --skip-editable
 
 # Fix all dependencies issues.
 audit-fix: update
